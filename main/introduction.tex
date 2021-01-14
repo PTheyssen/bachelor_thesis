@@ -1,0 +1,73 @@
+% !TeX spellcheck = en_US
+% !TeX encoding = UTF-8
+% !TeX root = ../thesis.tex
+
+\chapter{Introduction}
+
+\section{Motivation}
+Robots are expected to transform our production methods and society as a whole.
+Currently mostly toy applications [cite] are widely known to the public, or highly
+specialized robot systems  in industry [cite]  which preform a special task. What lacks
+is a freely moving agent, able to adapt to various situations and acting
+autonomously.
+To achieve this goal recent research has focused on reinforcement learning [cite],
+and data driven methods.
+
+Robotics and reinforcement learning go hand in hand, giving birth to a rich
+relationship similar to math and physics [cite robotics and RL survey].
+
+- give inspiration for robotics in general terms
+
+- write story about using a robot and solve tasks with different contexts
+
+- introduce robots to our ever-day life (big vision), robots need to
+autonomously learn rich set of complex behaviors
+
+- robotics offers platform of application for reinforcement learning
+(compare physics and mathematics)
+
+- robots ability to generalize experience across similar tasks,
+  adjust knowledge of the task to new setting or context
+
+- give example of tasks that are solve able with policy search
+
+- include pictures of robots solving tasks
+
+
+\section{Contribution}
+Trust region policy search based on Kullback-Leibler divergence has been
+successfully employed in some sample tasks [REPS,...]. 
+Abdolmaleki et al. (2015) introduced MORE to alleviate issues of a lot
+of evaluations of objective and converging prematurely. One of
+the contributions of this thesis is to explore recursive estimation 
+of the learned model of the objective function to increase
+sample efficiency. Besides that we aim to improve the overall runtime of
+the algorithm. We focus mainly on classical methods of parameter estimation and filtering
+like the Kalman Filter, considering more advanced methods is part of future work.
+We benchmark the new version of the MORE algorithm on test functions and compare
+them to previous results.
+
+\section{Structure of Thesis}
+The remainder of this thesis is structured as follows:
+
+\textbf{Chapter 2:} In the fundamentals chapter we, we lay the foundation for
+the thesis, introducing Reinforcement Learning for solving Robotic
+tasks. Introducing basic concepts and notation. We look at policy
+search algorithms which leads us to stochastic search algorithms.
+We shortly review some optimization principles including
+Lagrangian multipliers. Finally we look at Bayesian parameter
+estimation, focusing on the Kalman Filter.
+
+\textbf{Chapter 3:} Review of the related work in the field.
+
+\textbf{Chapter 4:} In this chapter we develop the algorithm connecting
+the MORE algorithm with recursive parameter estimation, first
+using simple Recursive Least Squares and finally using a Kalman Filter.
+
+\textbf{Chapter 5:} In the evaluation chapter we conduct experiments
+with the algorithms on several tests function and some toy tasks
+for a planar robot. We compare our algorithm with original MORE and
+other stochastic search algorithms.
+
+\textbf{Chapter 6:} Finally, we conclude the thesis with a summary of
+the achieved results and an outlook on future work.

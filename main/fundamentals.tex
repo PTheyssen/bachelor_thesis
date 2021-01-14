@@ -1,0 +1,88 @@
+% !TeX spellcheck = en_US
+% !TeX encoding = UTF-8
+% !TeX root = ../thesis.tex
+
+\chapter{Fundamentals}
+This chapter introduces basic concepts used throughout this thesis.
+First Markov decision processes and classical reinforcement learning.
+Then we look at the robot control problem with RL as a framework.
+Then discuss policy search, a sub-field of reinforcement learning,
+as one method to solve this problem.
+The Kullback-Leibler divergence (KL), as an important information theoretic
+distance metric between probability distributions and Dynamic Motor
+Primitives (DMPs) for policy representation.
+Then basics of stochastic optimization algorithms, Lagrangian multiplier
+and the dual function.
+Having introduced the underlying basics we can then discuss the MORE Algorithm as a policy search algorithm
+for solving the robot control problem.
+Finally we will look at Filtering from a Bayesian Estimation viewpoint and
+review the Kalman Filter for parameter estimation.
+
+\section{RL in Robotics}
+Agent explores space of possible strategies and receives feedback on the outcome of
+the choices he made.
+- [figure: classical RL interaction loop]
+
+\subsection{Markov Decision Processes}
+- cite bellman
+- long term reward function
+- agent interacting with environment
+- policy to choose action for given state
+- maximize reward, episodic task
+- for task without end, average, expected reward
+
+\subsection{Robot Control as a RL Problem}
+- curse of dimensionality
+- curse of real-world samples
+- accumulated reward
+- optimal policy
+
+\section{Policy search}
+- look for optimal policy
+- model-free vs. model based
+- exploration-exploitation trade-off
+
+\section{Kullback-Leibler (KL) Divergence}
+- equation
+- used to limit exploitation of surrogate model
+
+\section{Dynamic Motor/Movement Primitives (DMPs)}
+
+\section{MORE Algorithm}
+MORE black-box optimizer, key points:
+- trust region method, in which optimization steps are restricted to lie within a
+region where the approximation of the true cost function still holds
+- preventing updated policies from deviating too wildly, catastrophically bad
+update is lessened --> monotonic improvement in policy performance
+- objective function is locally approximated by a quadratic model
+- KL divergence for staying close to the old policy and having the policy
+as a proper distribution
+- analytic solution for the policy update derived using Lagrangian multipliers
+  (appendix)
+- that model used to locally optimize the objective function
+
+\subsection{MORE Framework}
+- policy search problem as constrained optimization problem
+- Dual problem
+
+\subsection{update of policy}
+- in Gaussian case
+
+\subsection{Iteration step}
+- pseudo code for MORE
+
+\section{Bayesian Estimation}
+- Bayesian probability, and Bayesian toolbox
+  - prior distribution
+  - measurement model
+  - posterior distribution
+
+
+\subsection{Least squares}
+- batch solution to Bayes filtering problem
+
+\subsection{Recursive least squares}
+- iterative step wise solution
+
+\subsection{Kalman Filter}
+- dynamic model solution, for linear problem assumption

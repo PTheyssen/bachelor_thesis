@@ -1,0 +1,43 @@
+% !TeX spellcheck = en_US
+% !TeX encoding = UTF-8
+% !TeX root = ../thesis.tex
+
+\chapter{Evaluation}
+This chapter will introduce the setup for the experiments and the tasks.
+
+
+\section{Experiments}
+
+\subsection{Setup}
+
+\subsection{Test Functions for Optimization}
+Based on \citet{molga2005test}.
+
+\Cref{fig:sphere} shows the sphere function, one of the simplest test benchmarks.
+
+$$ f(x) = \sum^n_{i=1}x_i^2 $$
+
+\begin{figure}[ht!]
+    \centering
+    \includesvg[width=0.5\textwidth]{figures/sphere}
+    \caption{sphere function}
+    \label{fig:sphere}
+\end{figure}
+
+\Cref{fig:rosenbrock} shows the rosenbrock function, a uni-model optimization function.
+
+$$ f(x) = \sum^{n-1}_{i=1} [100(x_{i+1} - x_i^2)^2 + (1-x_i)^2] $$
+
+\begin{figure}[ht!]
+    \centering
+    \includesvg[width=0.5\textwidth]{figures/rosenbrock}
+    \caption{rosenbrock function}
+    \label{fig:rosenbrock}
+\end{figure}
+
+
+\subsection{Planar reaching task}
+- DMPs as policy representation
+
+
+\section{Evaluation}
