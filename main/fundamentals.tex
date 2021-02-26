@@ -9,7 +9,8 @@ Next we discuss policy search, a sub-field of reinforcement learning,
 as one method to solve the robot learning problem.
 The Kullback-Leibler divergence (KL), as an important information theoretic
 distance metric between probability distributions.
-Having discussed the underlying basics we can then introduce the MORE Algorithm.
+Having discussed the underlying basics we can then
+introduce the MORE Algorithm.
 Finally we will look at Filtering from a Bayesian Estimation viewpoint and
 review the Kalman Filter for parameter estimation.
 
@@ -22,50 +23,55 @@ cause and effect relationship between actions.
 Compared to supervised learning and unsupervised learning it
 more closely resembles the way humans learn.
 
-The term reinforcement learning relates to a class of problems, solution methods
-and the field that studies these problems and solutions.
-\citet{sutton2018reinforcement}
-
-Some famous examples include playing games like Go but also atari
-and also the problems like a robot learning to walk.
-Generally RL is applicable to a large range of problems, making it very popular.
+As \citet{sutton2018reinforcement} puts it,
+the term reinforcement learning relates to a class of problems,
+solution methods and the field that studies these problems and solutions.
+Some famous examples include playing games like Go
+\citet{silver2016mastering} and Atari games \citet{mnih2013playing}
+Generally RL is applicable to a large range of problems.
 Whereas in supervised learning the best action is presented to the system,
 the agent in a reinforcement learning setting receives an occasional
 reward (or punishment).
-This difference can be formulated as the concept
-of learning with a critic, who gives occasional feedback, as opposed to learning
-with a teacher.
 To gain information about the rewards the agent needs
-to explore previously unused actions. Dare to try new things or keep performing safe
+to explore previously unused actions.
+Dare to try new things or keep performing safe
 well-known actions, this is the \textit{exploration-exploitation tradeoff}.
-The agent should exploit actions he knows that give decent reward, but he first
-has to try different things to learn about these actions, and progressively has to 
-focus in on them.
-The reward singal is only given occasionly, hence the amount of information
+The agent should exploit actions he knows that
+give decent reward, but he first
+has to try different things to learn about these actions,
+and then he has to progressively focus in on them.
+The reward signal is only given occasionally, hence the amount of information
 the agent receives is minimal compared to
 supervised and unsupervised learning approaches.
-Focus on simple general principles for learning that can be applied to different problems.
 
-Reinforcement learning as general case of optimal control, whereas optimal control
-assumes perfect knowledge, RL uses apporixmations and data-driven techniques.
-We can distinguish an \textit{episodic} setting, where the task is restarted after
-the end of an episode, here the goal is to maximize the total reward per episode.
-Otherwise if the taks is on-going the goal is to achieve high average reward over
-the whole life-time or a formulation with a sicounted return (wheighting the
+Reinforcement learning can also be seen as
+general case of optimal control as in \citet{sutton1992reinforcement},
+whereas optimal control assumes perfect knowledge, RL uses approximations
+and data-driven techniques.
+In general we can distinguish an \textit{episodic} setting,
+where the task is restarted after
+the end of an episode, here the goal is
+to maximize the total reward per episode.
+Otherwise if the task is on-going the goal
+is to achieve high average reward over
+the whole life-time or a formulation with a discounted return (weighting the
 future and past differently).
-We model the agent and its environment as a state $s \in S$ it may perform action
-$ a \in A$ which can be either discrete or continous.
-For every step the agent receives a Reward $R$, which is a scalar value
-The overarching goal is to find a mapping from states to actions, a policy $\pi$,
-that picks actions in a way that the reward is maximized. The policy $\pi$ may
+We model the agent and its environment as a state $s \in S$. The agent
+may perform action $ a \in A$ which can be either discrete or continuous.
+For every action step the agent receives a Reward $R$, which is a scalar value.
+The overarching goal is to find a mapping from states to actions,
+called policy $\pi$, that picks actions in a way that
+the reward is maximized.
+The policy $\pi$ may
 be deterministic $a = \pi(s)$ or stochastic $a \sim \pi(s,a) = P(a | s)$.
 
 The classical approach to formalizing problems in RL is through
 Markov Decision Processes (MDPs).
 MDPs are a mathematical
 framework for decision making in deterministic and stochastic environments.
-MDPs focus on only three aspects - sensation, action and goal, which are central
-for reinfocement learning problems.
+MDPs focus on only three aspects
+- sensation, action and goal, which are central
+for reinforcement learning problems.
 MDPs satisfy the Markov property (cite), which state that ``the future is independent
 of the past given the present''. In our case this means the next state $s'$ and the reward
 only depend on the previous state $s$ and action $a$ \citet{sutton1992reinforcement}.
@@ -88,7 +94,7 @@ In robotics we may only find some approximate notion of state.
 
 Generally the goal is to find an optimal policy $\pi*$ that
 maximizing the expected return $J$.
-Optimal behaviour can be modeled in different ways, resulting in different
+Optimal behavior can be modeled in different ways, resulting in different
 definitions for expected return.
 
 Finite-horizon model, for horizon $H$ meaning the next $H$ timesteps:
@@ -98,17 +104,18 @@ Discounted reward, discounting future rewards by a discount factor $\gamma$
 (with $0 \leq gamma < 1)$:
 $$ J = E \left\{\sum^{\infty}_{t=0} \gamma^t R_t \right\} $$
 
+
 \section{Robot Learning}
-The sub-field where reinforcement learning and machinelearning
+The sub-field where reinforcement learning and machine learning
 intersect with robotics is called \textit{Robot Learning}, it aims to bridge
 the gap between programmed robots,
-with fine tuned controlles  and fully autnomous robots.
+with fine tuned controllers  and fully autonomous robots.
 As proposed in \citet{deisenroth2013survey}, robot control can be modeled as
 a reinforcement learning problem.
 
-RL offers general framework, a movement is represented in terms of an optimizatoin or
+RL offers general framework, a movement is represented in terms of an optimization or
 reward criterion, learning algorithms fill the details of the
-Robotics differes from most other RL problems, high dimensional states and actions space.
+Robotics differs from most other RL problems, high dimensional states and actions space.
 
 - true state not observable not noise free
 
@@ -130,19 +137,19 @@ $r_T$ final reward, such as quadratic punishment term for deviation from goal po
 $$ R(\tau) = \sum^{\infty}_{t=0} \gamma^t r(x_t, u_t) $$
 where $\gamma \in [0,1)$ is a discount factor that discounts rewards further in the future.
 
-- finally tasks in robot learning as chossing a optimal control policy $\pi^*$ that
+- finally tasks in robot learning as choosing a optimal control policy $\pi^*$ that
 maximizes the expected accumulated reward
 
 - use imitation learning to initialize prior, this removes the need for global exploration,
   the student can improve locally
 
-  - generally no clear receipe for robot learning, hugh number of different methods,
-  but when used appropriately achive great results.
+  - generally no clear recipe for robot learning, huge number of different methods,
+  but when used appropriately achieve great results.
 
   - though minor incorrect flaws can completely prevent success of learning.
 
   - learning algorithms are rarely used on robots for real daily usage, and most
-  algorithms are overfitted to a praticular robot architecture and do not generalize
+  algorithms are over fitted to a particular robot architecture and do not generalize
   to other robots easily
   
 \subsection{Challenges}
@@ -175,15 +182,15 @@ robustness and reliability in learning
 \subsubsection{Curse of Goal Specification}
 
 \subsection{Policy search}
-Policy search methods use parametrized policies $\pi_{\theta}$ and operate
-directly in the parameter space $\Theta$ of theses parametrized policies and
-typically avoiding learing value function.
+Policy search methods use parameterized policies $\pi_{\theta}$ and operate
+directly in the parameter space $\Theta$ of theses parameterized policies and
+typically avoiding learning value function.
 
-Most traditional reinforcement methos use \textit{action-value methods}, in robotics
-there has been a focus on learning \textit{parametrized policies} that can select
+Most traditional reinforcement methods use \textit{action-value methods}, in robotics
+there has been a focus on learning \textit{parameterized policies} that can select
 actions without a value function.
 
-Policy search method use parametrized policies, instead
+Policy search method use parameterized policies, instead
 of value-based methods. Directly learn the policy without a value function.
 This enables Imitation learning, natural integration of expert knowledge through
 initialization of the policy.
@@ -191,15 +198,15 @@ This method has good results (cite reps, more, policy search review)
 
 Still choosing the right method for the right problem remains an open question.
 - Still in the robotics framework the computational cost of updating
-a policy in policy sarch can easiyl be cheaper than finding just one
+a policy in policy search can easily be cheaper than finding just one
 optimal action for one state by searching the state-action value function.
 
 - policy search as \textit{actor}-only method and value function as \textit{critic}-only
 because in value function we try to estimate performance of one control then improve
-the policy on this, whereas in policy search we direcly derive optimal policy.
+the policy on this, whereas in policy search we directly derive optimal policy.
 
-Most Policy search methods optimize exsiting parametrized policy locally. By computing
-changes to the policy parameters that will increase the expected retunr and results
+Most Policy search methods optimize existing parameterized policy locally. By computing
+changes to the policy parameters that will increase the expected return and results
 in iterative updates.
 
 The computation of the policy is the main concept to focus on. There have
@@ -211,7 +218,7 @@ There are model-free and model-based Policy search methods \citet{deisenroth2013
 
 - TODO: include graphic for different policy search methods
 
-- parametrized policy $\pi_{\theta}$, the search is performed in the parameter space
+- parameterized policy $\pi_{\theta}$, the search is performed in the parameter space
 $\theta \in \Theta$
 
 - We will focus on model free policy search methods where we sample trajectories from
@@ -220,7 +227,7 @@ the robot and improve the policy only based on the samples and the reward signal
 - model free policy search methods use sampled trajectories and immediate rewards directly
 to update parameters of the policy
 
-- mode-based methods, model the the robot's and environments's dynamics from sampled
+- mode-based methods, model the the robot's and environment's dynamics from sampled
   trajectories, and then use this model for improving the policy.
 
 - group of algorithms stochastic search algorithms, which are \textit{black-box optimizers}.
@@ -269,18 +276,18 @@ be readily be used to perform model-free policy search.
 
 \section{Kullback-Leibler (KL) Divergence}
 Many algorithms in policy search rely on the Kullback-Leibler Divergence, also
-kown as the relative entropy, for controlling
+known as the relative entropy, for controlling
 the difference between the the old and updated policy.
-Working with real robots additionaly requires to perform safe exploration, big
+Working with real robots additionally requires to perform safe exploration, big
 exploration steps, may result in damaging the hardware.
-Specifically, it measures the shannon entropy of one distribution relative to the
+Specifically, it measures the Shannon entropy of one distribution relative to the
 other.
 
 $$ KL(p || q) = \int p(\theta) \text{log} \frac{p(\theta)}{q(\theta)} d \theta $$
 
 Note that in general the relative entropy is not symmetric under interchange of the
 distributions $p$ and $q$. In general $KL(p || q) \neq KL(q || p) $, therefore
-in a mathematically sense it is not stricly a distance.
+in a mathematically sense it is not strictly a distance.
 
 The KL-bound has been used successfully for many algorithms (cite REPS, Natural gradient)
 It is widely used in Machine Learning algorithms. (cite..)
@@ -290,17 +297,17 @@ The MORE algorithm is a stochastic search algorithm. It can be used for
 model-free policy search. The key idea is using information-theoretic policy updates
 by bounding the relative entropy (Kullback Leibler divergence) between two subsequent
 policies. We approximate the objective function with a quadratic surrogate model hence
-we can statisfy the KL-bound in closed form.
+we can satisfy the KL-bound in closed form.
 
 
 - TODO: include 3D figure of more algorithm
 
 \subsection{MORE Framework}
-The MORE algorithm maintains a search distribution (policy) over the parameterspace
+The MORE algorithm maintains a search distribution (policy) over the parameter space
 of the objective function. We can use the method of constraint optimization
 to formulate an optimization problem for obtaining a new search distribution that
 maximizes the expected objective value while upper-bounding the KL-divergence and
-lower-bounding the entropy of the distrubtion.
+lower-bounding the entropy of the distribution.
 
 \begin{align}
  \max_{\pi} \int \pi(\theta) \mathbf{R}_{\theta} d\theta, \\
@@ -309,7 +316,7 @@ lower-bounding the entropy of the distrubtion.
 \quad 1 = \int \pi(\theta) d\theta
 \end{align}
 
-Forming the Lagragian we get
+Forming the Lagrangian we get
 \begin{align} \mathcal{L}(\pi, \eta, \omega) = 
 \int \pi(\theta) \mathcal{R}_{\theta} d\theta \; + \; 
 \eta  \left(\epsilon - \int \pi(\theta) \text{ log}
@@ -323,7 +330,7 @@ The solution is
 \text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right)
 \end{align}
 it depends on the quadratic and linear term of the surrogate model and the
-lagragian mutlipliers. These can be obtained by minimizing the dual problem:
+Lagrangian multipliers. These can be obtained by minimizing the dual problem:
 
 \begin{align}
   g(\eta,\omega) = \eta\epsilon - \omega\beta + (\eta - \omega) \text{log}
@@ -336,7 +343,7 @@ We get the closed form solution for the equation
 With these equations we can formulate an iterative algorithm for updating the policy.
 
 \subsubsection{Entropy constraint}
-The bound $\beta$ is defined such that realtive difference between the entropy
+The bound $\beta$ is defined such that relative difference between the entropy
 of the policy $H(\pi)$ and a minimum exploration policy $H(\pi_0)$ is decreased
 for a certain percentage:
 $$ H(\pi) - H(\pi_0) \geq \gamma (H(q) - H(\pi_0))
@@ -363,7 +370,7 @@ $$ g(\eta, \omega) = \eta \epsilon - \beta \omega
 \mathbf{b} - \eta log |2\pi \mathbf{Q}| + (\eta + \omega) log |2\pi (\eta + \omega)
 \mathbf{F}| \right) $$
 
-Assuming $\pi$ is gaussian we get the solution, and can update the mean and covariance matrix
+Assuming $\pi$ is Gaussian we get the solution, and can update the mean and covariance matrix
 of the search distribution. 
 \begin{align} \label{policy_update}
   \pi_{t+1} &= \mathcal{N}(\mu_{t+1}, \Sigma_{t+1}) \\
@@ -383,7 +390,7 @@ In Robotics it can be used to learn motor tasks by using Dynamic Movement Primit
 TODO:  rewrite, because currently this part to closely resembles \citet{sarkka2013bayesian}.
 
 Optimal filtering is concerned with estimating the state of a time-varying system
-which is only partialy observed through noisy meaurements.
+which is only partially observed through noisy measurements.
 \textit{Bayesian Filtering} refers to the Bayesian way of formulating optimal
 filtering.
 
@@ -437,7 +444,7 @@ $$ p(y | \theta) = \text{distribution of observation } y
 \subsubsection{posterior distribution}
 The conditional distribution of the parameters given the observations.
 It represents the updated belief about the parameters
-after obtaining the measurments. It can be computed by using Bayes' rule.
+after obtaining the measurements. It can be computed by using Bayes' rule.
 
 $$ p(\theta | y) = \frac{p(y | \theta) p(\theta)}{p(y)}
 \propto p(y | \theta) p(\theta) $$
@@ -447,7 +454,7 @@ The normalization constant can be computed by integrating $\theta$ out.
 $$ p(y) = \int p(y | \theta) p(\theta) d\theta $$
 
 -TODO: create graphic (2d or 3d) for merging prior with observation to get
-    posterior (show with multivariate gaussian distribution)
+    posterior (show with multivariate Gaussian distribution)
 
 \subsection{Gaussian probability function}
 A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
@@ -455,7 +462,7 @@ $m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
 probability density has the form
 $$ \text{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
 \text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
-where $|P|$ is the determinant of the marix $P$.
+where $|P|$ is the determinant of the matrix $P$.
     
 \subsection{Least squares}
 To grasp the Bayesian Filtering viewpoint we will now look
@@ -507,7 +514,7 @@ For this we have to assume the next step only
 depends on the previous state, (markovian assumption).
 The main idea is using the previous posterior as the prior in the estimation
 step.
-The measurements are assumed to be conditionally independnt.
+The measurements are assumed to be conditionally independent.
 
 To get the \textit{recursive Bayesian solution} we proceed as follows:
 In the beginning of estimation all the information about the parameter $\theta$
@@ -542,11 +549,11 @@ from which we get:
 
 TODO: do calculation with matrix inversion lemma (in appendix?)
 
-By using the \textit{matrix inversion lemma} the covariance caculation can be
+By using the \textit{matrix inversion lemma} the covariance calculation can be
 written as
 $$ P_k = P_{k-1} - P_{k-1} H_k^T [H_k P_{k-1} H_k^T + \sigma^2]^{-1} H_k P_{k-1} $$
 
-By introducing temporary varaiables $S_k$ and $\mathbf{K}_k$ the caclulation of
+By introducing temporary variables $S_k$ and $\mathbf{K}_k$ the calculation of
 the mean and covariance can be written in the form
 \begin{align*}
      S_k &= \textbf{H}_k \textbf{P}_{k-1} \textbf{H}^T_k + \sigma^2 \\
@@ -555,7 +562,7 @@ the mean and covariance can be written in the form
      \textbf{P}_k &= \textbf{P}_{k-1} - \textbf{K}_k S_k \textbf{K}_k^T
 \end{align*}
 Here $\mathbf{K}$ is the Kalman gain that controls the weight we give to new
-measurments.
+measurements.
 This is actually a special case of The Kalman filter update equations.
 Since here the parameters $\theta$ are assumed to stay constant there is
 no stochastic dynamics model used for the prediction step.
