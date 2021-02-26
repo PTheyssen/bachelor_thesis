@@ -5,69 +5,98 @@
 \chapter{Introduction}
 
 \section{Motivation}
-Robots are expected to transform our production methods and society as a whole.
-Currently mostly toy applications [cite] are widely known to the public, or highly
-specialized robot systems  in industry [cite]  which preform a special task. What lacks
-is a freely moving agent, able to adapt to various situations and acting
-autonomously.
-To achieve this goal recent research has focused on reinforcement learning [cite],
-and data driven methods.
+Robots are already used extensively in industry to form production chains,
+where they perform the same task over and over.
+These robots are being programmed and fine tuned
+by a human engineer which requires experience and expertise. \par
+Recently there has been a new development of robots
+becoming part of our daily life's, for example in the form of 
+vacuum cleaner and lawn mowers . In the future areas like care giving and
+everyday assistance and household robots may
+become more established \citet{schaal2007new}.
+Especially countries like Japan, facing the problem of an
+aging population, put increasing effort to make robots
+viable in these domains. 
+In daily life the robots are confronted with different challenges,
+like  adapting to different like lightening conditions and
+objectives being moved around.
+The robots which are currently already on the market
+like vacuum cleaners and lawn mowers have
+either a ``one size fits all'' approach or need a special setup
+in software or hardware. To solve this issue
+machine learning and especially
+reinforcement learning will be key technologies to enable robots
+to adjust to dynamic and stochastic environments.
 
-Robotics and reinforcement learning go hand in hand, giving birth to a rich
-relationship similar to math and physics [cite robotics and RL survey].
+- TODO: focus on motor skills (movement primitives)
 
-- give inspiration for robotics in general terms
+Robotics and reinforcement learning complement each other
+with robotics providing a great, and reinforcement learning providing
+the framework for formulating solutions, the 
+relationship may be similar to the one of  math and physics
+\citet{kober2013reinforcement}.
+Compared to other domains like board games Go, or video games Atari
+Robotics  poses special challenges for reinforcement algorithms. Making
+it necessary to explore methods specialized to the inherent
+challenges of Robotics, which include:
 
-- write story about using a robot and solve tasks with different contexts
+\begin{itemize}
+\item high dimensional state and action space
+\item obtaining real world samples
+\item goal specification
+\end{itemize}
 
-- introduce robots to our ever-day life (big vision), robots need to
-autonomously learn rich set of complex behaviors
+In general Robots have potential to transform our society, by
+bringing robots from the factories into our homes there will be many
+possibilities for improvement and challenges likewise.
 
-- robotics offers platform of application for reinforcement learning
-(compare physics and mathematics)
-
-- robots ability to generalize experience across similar tasks,
-  adjust knowledge of the task to new setting or context
-
-- give example of tasks that are solve able with policy search
-
-- include pictures of robots solving tasks
+- TODO: include pictures of robots solving tasks with RL
 
 
 \section{Contribution}
-Trust region policy search based on Kullback-Leibler divergence has been
-successfully employed in some sample tasks [REPS,...]. 
-Abdolmaleki et al. (2015) introduced MORE to alleviate issues of a lot
-of evaluations of objective and converging prematurely. One of
+Policy search algorithms have shown promise as an alternative
+to value function-based reinforcement learning, especially for learning motor
+skills in robotics \citet{deisenroth2013survey}.
+The MORE algorithm as a policy search method based on
+information theoretic updates is introduced in \citet{abdolmaleki2015model}.
+The key idea of MORE is to learn a surrogate Model of
+the objective function to efficiently computing the updates to
+the policy in closed form. One of
 the contributions of this thesis is to explore recursive estimation 
-of the learned model of the objective function to increase
-sample efficiency. Besides that we aim to improve the overall runtime of
-the algorithm. We focus mainly on classical methods of parameter estimation and filtering
-like the Kalman Filter, considering more advanced methods is part of future work.
-We benchmark the new version of the MORE algorithm on test functions and compare
+for learning the surrogate model of the objective function to increase
+sample efficiency. Besides that we aim to improve the  runtime of
+the algorithm with this approach.
+We focus mainly on classical methods of parameter estimation and filtering
+like the Recursive Least Squares and the Kalman Filter,
+considering more advanced methods is part of future work.
+We benchmark the our version of the MORE algorithm on test functions and
+simple planar reaching tasks and compare
 them to previous results.
 
 \section{Structure of Thesis}
 The remainder of this thesis is structured as follows:
 
-\textbf{Chapter 2:} In the fundamentals chapter we, we lay the foundation for
-the thesis, introducing Reinforcement Learning for solving Robotic
-tasks. Introducing basic concepts and notation. We look at policy
-search algorithms which leads us to stochastic search algorithms.
-We shortly review some optimization principles including
-Lagrangian multipliers. Finally we look at Bayesian parameter
-estimation, focusing on the Kalman Filter.
+\textbf{Chapter 2:} In the fundamentals chapter we lay the foundation for
+the thesis, first introducing the basics of Reinforcement Learning and
+then focusing on the specifics of applying RL to robotic
+tasks.
+Then We focus on policy
+search as one method for solving the robot learning problem.
+Next we introduce the original MORE algorithm and finally
+we look at Bayesian filtering.
 
 \textbf{Chapter 3:} Review of the related work in the field.
 
-\textbf{Chapter 4:} In this chapter we develop the algorithm connecting
-the MORE algorithm with recursive parameter estimation, first
-using simple Recursive Least Squares and finally using a Kalman Filter.
+\textbf{Chapter 4:} In this chapter we motivate the idea of
+using recursive estimation for learning the surrogate model
+and then review methods used for data preprocessing.
+Finally we develop our approach of  connecting
+the MORE algorithm with recursive parameter estimation. 
 
 \textbf{Chapter 5:} In the evaluation chapter we conduct experiments
-with the algorithms on several tests function and some toy tasks
+with the algorithms on several tests function and some simple reaching tasks
 for a planar robot. We compare our algorithm with original MORE and
 other stochastic search algorithms.
 
-\textbf{Chapter 6:} Finally, we conclude the thesis with a summary of
+\textbf{Chapter 6:} We conclude the thesis with a summary of
 the achieved results and an outlook on future work.

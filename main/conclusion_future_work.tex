@@ -6,10 +6,27 @@
 
 
 \section{Conclusion}
+- managed to improve sample efficiency on simple test functions
 
-Your conclusion.
+We achieved some good results on the rosenbrock test function
+considerably improving the sample efficiency. Nonetheless for
+the planar reaching tasks we did not manage to achieve a
+significant improvement.
+Also our proposed algorithm did not work with multimodal and noisy objective functions.
 
+- One main problem seems to be tuning the recurisve estimation for one specific
+task.
+
+The data seems to be difficult to Still
+
+- inexperience of author with kalman filter (setting up matrices, choosing good state transition model)
 
 \section{Future Work}
+- remove sample pool
 
-Your ideas about possible future works.
+- usage of state transition model (kalman filter prediction step)
+
+- make learning more stable for reaching tasks (safe exploration)
+
+- learning the model noise: run original MORE approach and do backpropagation with pytorch over the
+weights

@@ -5,20 +5,52 @@
 \chapter{Related Work}
 
 \section{Policy Search Algorithms}
-- episodic REPS --> use of KL-divergence
+Generally model-free policy search algorithms have have been used
+for their ease of use, at often being black box optimizers.
 
-- in MORE algorithm we use surrogate model to
-calculate KL-divergence bound, opposed to a Taylor approximations
-or sample based approximation of the KL-bound
+For model-free policy search the agent generates trajectories
+evaluates them and uses the reward and the trajectories to
+iteratively update the policy such that the expected reward is maximized.
+
+There are different methods for computing the update of the
+policy, common strategies are based on gradient ascent
+\citet{peters2006policy}.
 
 - natural gradient by NES (update direction of parameters like standard
 gradient but still in bound by KL-divergence)
 
+- evolutionary strategies
 
-- CMA-ES is state of the art in stochastic search optimization and the sample
-  efficiency of it
+- expectation-maximization algorithms
 
+The MORE algorithm is part of information theoretic approaches
+to PS.
+Information theoretic approaches use
+the Kullback-Leibler Divergence in an optimization problem
+to bound the distance of the old policy to the new one.
+There are different techniques to solve the Integrals that arise
+when optimizing the problem.
+The REPS algorithm proposed in \cite{peters2010relative} uses a
+sample-based approximation for the KL-divergence.
+Using Taylor-expansions for the KL-divergence resulted in the natural
+evolutionary strategies (NES) \cite{wierstra2014natural}.
 
-\section{Parameter Estimation}
+Some additions to the original MORE have been explored like formulating
+a contextual version CMORE \citet{tangkaratt2017policy}, enabling learning from high-dimensional
+context variables like camera images.
 
-- look for some examples of kalman filter used for parameter estimation
+\section{Surrogate modeling}
+Model-based methods for approximating the objective function
+with a local surrogate have been used in
+derivative free optimization \citet{nocedal2006numerical}.
+Local surrogate models have been used in trust region methods like \citet{powell2009bobyqa}. These methods maintain a point estimate
+and a trust region around this point instead
+of a search distribution, they update the point estimate by optimizing
+the surrogate and staying in the trust region.
+
+Recursive estimation with methods like
+the Kalman Fiter is extensively used in robotics, mostly to deal with
+noisy measurements. Probabilistic methods from
+a Bayesian especially with a focus on decision making
+is introduced in \citet{thrun2002probabilistic}.
+

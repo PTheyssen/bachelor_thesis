@@ -5,22 +5,27 @@
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-The use of robots is expected to become part of our everyday life's.
-There are is quite a market for little house cleaning robots or
-toys. Most of these robots rely on being
+Robots will increasingly permeate our daily lifes over the next few decades.
+Fulfilling a wide range of tasks like elder care, search
+and rescue and general assistance in daily life.
+Today most robots rely on being
 taught and programmed by a skilled human operator.
-This means robots still have problems to automatically acquire
-new skills and changing environments and requirements.
-Recent research is focusing on Reinforcement Learning as a framework
-to solve the robot control problem.
+For robots to become part of daily life they need to cope
+with changing environments and adjust to new situations,
+therefore problem of autonomously learning robotics will become more
+important. Currently robot learning is already
+a very active field of research. There is a close relationship between Reinforcement learning and
+robotics, where both areas of research complement each other.
+A big challenge for robot learning is being sample efficiency,
+because real world samples are costly to obtain.
+Policy search methods, a sub-field of reinforcement learning,
+can be used to learn different task only through trial and error.
 
-Policy search methods, a sub-field of reinforcement learning, try to
-optimize the robot's policy parameters for the task at hand.
 
-In this thesis we try to improve the sample efficiency of a policy search algorithm,
-which is of special importance for robotics. This is done
-by using classical recursive estimation techniques like the Kalman filter.
-
+In this thesis we try to improve the sample efficiency
+of a policy search algorithm.
+This is done using classical recursive estimation
+techniques like the Kalman filter, introduced from a Bayesian perspective.
 We implement different versions of Filtering algorithms and compare them with
 previous methods and benchmark them on optimization test function and simple
-planar robot tasks.
+planar reaching tasks.

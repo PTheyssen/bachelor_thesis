@@ -37,6 +37,7 @@ parskip]{scrreprt} % scrartcl
 \usepackage[scaled=0.92]{helvet} % Different fonts
 \usepackage{courier}
 \usepackage{mathptmx}
+\usepackage[ruled,vlined]{algorithm2e} % for algorithms
 \usepackage{listings} % Source code listings, etc
 \usepackage{lastpage}
 \usepackage{microtype} % Better typesetting
