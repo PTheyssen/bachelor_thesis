@@ -14,15 +14,13 @@ introduce the MORE Algorithm.
 Finally we will look at Filtering from a Bayesian Estimation viewpoint and
 review the Kalman Filter for parameter estimation.
 
-
 \section{Reinforcement Learning}
 Reinforcement Learning is a subfield of Machine Learning concerned with agents
 learning to interact with their environment.
 This is done through exploration and trial-and-error, trying to discover
 cause and effect relationship between actions.
 Compared to supervised learning and unsupervised learning it
-more closely resembles the way humans learn.
-
+more closely resembles the way humans learn. \\
 As \citet{sutton2018reinforcement} puts it,
 the term reinforcement learning relates to a class of problems,
 solution methods and the field that studies these problems and solutions.
@@ -42,28 +40,25 @@ has to try different things to learn about these actions,
 and then he has to progressively focus in on them.
 The reward signal is only given occasionally, hence the amount of information
 the agent receives is minimal compared to
-supervised and unsupervised learning approaches.
-
-Reinforcement learning can also be seen as
-general case of optimal control as in \citet{sutton1992reinforcement},
-whereas optimal control assumes perfect knowledge, RL uses approximations
-and data-driven techniques.
-In general we can distinguish an \textit{episodic} setting,
-where the task is restarted after
-the end of an episode, here the goal is
-to maximize the total reward per episode.
-Otherwise if the task is on-going the goal
-is to achieve high average reward over
-the whole life-time or a formulation with a discounted return (weighting the
-future and past differently).
+supervised and unsupervised learning approaches. \\
 We model the agent and its environment as a state $s \in S$. The agent
 may perform action $ a \in A$ which can be either discrete or continuous.
-For every action step the agent receives a Reward $R$, which is a scalar value.
+For every action step the agent receives a Reward $R$,
+which is a scalar value.
 The overarching goal is to find a mapping from states to actions,
 called policy $\pi$, that picks actions in a way that
-the reward is maximized.
-The policy $\pi$ may
-be deterministic $a = \pi(s)$ or stochastic $a \sim \pi(s,a) = P(a | s)$.
+the reward is maximized. \\
+We can distinguish an \textit{episodic} setting
+from an on-going task.
+In the episodic setting
+the task is restarted after
+the end of an episode and the goal is
+to maximize the total reward per episode.
+In on-going tasks the goal
+is to simply achieve high average reward over
+the whole life-time or one can use a formulation
+with a discounted return (weighting the
+future and past differently).
 
 The classical approach to formalizing problems in RL is through
 Markov Decision Processes (MDPs).
@@ -90,13 +85,13 @@ The Markov property can be expressed as
 $$ P(s_{t+1} | s_t, a_t, s_{t-1}, a_{t-1}\cdots) = P(s_{t+1} | s_t, a_t)$$
 This recapitulates the notion of state - a state is a sufficient statistic
 for predicting the future, rendering previous observations irrelevant.
-In robotics we may only find some approximate notion of state.
-
-Generally the goal is to find an optimal policy $\pi*$ that
+In robotics we may only find some approximate notion of state. \\
+Generally the goal is to find an optimal policy $\pi*$,
+a mapping from states to actions that
 maximizing the expected return $J$.
-Optimal behavior can be modeled in different ways, resulting in different
-definitions for expected return.
-
+Optimal behavior can be modeled in
+different ways, resulting in different
+definitions for expected return. \\
 Finite-horizon model, for horizon $H$ meaning the next $H$ timesteps:
 $$ J = E \left\{\sum^H_{t=0} R_t \right\} $$
 
@@ -104,94 +99,147 @@ Discounted reward, discounting future rewards by a discount factor $\gamma$
 (with $0 \leq gamma < 1)$:
 $$ J = E \left\{\sum^{\infty}_{t=0} \gamma^t R_t \right\} $$
 
+Reinforcement learning can also be seen as
+general case of optimal control as in \citet{sutton1992reinforcement},
+whereas optimal control assumes perfect knowledge, RL uses approximations
+and data-driven techniques.
+
+- write about Value learning, and shortly name traditional methods (multiarmbandit,
+DP, Temporal difference learning)
+
 
 \section{Robot Learning}
 The sub-field where reinforcement learning and machine learning
-intersect with robotics is called \textit{Robot Learning}, it aims to bridge
+intersect with robotics is called \textit{Robot Learning}. It aims to bridge
 the gap between programmed robots,
 with fine tuned controllers  and fully autonomous robots.
 As proposed in \citet{deisenroth2013survey}, robot control can be modeled as
-a reinforcement learning problem.
+a reinforcement learning problem.  \\
+The state space $\mathbf{x}$ in robotic tasks is high dimensional and made up of
+the internal state of the robot (e.g., joint position, body position/ orientation)
+and external state (e.g. object locations, lighting). The true state is
+not observable and also not noise free. 
+The Robot chooses its next motor control $u$ according to a policy $\pi$.
+This policy $\pi$ may
+be deterministic $a = \pi(s)$ or stochastic $a \sim \pi(s,a) = P(a | s)$.
+The motor commands $u$ alter the state according to the probabilistic
+transition function $p(\mathbf{x}_{t+1} | x_t, u_t)$. This transition function
+is not known, in model-based policy search this function is learned from data and
+used to improve the policy.
+Collectively the states and actions of the robot form a
+\textit{trajectory} $\tau = (x_0, u_0, x_1, u_1,...)$ which is also called
+a \textit{rollout} or a \textit{path}.
+There has to be a numeric scoring system assessing the quality
+of the robots trajectory and returning a reward signal $R(\tau)$.
+For \textit{episodic learning tasks} the task ends after a given number $T$ of time
+steps. Then the accumulated reward $R(\tau)$ for a trajectory is given by
 
-RL offers general framework, a movement is represented in terms of an optimization or
-reward criterion, learning algorithms fill the details of the
-Robotics differs from most other RL problems, high dimensional states and actions space.
-
-- true state not observable not noise free
-
-- reward shaping is difficult and requires fair amount of domain knowledge
-
-- robot chooses motor control $u$ according to policy $\pi$
-
-- probabilistic transition function $p(x_{t+1} | x_t, u_t$
-
-- states and actions form \textit{trajectory} $\tau = (x_0, u_0, x_1, u_1,...)$
-called \textit{rollout} or a \textit{path}
-
-- episodic reward
 $$ R(\tau) = r_T(x_T) + \sum^{T-1}_{t=0} r_t(x_t,u_t) $$
-with $r_t$ is instantaneous reward function (consumed energy) and
-$r_T$ final reward, such as quadratic punishment term for deviation from goal posture.
 
-- infinite-horizon case
+where $r_t$ is an instantaneous reward function (e.g. a punishment for energy consumed)
+and $r_T$ the final reward, when performing a reaching task this may take the
+form of a quadratic punishment term for deviation from the goal posture.
+
+If we consider an infinite-horizon for an on-going task we get
 $$ R(\tau) = \sum^{\infty}_{t=0} \gamma^t r(x_t, u_t) $$
 where $\gamma \in [0,1)$ is a discount factor that discounts rewards further in the future.
 
-- finally tasks in robot learning as choosing a optimal control policy $\pi^*$ that
-maximizes the expected accumulated reward
+Many tasks in robotics can thus be formulated as choosing a optimal control
+policy $\pi^*$ that maximized the expected accumulated reward
 
-- use imitation learning to initialize prior, this removes the need for global exploration,
-  the student can improve locally
+$$ J_{\pi} \mathbb{E}[R(\tau) | \pi] = \int R(\tau) p_{\pi}(\tau) d\tau $$
+where $R(\tau)$ defines the objectives of the task, and $p_{\pi}(\tau)$ is the
+distribution over trajectories $\tau$.
+
+Formulating robotic tasks in this way allows us to use methods from
+reinforcement learning. Albeit most traditional methods from RL like
+TD-learning \cite{sutton2018reinforcement}
+have been unfit for the particular requirements of robotic tasks, other
+methods that have been used in traditional RL like policy search have
+been successfully applied to robot learning.
+Stressing the importance of robotics as a testing ground for RL,
+demanding new developments and active research.
+
+\subsection{Challenges}
+Robotics is different compared to other fields where Reinforcement Learning
+is used extensively. We have a high dimensional state space and running
+real world systems on real hardware is costly. \\
+Traditional RL methods like value functions used in Temporal Difference learning,
+seems unfit for robotic tasks. The problems post in robotics differ from
+the traditional RL tasks.
+Making robotics an unique testing ground for Reinforcement Learning.
+The main challenges encountered are as follows.
+
+\subsubsection{Curse of Dimensionality}
+- basic problem as number of dimensions grows, exponentially more data and
+computation are needed to cover the complete state-action space.
+
+- ``Curse of Dimensionality'' (by Bellman 1957)
+
+- three-dimensional state-space
+
+- having to collect data throughout the state-space to ensure global optimality
+in reinforcement learning
+
+- many degrees of freedom of modern anthropomorphic robots.
+
+- high dimensionality is major challenge for robotics and reinforcement learning
+
+\subsubsection{Curse of Real-world Samples}
+- interact with physical world
+
+- robot hardware expensive, suffers from wear and tear
+
+- safe exploration has become key issue, that neglected in the
+general reinforcement learning community
+
+- training time is limited $\rightarrow$ only relatively few complete executions can ever be generated
+
+- sharing data across different robotics as \textit{cloud robotics}, for example Google's self
+driving cars,
+
+-  controlling motion of robots has strong realtime requirements, and
+same robot model can create different data depending on environment conditions and
+wear and tear
+
+\subsubsection{Curse of Goal Specification}
+- needs a lot of domain knowledge and expertise to craft reward functions
+
 
   - generally no clear recipe for robot learning, huge number of different methods,
   but when used appropriately achieve great results.
 
   - though minor incorrect flaws can completely prevent success of learning.
 
-  - learning algorithms are rarely used on robots for real daily usage, and most
-  algorithms are over fitted to a particular robot architecture and do not generalize
-  to other robots easily
+  - use imitation learning to initialize prior, this removes the need for global exploration,
+  the agent can improve locally
+
+  - value function approaches have problems with these challenges
   
-\subsection{Challenges}
-Robotics is different compared to other fields where Reinforcement Learning
-is used extensively. We have a high dimensional state space and running
-real world systems on real hardware is costly.
-
-Nevertheless robotics provides an important testing ground for Reinforcement Learning.
-
-\subsubsection{Curse of Dimensionality}
-(continuous state and action space)
-
-\subsubsection{Curse of Real-world Samples}
-\begin{itemize}
-\item training time is limited $\rightarrow$ only relatively few complete executions can ever be generated
-\end{itemize}
-
-- generating \textit{interesting} data with useful information is difficult to
-obtain since we are trying to improve imperfect controller. This is also
-called exploration/exploitation tradeoff
-
-- sharing data across different robotics as \textit{cloud robotics}, for example Google's self
-driving cars, but for controlling motion of robots has strong realtime requirements, and
-same robot model can create different data depending on environment conditions and
-wear and tear
-
-- Ensuring safe interaction with human being (in everyday life applications),
-robustness and reliability in learning
-
-\subsubsection{Curse of Goal Specification}
+Still learning algorithms are rarely used on robots for real daily usage, and most
+algorithms are over fitted to a particular robot architecture and do not generalize
+o other robots easily, showing that robot learning still has a lot open problems,
+and will probably grow as a research field.
 
 \subsection{Policy search}
+One focus in robot learning has been on policy search methods.
+
 Policy search methods use parameterized policies $\pi_{\theta}$ and operate
 directly in the parameter space $\Theta$ of theses parameterized policies and
 typically avoiding learning value function.
 
+Model-free policy search and Model-based policy search.
+Model free ease of use has been employed successfully.
+Model-based, circle of learning model using model to improve policy,
+sample with trajectories.
+
+- include figure (recreated from \citet{deisenroth2013survey})
+  also include examples for each type (REINFORCE, REPS, PILCO,...)
+
 Most traditional reinforcement methods use \textit{action-value methods}, in robotics
 there has been a focus on learning \textit{parameterized policies} that can select
 actions without a value function.
-
-Policy search method use parameterized policies, instead
-of value-based methods. Directly learn the policy without a value function.
+Directly learn the policy without a value function.
 This enables Imitation learning, natural integration of expert knowledge through
 initialization of the policy.
 This method has good results (cite reps, more, policy search review)
@@ -215,8 +263,6 @@ been different approaches gradient estimation, stochastic optimization,... (cite
 Generally we can divide policy search into model-free and model-based and
 differentiate whether stochastic or deterministic trajectories are used.
 There are model-free and model-based Policy search methods \citet{deisenroth2013survey}.
-
-- TODO: include graphic for different policy search methods
 
 - parameterized policy $\pi_{\theta}$, the search is performed in the parameter space
 $\theta \in \Theta$

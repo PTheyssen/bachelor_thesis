@@ -4,15 +4,15 @@
 
 \chapter{Recursive Surrogate-Modeling for MORE}
 In this chapter we will first motivate the idea of using recursive filtering
-for estiating the surrogate model. Then we formulate the surrogate estimation
-as a regression problem and derive the recrusive
+for estimating the surrogate model. Then we formulate the surrogate estimation
+as a regression problem and derive the recursive
 least squares approach for the drift model.
 Then we formulate our version of the MORE algorithm with
 recursive estimation of the surrogate model.
 Next we discuss various data preprocessing techniques we use or explored.
 
 \section{Motivation}
-We want to be sample efficienty, because of high cost of real world samples.
+We want to be sample efficiently, because of high cost of real world samples.
 
 - do 3D example on simple sphere function
 
@@ -34,7 +34,7 @@ The surrogate model has the form
 With a quadratic term $A$, a spd(semi positive definite) matrix, a
 linear term $b$ and a scalar $c$.
 
-- TODO: include 2D countour line
+- TODO: include 2D contour line
 
 The learned quadratic models are locally correlated and thus we can use recursive
 filtering algorithms to exploit the information of previous models at
@@ -62,7 +62,7 @@ In our algorithm we solve this problem by using the Recursive Least squares equa
 TODO: move this whole section into evaluation/experiments?
 
 To improve the performance of the algorithm we examined several data processing techniques.
-Here talk theorectically about the methods and in evaluation part
+Here talk theoretically about the methods and in evaluation part
 show experiments about different techniques (for example show whitened model
 parameters)
 
@@ -97,9 +97,8 @@ is fulfilled if $\mathbf{W}$ satisfies the condition
 $$ \mathbf{W}^T \mathbf{W} = \Sigma^{-1} $$
 
 This constrain does not uniquely determine the whitening
-matrix $\mathbf{W}$, insetad given $\Sigma$ there are infinitely many
+matrix $\mathbf{W}$, instead given $\Sigma$ there are infinitely many
 possible matrices $\mathbf{W}$, because it allows for rotational freedom.
-
 
 We used \textit{Cholesky whitening} which is based on
 Cholesky factorization of the precision matrix
@@ -150,7 +149,7 @@ the weighted moving average or exponential moving average
 
 \paragraph{moving average}
 - Write analysis about using different methods and showing that the mean
-is not what we want but the wheighted average
+is not what we want but the weighted average
 
 
 \section{MORE with Recursive Surrogate-Modeling}
@@ -182,6 +181,28 @@ is not what we want but the wheighted average
 
 - Add 3d Graphic of search distribution mean path
 
+\subsection{Higher model noise for older samples}
+Using the recursive least squares algorithm we had to maintain a sample
+pool, because otherwise the resulting estimation was not
+satisfactory. From a theoretic perspective this sloppy and ideally we
+would refrain from using the sample pool.
+
+We introduced a simple counter for each sample, indicating how many times
+the sample has been used.
+Then for older samples (higher counter) we increased the model
+noise proportionally.
+We tried a linear relationship between the counter and
+the increased covariance for the model parameters.
+
+$$ new\_cov = constant\_cov\_matrix + w * \text{counter} * \mathbf{I} $$
+
+- TODO: try different weightings: exponential
+
+This improved our results on the rosenbrock test function compared
+to the RLS version with constant model noise for all samples.
+In each MORE iteration first the oldest samples from the sample pool
+are used, meaning the recent samples with lowest model noise are
+processed last by RLS.
 
 \subsection{Moving back to prior}
 One technique we investigated is 
