@@ -141,70 +141,95 @@ and $r_T$ the final reward, when performing a reaching task this may take the
 form of a quadratic punishment term for deviation from the goal posture.
 
 If we consider an infinite-horizon for an on-going task we get
-$$ R(\tau) = \sum^{\infty}_{t=0} \gamma^t r(x_t, u_t) $$
+$$ R(\tau) = \sum^{\infty}_{t=0} \gamma^{\; t} r(x_t, u_t) $$
 where $\gamma \in [0,1)$ is a discount factor that discounts rewards further in the future.
 
 Many tasks in robotics can thus be formulated as choosing a optimal control
 policy $\pi^*$ that maximized the expected accumulated reward
 
-$$ J_{\pi} \mathbb{E}[R(\tau) | \pi] = \int R(\tau) p_{\pi}(\tau) d\tau $$
+$$ J_{\pi} = \mathbb{E}[R(\tau) | \pi] = \int R(\tau) p_{\pi}(\tau) d\tau $$
 where $R(\tau)$ defines the objectives of the task, and $p_{\pi}(\tau)$ is the
 distribution over trajectories $\tau$.
 
 Formulating robotic tasks in this way allows us to use methods from
-reinforcement learning. Albeit most traditional methods from RL like
-TD-learning \cite{sutton2018reinforcement}
-have been unfit for the particular requirements of robotic tasks, other
-methods that have been used in traditional RL like policy search have
-been successfully applied to robot learning.
-Stressing the importance of robotics as a testing ground for RL,
-demanding new developments and active research.
+reinforcement learning. 
 
 \subsection{Challenges}
+Reinforcement learning in general is a difficult problem, it can be harder
+to make RL work compared to supervised or unsupervised learning. One reason
+for this is that the reward signal may only be given occasionally and
+even then it may be unclear which of
+the agents actions were responsible for a certain
+reward signal. 
+
 Robotics is different compared to other fields where Reinforcement Learning
-is used extensively. We have a high dimensional state space and running
-real world systems on real hardware is costly. \\
-Traditional RL methods like value functions used in Temporal Difference learning,
-seems unfit for robotic tasks. The problems post in robotics differ from
-the traditional RL tasks.
-Making robotics an unique testing ground for Reinforcement Learning.
-The main challenges encountered are as follows.
+is used extensively. First of all the states and actions of the robots in the
+real world are inherently continuous requiring us to
+deal with the resolution.
+In addition the state space can have a high dimensionality and
+working with real world systems on real hardware is costly and
+makes manual interventions necessary.
+Robots require algorithms to run in real-time and working with
+real sensors further introduces discrepancy between sensing and
+execution.
+
+Most traditional methods from RL like
+TD-learning \cite{sutton2018reinforcement}
+have been unfit for these particular requirements of robotic tasks.
+Stressing the importance of robotics as a testing ground for RL that
+demands new developments and innovative research.
 
 \subsubsection{Curse of Dimensionality}
-- basic problem as number of dimensions grows, exponentially more data and
-computation are needed to cover the complete state-action space.
-
-- ``Curse of Dimensionality'' (by Bellman 1957)
-
-- three-dimensional state-space
-
-- having to collect data throughout the state-space to ensure global optimality
-in reinforcement learning
-
-- many degrees of freedom of modern anthropomorphic robots.
-
-- high dimensionality is major challenge for robotics and reinforcement learning
+The term ``Curse of Dimensionality'' was coined by \citet{Bellman:1957} when
+he explored optimal control in higher dimensions and encountered
+an exponential explosion of the states and actions.
+For example, for the evaluation of our algorithm we run a simulation of a
+simple planar reaching task
+with a 5 link robot arm using DMPs
+for policy representation and get a 25 state dimension.
+Especially modern antropomorphic robots tend to have many degrees of
+freedom.
+The agent in RL generally needs to collect data throughout the entire
+state-spae to ensure global optimization, for robotics dealing with
+three dimensional space makes this very difficult.
+To elliviate this problem  a widespread idea is to use expert demonstration
+to get a good initialization for the agents policy, this
+eliminates the need to search the entire search space, instead the
+agent can focus on locally optimizing the initialized policy.
+This concept of imitation learning focuses on the problem of ``learning
+from demonstrations'' which plays an imporant role
+for robotics \citet{osa2018algorithmic}. Imitation learning
+will enable domain experts to teach motions and
+skills without special knowledge about robotics, which will be crucial
+when robots start making their way from factories into everyday life.
 
 \subsubsection{Curse of Real-world Samples}
 - interact with physical world
 
-- robot hardware expensive, suffers from wear and tear
+Robot hardware is expensive and suffers from wear and tear, making
+coslty maintenance necessary. Whereas 
+in the traditional reinforcement learning safe exploration did
+not receive much attention, it 
+has become key issue in robot learning \citet{schneider1997exploiting}.
 
-- safe exploration has become key issue, that neglected in the
-general reinforcement learning community
+
+- need for human supervision
 
 - training time is limited $\rightarrow$ only relatively few complete executions can ever be generated
 
 - sharing data across different robotics as \textit{cloud robotics}, for example Google's self
 driving cars,
 
--  controlling motion of robots has strong realtime requirements, and
-same robot model can create different data depending on environment conditions and
-wear and tear
+- robot learning prefer small number of trials over limiting
+memory consumption or computational complexity
+
+- dynamic tasks cannot be stopped
+
+- state of setup represented by sensors slightly lags behind real
+state due to processing and communication delays
 
 \subsubsection{Curse of Goal Specification}
 - needs a lot of domain knowledge and expertise to craft reward functions
-
 
   - generally no clear recipe for robot learning, huge number of different methods,
   but when used appropriately achieve great results.
