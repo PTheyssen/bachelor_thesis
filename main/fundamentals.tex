@@ -40,14 +40,15 @@ has to try different things to learn about these actions,
 and then he has to progressively focus in on them.
 The reward signal is only given occasionally, hence the amount of information
 the agent receives is minimal compared to
-supervised and unsupervised learning approaches. \\
+supervised and unsupervised learning approaches.
+
 We model the agent and its environment as a state $s \in S$. The agent
 may perform action $ a \in A$ which can be either discrete or continuous.
 For every action step the agent receives a Reward $R$,
 which is a scalar value.
 The overarching goal is to find a mapping from states to actions,
 called policy $\pi$, that picks actions in a way that
-the reward is maximized. \\
+the reward is maximized.
 We can distinguish an \textit{episodic} setting
 from an on-going task.
 In the episodic setting
@@ -114,7 +115,7 @@ intersect with robotics is called \textit{Robot Learning}. It aims to bridge
 the gap between programmed robots,
 with fine tuned controllers  and fully autonomous robots.
 As proposed in \citet{deisenroth2013survey}, robot control can be modeled as
-a reinforcement learning problem.  \\
+a reinforcement learning problem. \\
 The state space $\mathbf{x}$ in robotic tasks is high dimensional and made up of
 the internal state of the robot (e.g., joint position, body position/ orientation)
 and external state (e.g. object locations, lighting). The true state is
@@ -178,6 +179,9 @@ TD-learning \cite{sutton2018reinforcement}
 have been unfit for these particular requirements of robotic tasks.
 Stressing the importance of robotics as a testing ground for RL that
 demands new developments and innovative research.
+We will now discuss some problems encountered when applying
+RL to robotics, this treatment does only focus on a certain
+set of challenges and is not exhaustive.
 
 \subsubsection{Curse of Dimensionality}
 The term ``Curse of Dimensionality'' was coined by \citet{Bellman:1957} when
@@ -187,134 +191,159 @@ For example, for the evaluation of our algorithm we run a simulation of a
 simple planar reaching task
 with a 5 link robot arm using DMPs
 for policy representation and get a 25 state dimension.
-Especially modern antropomorphic robots tend to have many degrees of
+Especially modern anthropomorphic robots tend to have many degrees of
 freedom.
+
 The agent in RL generally needs to collect data throughout the entire
-state-spae to ensure global optimization, for robotics dealing with
+state-space to ensure global optimization, for robotics dealing with
 three dimensional space makes this very difficult.
-To elliviate this problem  a widespread idea is to use expert demonstration
+To alleviate this problem  a widespread idea is to use expert demonstration
 to get a good initialization for the agents policy, this
 eliminates the need to search the entire search space, instead the
 agent can focus on locally optimizing the initialized policy.
 This concept of imitation learning focuses on the problem of ``learning
-from demonstrations'' which plays an imporant role
-for robotics \citet{osa2018algorithmic}. Imitation learning
+from demonstrations'' which plays an important role
+for robotics \citet{Osaetal18}. Imitation learning
 will enable domain experts to teach motions and
 skills without special knowledge about robotics, which will be crucial
 when robots start making their way from factories into everyday life.
 
 \subsubsection{Curse of Real-world Samples}
-- interact with physical world
-
 Robot hardware is expensive and suffers from wear and tear, making
-coslty maintenance necessary. Whereas 
-in the traditional reinforcement learning safe exploration did
-not receive much attention, it 
-has become key issue in robot learning \citet{schneider1997exploiting}.
+costly maintenance necessary. Hence safe methods for real robots
+should avoid big jumps in policy updates, as such sudden changes may
+result in unpredictable movements and consequently damage the robot.
+This problem is commonly referred to as \textit{safe exploration}.
+Whereas in traditional reinforcement learning
+safe exploration does not receive much attention,
+it has become a key issue for robot learning \citet{schneider1997exploiting}.
+Different external factors like temperature may change the robot dynamics and
+additional uncertainty from the sensors makes it difficult to reproduce and
+compare results.
 
-
-- need for human supervision
-
-- training time is limited $\rightarrow$ only relatively few complete executions can ever be generated
-
-- sharing data across different robotics as \textit{cloud robotics}, for example Google's self
-driving cars,
-
-- robot learning prefer small number of trials over limiting
-memory consumption or computational complexity
-
-- dynamic tasks cannot be stopped
-
-- state of setup represented by sensors slightly lags behind real
-state due to processing and communication delays
+Most task also require a ``human in the loop'' who either supervises the robot
+or resets the setup after one episode. Even if this can be avoided the learning
+speed simply cannot be sped up.
+For a single robot the training time has a natural limit
+and in total only relatively few executions can be completed.
+One method for gathering more data is ``collective robot learning'' described in
+\citet{kehoe2015survey}. The idea is for multiple robots to
+share their data on trajectories, policies and outcomes.Currently this seems only
+viable for large corporations with significant capital.
+Thus in robot learning the constraint of using only a small number of trials
+is given more weight than limiting memory consumption or computational complexity.
+Thus sample efficient algorithms are essential.
+Generally the state represented by sensors slightly lags behind the real
+state due to processing and communication delays. This is in stark contrast to
+most other reinforcement learning algorithms, which assume actions to take effect
+instantaneously.
 
 \subsubsection{Curse of Goal Specification}
-- needs a lot of domain knowledge and expertise to craft reward functions
+Defining a good reward function in robot reinforcement learning is
+difficult and often needs a lot of domain knowledge and expertise.
+There are certain trade-offs to keep in mind, for example performing
+a powerful swing for a hitting task may yield high reward but may damage
+or shorten the life-time the robot.
+Reinforcement learning algorithms also tend to solve tasks
+in unintended ways exploiting the reward function in some unforeseen way.
 
-  - generally no clear recipe for robot learning, huge number of different methods,
-  but when used appropriately achieve great results.
+Inverse reinforcement learning \citet{russell1998learning}
+provides an alternative  to specifying the reward function manually.
+The goal of inverse reinforcement learning is to recover the unknown
+reward function from the expert's trajectories.
 
-  - though minor incorrect flaws can completely prevent success of learning.
+Still learning algorithms are rarely employed on robots
+for real daily usage. Also most
+algorithms are over fitted to a particular robot architecture
+and do not generalize to other robots easily.
+A large number of different methods exist, but
+in general there is no clear recipe for robot learning.
+Showing that robot learning still has a lot open problems,
+and will continue to grow as a research field.
+Even minor flaws or errors in the employed method can completely prevent
+success of learning.
+Nonetheless appropriately chosen algorithms and rewards functions
+already achieve promising results.
 
-  - use imitation learning to initialize prior, this removes the need for global exploration,
-  the agent can improve locally
-
-  - value function approaches have problems with these challenges
-  
-Still learning algorithms are rarely used on robots for real daily usage, and most
-algorithms are over fitted to a particular robot architecture and do not generalize
-o other robots easily, showing that robot learning still has a lot open problems,
-and will probably grow as a research field.
 
 \subsection{Policy search}
-One focus in robot learning has been on policy search methods.
-
-Policy search methods use parameterized policies $\pi_{\theta}$ and operate
-directly in the parameter space $\Theta$ of theses parameterized policies and
-typically avoiding learning value function.
-
-Model-free policy search and Model-based policy search.
-Model free ease of use has been employed successfully.
-Model-based, circle of learning model using model to improve policy,
-sample with trajectories.
-
-- include figure (recreated from \citet{deisenroth2013survey})
-  also include examples for each type (REINFORCE, REPS, PILCO,...)
-
-Most traditional reinforcement methods use \textit{action-value methods}, in robotics
-there has been a focus on learning \textit{parameterized policies} that can select
-actions without a value function.
-Directly learn the policy without a value function.
-This enables Imitation learning, natural integration of expert knowledge through
-initialization of the policy.
-This method has good results (cite reps, more, policy search review)
-
-Still choosing the right method for the right problem remains an open question.
-- Still in the robotics framework the computational cost of updating
-a policy in policy search can easily be cheaper than finding just one
-optimal action for one state by searching the state-action value function.
-
-- policy search as \textit{actor}-only method and value function as \textit{critic}-only
-because in value function we try to estimate performance of one control then improve
-the policy on this, whereas in policy search we directly derive optimal policy.
-
-Most Policy search methods optimize existing parameterized policy locally. By computing
-changes to the policy parameters that will increase the expected return and results
-in iterative updates.
-
-The computation of the policy is the main concept to focus on. There have
-been different approaches gradient estimation, stochastic optimization,... (cite)
+Many traditional methods in RL try to estimate the
+expected long-term reward of a policy for each state $\mathbf{x}$
+and time step $t$, this leads to formulation of the value function $V^{\pi}_t(\mathbf{x})$.
+With the value function we can asses the quality of executing action
+$\mathbf{u}$ in state $\mathbf{x}$. This assessment is used
+to directly compute the policy by action selection or to update
+the policy $\pi$. As value function methods struggle with the
+challenges in reinforcement learning, the main approach
+for robotics has become policy search.
+Policy search methods opposed to value-based methods
+use parameterized policies $\pi_{\theta}$ and search
+directly in the parameter space $\Theta$. This allows using RL with
+high-dimensional continuous action spaces encountered
+in robotics by reducing the search space of possible policies.
+Policy search further allows the usage of predefined
+task-appropriate policy representations like Dynamic
+Movement Primitives \citet{schaal2005learning}, as well
+as easily integrating imitation learning
+for policy initialization.
 
 Generally we can divide policy search into model-free and model-based and
 differentiate whether stochastic or deterministic trajectories are used.
-There are model-free and model-based Policy search methods \citet{deisenroth2013survey}.
+Model-free policy search uses trajectories from the robot directly
+for updating the policy. Model-based methods use the data
+from the robot to learn a model of the robot. This model is then used
+to generate trajectories that are used for policy updates.
 
-- parameterized policy $\pi_{\theta}$, the search is performed in the parameter space
-$\theta \in \Theta$
+- include figure for policy search taxonomy
+  (recreated from \citet{deisenroth2013survey})
+  also include examples for each type (REINFORCE, REPS, PILCO,...)
 
-- We will focus on model free policy search methods where we sample trajectories from
-the robot and improve the policy only based on the samples and the reward signal.
+The most important concept is computing the policy updates.
+Both model-free and model-based policy search use policy gradients (PG),
+expectation-maximization (EM)-based updates, or
+information-theoretic insights (Inf.Th.).
 
-- model free policy search methods use sampled trajectories and immediate rewards directly
-to update parameters of the policy
+In this thesis we will focus on model free policy search methods
+where the trajectories are generated by ``sampling'' from
+the robot.
+Due to their simplicity and ease of use of these algorithms
+are used more frequently than model-based policy search methods.
+Specifically we will focus on stochastic
+search algorithms, which are general black-box optimizers.
+They are used in a wide range of fields like operations research,
+machine learning and also policy search.
+Since these algorithms do not use any knowledge about the
+objective function it is straightforward to
+apply them to policy search in the episode-based formulation.
 
-- mode-based methods, model the the robot's and environment's dynamics from sampled
-  trajectories, and then use this model for improving the policy.
+Using stochastic search algorithms we keep an upper-level policy
+$\pi_{omega}(\theta)$ which selects the parameters of the
+actual control policy $\pi_{\theta}(\mathbf{u} | \mathbf{x})$ of the robot.
+With this instead of directly finding the parameters $\theta$ of the
+lower-level policy we want to find the parameter vector $\omega$ which
+defines a distribution over $\theta$. We can then use this
+search distribution to directly explore the parameter space.
 
-- group of algorithms stochastic search algorithms, which are \textit{black-box optimizers}.
-algorithm has no knowledge of shape or gradient of the objective function.
 
-- approach useful when objective function is unknown or too complex to model.
+\section{Kullback-Leibler (KL) Divergence}
+Many algorithms in policy search rely on the Kullback-Leibler Divergence, also
+known as the relative entropy, for controlling
+the difference between the the old and updated policy.
+Working with real robots additionally requires to perform safe exploration, big
+exploration steps, may result in damaging the hardware.
+Specifically, it measures the Shannon entropy of one distribution relative to the
+other.
 
-- applied for policy search in episode-based formulation, maintaining a upper-level policy
-$\pi_{omega}(\theta)$ to create samples in the parameter space, which are
-subsequently evaluated on the real system.
+$$ KL(p || q) = \int p(\theta) \text{log} \frac{p(\theta)}{q(\theta)} d \theta $$
 
-- simplicity and ease of use of these algorithms
+Note that in general the relative entropy is not symmetric under interchange of the
+distributions $p$ and $q$. In general $KL(p || q) \neq KL(q || p) $, therefore
+in a mathematically sense it is not strictly a distance.
 
-- when we look at MORE algorithm we will see that stochastic optimization algorithms can
-be readily be used to perform model-free policy search.
-  
+The KL-bound has been used successfully for many algorithms (cite REPS, Natural gradient)
+It is widely used in Machine Learning algorithms. (cite..)
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Constraint Optimization}
 %- look at mechano informatik slides
@@ -344,24 +373,6 @@ be readily be used to perform model-free policy search.
 %solve than the primal problem. We optimize for the Lagragian multipliers.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Kullback-Leibler (KL) Divergence}
-Many algorithms in policy search rely on the Kullback-Leibler Divergence, also
-known as the relative entropy, for controlling
-the difference between the the old and updated policy.
-Working with real robots additionally requires to perform safe exploration, big
-exploration steps, may result in damaging the hardware.
-Specifically, it measures the Shannon entropy of one distribution relative to the
-other.
-
-$$ KL(p || q) = \int p(\theta) \text{log} \frac{p(\theta)}{q(\theta)} d \theta $$
-
-Note that in general the relative entropy is not symmetric under interchange of the
-distributions $p$ and $q$. In general $KL(p || q) \neq KL(q || p) $, therefore
-in a mathematically sense it is not strictly a distance.
-
-The KL-bound has been used successfully for many algorithms (cite REPS, Natural gradient)
-It is widely used in Machine Learning algorithms. (cite..)
 
 \section{MORE Algorithm}
 The MORE algorithm is a stochastic search algorithm. It can be used for
