@@ -98,7 +98,7 @@ $$ J = E \left\{\sum^H_{t=0} R_t \right\} $$
 
 Discounted reward, discounting future rewards by a discount factor $\gamma$
 (with $0 \leq gamma < 1)$:
-$$ J = E \left\{\sum^{\infty}_{t=0} \gamma^t R_t \right\} $$
+$$ J = E \left\{\sum^{\infty}_{t=0} \gamma^{\; t} R_t \right\} $$
 
 Reinforcement learning can also be seen as
 general case of optimal control as in \citet{sutton1992reinforcement},
@@ -228,7 +228,7 @@ For a single robot the training time has a natural limit
 and in total only relatively few executions can be completed.
 One method for gathering more data is ``collective robot learning'' described in
 \citet{kehoe2015survey}. The idea is for multiple robots to
-share their data on trajectories, policies and outcomes.Currently this seems only
+share their data on trajectories, policies and outcomes. Currently this seems only
 viable for large corporations with significant capital.
 Thus in robot learning the constraint of using only a small number of trials
 is given more weight than limiting memory consumption or computational complexity.
@@ -294,7 +294,7 @@ for updating the policy. Model-based methods use the data
 from the robot to learn a model of the robot. This model is then used
 to generate trajectories that are used for policy updates.
 
-- include figure for policy search taxonomy
+- TODO: include figure for policy search taxonomy
   (recreated from \citet{deisenroth2013survey})
   also include examples for each type (REINFORCE, REPS, PILCO,...)
 
@@ -317,7 +317,7 @@ objective function it is straightforward to
 apply them to policy search in the episode-based formulation.
 
 Using stochastic search algorithms we keep an upper-level policy
-$\pi_{omega}(\theta)$ which selects the parameters of the
+$\pi_{\omega}(\theta)$ which selects the parameters of the
 actual control policy $\pi_{\theta}(\mathbf{u} | \mathbf{x})$ of the robot.
 With this instead of directly finding the parameters $\theta$ of the
 lower-level policy we want to find the parameter vector $\omega$ which
@@ -376,31 +376,44 @@ It is widely used in Machine Learning algorithms. (cite..)
 
 \section{MORE Algorithm}
 The MORE algorithm is a stochastic search algorithm. It can be used for
-model-free policy search. The key idea is using information-theoretic policy updates
-by bounding the relative entropy (Kullback Leibler divergence) between two subsequent
-policies. We approximate the objective function with a quadratic surrogate model hence
-we can satisfy the KL-bound in closed form.
-
+model-free policy search. The key idea is
+using information-theoretic policy updates
+by bounding the relative entropy (Kullback Leibler divergence)
+between two subsequent policies.
+The essential difference of MORE compared to previous algorithms using
+the KL-bound like REPS \citet{peters2010relative} lies in the quadratic
+surrogate model of the objective function which enables us to 
+satisfy the KL-bound in closed form without approximations. On top of that it
+introduces a lower bound constraint on the entropy of the new distribution
+to avoid premature convergence.
 
 - TODO: include 3D figure of more algorithm
 
 \subsection{MORE Framework}
-The MORE algorithm maintains a search distribution (policy) over the parameter space
-of the objective function. We can use the method of constraint optimization
-to formulate an optimization problem for obtaining a new search distribution that
-maximizes the expected objective value while upper-bounding the KL-divergence and
+The MORE algorithm maintains a search distribution, which corresponds
+to the upper-level policy.
+We can use the method of constraint optimization
+to formulate an optimization problem \Cref{more_opt} for
+obtaining a new search distribution that
+maximizes the expected objective value while
+upper-bounding the KL-divergence and
 lower-bounding the entropy of the distribution.
 
-\begin{align}
- \max_{\pi} \int \pi(\theta) \mathbf{R}_{\theta} d\theta, \\
-\; \text{ s.t. KL}(\pi(\theta)||q(\theta)) \leq \epsilon, \\
-\quad H(\pi) \geq \beta, \\
-\quad 1 = \int \pi(\theta) d\theta
-\end{align}
+\begin{equation}
+  \label{more_opt}
+  \begin{aligned}
+    \max_{\pi} \int \pi(\theta) \mathbf{R}_{\theta} d\theta, \\
+    \; \text{ s.t. KL}(\pi(\theta)||q(\theta)) \leq \epsilon, \\
+    \quad H(\pi) \geq \beta, \\
+    \quad 1 = \int \pi(\theta) d\theta
+  \end{aligned}
+\end{equation}
 
+where $H(\pi) = - \int \pi(\theta) \log \pi(\theta) d\theta$ denotes
+the entropy of the search distribution. 
 Forming the Lagrangian we get
-\begin{align} \mathcal{L}(\pi, \eta, \omega) = 
-\int \pi(\theta) \mathcal{R}_{\theta} d\theta \; + \; 
+\begin{align} \mathfrak{L}(\pi, \eta, \omega) = 
+\int \pi(\theta) R_{\theta} d\theta \; + \; 
 \eta  \left(\epsilon - \int \pi(\theta) \text{ log}
  \frac{\pi(\theta)}{q(\theta)} d\theta\right)
  - \; \omega \left(\beta + \int \pi(\theta) \text{ log}(\pi(\theta)) d\theta\right)
@@ -409,88 +422,102 @@ Forming the Lagrangian we get
 The solution is
 \begin{align}
 \pi(\theta) \propto q(\theta)^{\eta/(\eta+\omega)} 
-\text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right)
+\text{exp}\left(\frac{R_\theta}{\eta + \omega}\right)
 \end{align}
 it depends on the quadratic and linear term of the surrogate model and the
-Lagrangian multipliers. These can be obtained by minimizing the dual problem:
+Lagrangian multipliers
+$\eta$ and $\omega$. These can be obtained by minimizing the dual function:
 
 \begin{align}
   g(\eta,\omega) = \eta\epsilon - \omega\beta + (\eta - \omega) \text{log}
 \left(\int q(\theta)^{\frac{\eta}{\eta + \omega}}
-  \text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right) d\theta \right)
+  \text{exp}\left(\frac{R_\theta}{\eta + \omega}\right) d\theta \right)
 \end{align}
 We get the closed form solution for the equation
 (see full derivation in Appendix).
 
-With these equations we can formulate an iterative algorithm for updating the policy.
+With these equations we can formulate an iterative algorithm for updating the
+policy.
 
 \subsubsection{Entropy constraint}
 The bound $\beta$ is defined such that relative difference between the entropy
-of the policy $H(\pi)$ and a minimum exploration policy $H(\pi_0)$ is decreased
+of the policy $H(\pi)$ and a minimum exploration policy $H(\pi_0)$ is
+decreased
 for a certain percentage:
 $$ H(\pi) - H(\pi_0) \geq \gamma (H(q) - H(\pi_0))
 \rightarrow \beta = \gamma (H(q) - H(\pi_0) + H(\pi_0) $$
 
 \subsection{Surrogate Model}
-The key idea of the MORE algorithm is using a surrogate model of the objective function
+The key idea of the MORE algorithm is using a surrogate model
+of the objective function
 for satisfying the bound set by the optimization problem. It has proven to be
-sufficient to use a quadratic model, since the exponent of Gaussian distribution
+sufficient to use a quadratic model, since the exponent
+of Gaussian distribution
 is also quadratic, it is not possible to exploit the information of a more
-complex surrogate model. This concept of using a surrogate model has been used
-in numerical optimization (cite form book numerical optimization)
-
+complex surrogate model.
 The original approach of MORE is based on weighted Bayesian linear model with
 dimensionality reduction.
 
 \subsection{Analytic Solution for Dual-Function and Policy}
 Assuming we are given a quadratic surrogate model
-$$ R_\theta \approx \theta^T R \theta + \theta^T r + r_0 $$
+$$ R_\theta \approx \theta^T \mathbf{R} \theta + \theta^T \mathbf{r} + r_0 $$
 we can now solve the dual function in closed form.
-
 $$ g(\eta, \omega) = \eta \epsilon - \beta \omega
-+ \frac{1}{2} \left(\mathbf{f}^T \mathbf{F} \mathbf{f} - \eta \mathbf{b}^T \mathbf{Q}^{-1}
-\mathbf{b} - \eta log |2\pi \mathbf{Q}| + (\eta + \omega) log |2\pi (\eta + \omega)
++ \frac{1}{2} \left(\mathbf{f}^T \mathbf{F} \mathbf{f}
+  - \eta \mathbf{b}^T \mathbf{Q}^{-1}
+  \mathbf{b} - \eta \log |2\pi \mathbf{Q}|
+  + (\eta + \omega) \log |2\pi (\eta + \omega)
 \mathbf{F}| \right) $$
+with $\mathbf{F} = (\eta \Sigma^{-1} - 2 \mathbf{R})^{-1}$ and
+$\mathbf{f} = \eta \Sigma^{-1} \mu + \mathbf{r}$
 
-Assuming $\pi$ is Gaussian we get the solution, and can update the mean and covariance matrix
-of the search distribution. 
-\begin{align} \label{policy_update}
-  \pi_{t+1} &= \mathcal{N}(\mu_{t+1}, \Sigma_{t+1}) \\
-  \mu_{t+1} &= (\eta \Sigma_{t}^{-1}\mu_t + r) / (\eta + \omega) \\
-  \Sigma_{t+1} &= (\eta \Sigma_t^{-1} + R) / (\eta + \omega)
-\end{align}
+Assuming $\pi$ is Gaussian we get the solution \Cref{policy_update}
+for updating the mean and covariance matrix
+of the search distribution.
+
+\begin{equation}
+  \label{policy_update}
+  \begin{aligned}
+    \pi_{t+1} &= \mathbf{N}(\mu_{t+1}, \Sigma_{t+1}) \\
+    \mu_{t+1} &= (\eta \Sigma_{t}^{-1}\mu_t + r) / (\eta + \omega) \\
+    \Sigma_{t+1} &= (\eta \Sigma_t^{-1} + R) / (\eta + \omega)
+  \end{aligned}
+\end{equation}
 
 With these equations we can iteratively update our search distribution.
-It is important to note that MORE can be used as a stochastic search algorithm,
+MORE can be used as a stochastic search algorithm,
 a ``black box solver'' because only the samples and objective function value
 is needed to update the search distribution.
-In Robotics it can be used to learn motor tasks by using Dynamic Movement Primitives
+In Robotics it can be used to learn motor tasks
+by using Dynamic Movement Primitives
 (DMPs) as a policy representation.
 
 \section{Bayesian Filtering}
-
-TODO:  rewrite, because currently this part to closely resembles \citet{sarkka2013bayesian}.
-
-Optimal filtering is concerned with estimating the state of a time-varying system
+Optimal filtering is concerned with estimating the state
+of a time-varying system
 which is only partially observed through noisy measurements.
-\textit{Bayesian Filtering} refers to the Bayesian way of formulating optimal
-filtering.
+We will focus on optimal filtering from a Bayesian perspective
+as formulated in \citet{sarkka2013bayesian}.
 
-In general the term ``Bayesian'' refers to inference methods that represent
-``degrees of certainty'' using probability theory, and basically use \textbf{Bayes' rule}
-to update the degree of certainty given data.
+The term ``Bayesian'' refers to inference methods that represent
+``degrees of certainty'' using probability theory, based on applying
+\textbf{Bayes' rule} to update the degree of certainty given data.
+More generally as \citet{gelman2013bayesian} puts its, Bayesian inference
+is the process of fitting a probability model
+to a set of data and summarizing the result by a probability distribution
+on the parameters of the model and on unobserved quantities such
+as predictions for new observations.
 
-Filtering methods are important in robotics for handling the uncertainty in the
-environment. Sensing and modeling the state of the robot itself.
-Methods like the Kalman Filter are extensively used since we are dealing with noisy sensors.
+Filtering methods are important in robotics
+for handling the uncertainty in the
+environment.
+In addition methods like the Kalman Filter are extensively used
+since we are dealing with noisy sensors.
+Robots need to make decisions based on only small amounts
+of data for this Bayesian methods can be used to encode the
+uncertainty about the environment \citet{thrun2002probabilistic}.
 
-Also the data is very limited and when the robots needs to make
-decisions it can only work with small amounts of data, therefore
-therefore Bayesian methods are a great fit and are widely used (cite..)
-
-In general we solve linear Gaussian and non-linear/non-Gaussian state space
-models with the Bayesian filtering equations.
-
+\subsection{Optimal filtering as Bayesian inference}
 - optimal recursive estimators first presented for linear systems (simplicity)
 
 - most natural optimality criterion is the least squares optimality,
@@ -538,18 +565,11 @@ $$ p(y) = \int p(y | \theta) p(\theta) d\theta $$
 -TODO: create graphic (2d or 3d) for merging prior with observation to get
     posterior (show with multivariate Gaussian distribution)
 
-\subsection{Gaussian probability function}
-A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
-$m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
-probability density has the form
-$$ \text{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
-\text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
-where $|P|$ is the determinant of the matrix $P$.
     
 \subsection{Least squares}
-To grasp the Bayesian Filtering viewpoint we will now look
-at a simple regression problem from a Bayesian perspective
-and derive the least squares solution.
+To later ease the application of Bayesian Filtering to our surrogate
+model estimation problem we will first look
+at a simple regression problem and derive the least squares solution.
 
 We consider a simple linear regression problem,
 $$ y_k = \theta_1 + \theta_2 x_k + \epsilon_k $$
@@ -572,6 +592,14 @@ Because the prior and likelihood are Gaussian, the \textit{posterior distributio
 will also be Gaussian
 $$ p(\theta | y_{1:T}) = \text{N}(\theta | m_t, P_t) $$
 
+\subsubsection{Gaussian probability function}
+A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
+$m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
+probability density has the form
+$$ \text{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
+\text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
+where $|P|$ is the determinant of the matrix $P$.
+
 Mean and covariance obtained by completing the quadratic form in the exponent:
 - TODO: Do calculation in Appendix, (use canonical form)
 
@@ -584,8 +612,6 @@ Mean and covariance obtained by completing the quadratic form in the exponent:
 \end{align}
 
 This gives us the batch least squares solution.
-
-- TODO talk more about how to why this is ordinary least squares?
 
 \subsection{Recursive least squares} \label{RLS}
 With the Bayesian formulation we can now  introduce a recursive
@@ -645,9 +671,6 @@ the mean and covariance can be written in the form
 \end{align*}
 Here $\mathbf{K}$ is the Kalman gain that controls the weight we give to new
 measurements.
-This is actually a special case of The Kalman filter update equations.
-Since here the parameters $\theta$ are assumed to stay constant there is
-no stochastic dynamics model used for the prediction step.
 
 For estimating the surrogate model for the MORE algorithm we have to
 deal with dynamic parameters instead. In the next chapter we will therefore
