@@ -16,9 +16,9 @@ AMD Ryzen 2700X processores clocked at 2.6 GHz and 31GB of RAM.
 - code is uploaded to gitlab/github (archive repo)
 
 \subsection{Hyperparameter search}
-We did a mixture of manual hyperparameter search and grid search
-with the cw2 framework. At a later stage we incorporated optuna
-for hyperparameter optimization.
+We did a mixture of manual hyperparameter tuning and grid search
+with the cw2 framework. (name some number of different parameter
+sets tested)
 
 \section{Experiments}
 We now evaluate the performance of our algorithms on various problems.
@@ -111,6 +111,8 @@ Therefore 25 dimensions of the problem, which should be at viapoint (1,1)
 at time step 100 and at viapoint (5,0) at timestep 200.
 In \Cref{fig:blr_via} we see the task solved by the original MORE algorithm.
 
+Problem of 351 parameters for recursive least squares
+
 \begin{figure}[ht!]
   \centering
      \includesvg[width=0.6\textwidth]{figures/blr_via}
@@ -127,8 +129,14 @@ In \Cref{fig:blr_via} we see the task solved by the original MORE algorithm.
 5 link robot, that has to reach into hole at [2,0] without collision
 with ground or walls.
 
-\subsection{Tests for Preprocessing Methods}
-- TODO: place this into appendix?
+\subsection{Tests on preprocessing techniques}
+Here I want to include some tests on different versions
+of final algorithm and what we learned form experiments.
+Like using weighted model noise on older samples, and
+normalization but also different KL-bounds etc.
+
+% do sections for different tests performed
+%- TODO: place this into appendix?
 
 Tests on data preprocessing methods, different normalization techniques.
 Whitening very important, making it possible to track the model parameters

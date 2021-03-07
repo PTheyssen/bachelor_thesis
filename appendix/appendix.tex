@@ -4,10 +4,18 @@
 
 \chapter{Appendix}
 
-\section{MORE: Closed Form Solution}
+\section{MORE: Equations}\label{more_appendix}
 - add derivation of lagragian function for MORE with clear
 steps
 
 
-\section{Kalman Filter Derivation}
+\section{Gaussian probability function}\label{gauss_pdf}
+A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
+$m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
+probability density has the form
+$$ \text{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
+\text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
+where $|P|$ is the determinant of the matrix $P$.
+
+\section{Kalman Filter Derivation} \label{KF_appendix}
 % TODO also LS or RLS solution with extensive math

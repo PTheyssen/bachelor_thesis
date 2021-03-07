@@ -4,19 +4,20 @@
 
 \chapter{Fundamentals}
 This chapter introduces basic concepts used throughout this thesis.
-First basics of reinforcement learning and the problem of robot learning.
-Next we discuss policy search, a sub-field of reinforcement learning,
+First we discuss the basics of reinforcement learning and
+the problem of robot learning.
+Next we give an overview of policy search, a sub-field of reinforcement learning,
 as one method to solve the robot learning problem.
-The Kullback-Leibler divergence (KL), as an important information theoretic
-distance metric between probability distributions.
+The Kullback-Leibler divergence (KL) is introduced as an important information theoretic
+distance metric between probability distributions \citep{kullback1951information}.
 Having discussed the underlying basics we can then
 introduce the MORE Algorithm.
 Finally we will look at Filtering from a Bayesian Estimation viewpoint and
 review the Kalman Filter for parameter estimation.
 
 \section{Reinforcement Learning}
-Reinforcement Learning is a subfield of Machine Learning concerned with agents
-learning to interact with their environment.
+Reinforcement Learning (RL) is a subfield of Machine Learning concerned with agents
+learning to interact with their environment, enabling them to solve tasks.
 This is done through exploration and trial-and-error, trying to discover
 cause and effect relationship between actions.
 Compared to supervised learning and unsupervised learning it
@@ -25,10 +26,10 @@ As \citet{sutton2018reinforcement} puts it,
 the term reinforcement learning relates to a class of problems,
 solution methods and the field that studies these problems and solutions.
 Some famous examples include playing games like Go
-\citet{silver2016mastering} and Atari games \citet{mnih2013playing}
+\citep{silver2016mastering} and Atari games \citep{mnih2013playing}
 Generally RL is applicable to a large range of problems.
 Whereas in supervised learning the best action is presented to the system,
-the agent in a reinforcement learning setting receives an occasional
+the agent in a reinforcement learning setting receives a
 reward (or punishment).
 To gain information about the rewards the agent needs
 to explore previously unused actions.
@@ -38,11 +39,38 @@ The agent should exploit actions he knows that
 give decent reward, but he first
 has to try different things to learn about these actions,
 and then he has to progressively focus in on them.
-The reward signal is only given occasionally, hence the amount of information
+The reward signal is typically a single scalar value, hence the amount of information
 the agent receives is minimal compared to
 supervised and unsupervised learning approaches.
 
-We model the agent and its environment as a state $s \in S$. The agent
+The classical approach to formalizing problems in RL is through
+Markov Decision Processes (MDPs).
+MDPs are a mathematical
+framework for decision making in deterministic and stochastic environments.
+MDPs focus on only three aspects
+- sensation, action and goal, which are central
+for reinforcement learning problems.
+MDPs satisfy the Markov property (cite), which state that ``the future is independent
+of the past given the present''. In our case this means the next state $s'$ and the reward
+only depend on the previous state $s$ and action $a$ \citet{sutton1992reinforcement}.
+An MDP can be formally defined as a tuple $(S, A, P, r)$:
+
+\begin{itemize}
+\item a set of states $s \in S$ that describe the environment.
+\item a set of actions $a \in A$ that can be performed by the agent in the environment
+\item a transition function $P(s_{t+1} | s_t, a_t)$ that gives the probability of a new
+  state $s_{t+1}$ after an action $a_t$ has been taken in state $s_t$
+\item a reward function $r(s_t, a_t)$ that specifies the immediate reward after taking action
+  $a_t$ in state $s_t$
+\end{itemize}
+
+The Markov property can be expressed as
+$$ P(s_{t+1} | s_t, a_t, s_{t-1}, a_{t-1}\cdots) = P(s_{t+1} | s_t, a_t) $$
+This recapitulates the notion of state - a state is a sufficient statistic
+for predicting the future, rendering previous observations irrelevant.
+In robotics we may only find some approximate notion of state.
+
+For our setting we model the agent and its environment as a state $s \in S$. The agent
 may perform action $ a \in A$ which can be either discrete or continuous.
 For every action step the agent receives a Reward $R$,
 which is a scalar value.
@@ -61,35 +89,9 @@ the whole life-time or one can use a formulation
 with a discounted return (weighting the
 future and past differently).
 
-The classical approach to formalizing problems in RL is through
-Markov Decision Processes (MDPs).
-MDPs are a mathematical
-framework for decision making in deterministic and stochastic environments.
-MDPs focus on only three aspects
-- sensation, action and goal, which are central
-for reinforcement learning problems.
-MDPs satisfy the Markov property (cite), which state that ``the future is independent
-of the past given the present''. In our case this means the next state $s'$ and the reward
-only depend on the previous state $s$ and action $a$ \citet{sutton1992reinforcement}.
-A MDP can be formally defined as a tuple $(S, A, P, r)$:
-
-\begin{itemize}
-\item a set of states $s \in S$ that describe the environment.
-\item a set of actions $a \in A$ that can be performed by the agent in the environment
-\item a transition function $P(s_{t+1} | s_t, a_t)$ that gives the probability of a new
-  state $s_{t+1}$ after an action $a_t$ has been taken in state $s_t$
-\item a reward function $r(s_t, a_t)$ that specifies the immediate reward after taking action
-  $a_t$ in state $s_t$
-\end{itemize}
-
-The Markov property can be expressed as
-$$ P(s_{t+1} | s_t, a_t, s_{t-1}, a_{t-1}\cdots) = P(s_{t+1} | s_t, a_t)$$
-This recapitulates the notion of state - a state is a sufficient statistic
-for predicting the future, rendering previous observations irrelevant.
-In robotics we may only find some approximate notion of state. \\
-Generally the goal is to find an optimal policy $\pi*$,
+Generally the goal is to find an optimal policy $\pi^*$,
 a mapping from states to actions that
-maximizing the expected return $J$.
+maximizes the expected return $J$.
 Optimal behavior can be modeled in
 different ways, resulting in different
 definitions for expected return. \\
@@ -97,16 +99,17 @@ Finite-horizon model, for horizon $H$ meaning the next $H$ timesteps:
 $$ J = E \left\{\sum^H_{t=0} R_t \right\} $$
 
 Discounted reward, discounting future rewards by a discount factor $\gamma$
-(with $0 \leq gamma < 1)$:
+(with $0 \leq \gamma < 1)$:
 $$ J = E \left\{\sum^{\infty}_{t=0} \gamma^{\; t} R_t \right\} $$
+
 
 Reinforcement learning can also be seen as
 general case of optimal control as in \citet{sutton1992reinforcement},
 whereas optimal control assumes perfect knowledge, RL uses approximations
 and data-driven techniques.
 
-- write about Value learning, and shortly name traditional methods (multiarmbandit,
-DP, Temporal difference learning)
+%TODO: - write about Value learning, and shortly name traditional methods (multiarmbandit,
+%DP, Temporal difference learning)
 
 
 \section{Robot Learning}
@@ -117,7 +120,7 @@ with fine tuned controllers  and fully autonomous robots.
 As proposed in \citet{deisenroth2013survey}, robot control can be modeled as
 a reinforcement learning problem. \\
 The state space $\mathbf{x}$ in robotic tasks is high dimensional and made up of
-the internal state of the robot (e.g., joint position, body position/ orientation)
+the internal state of the robot (e.g., joint position, body position, camera images)
 and external state (e.g. object locations, lighting). The true state is
 not observable and also not noise free. 
 The Robot chooses its next motor control $u$ according to a policy $\pi$.
@@ -145,8 +148,8 @@ If we consider an infinite-horizon for an on-going task we get
 $$ R(\tau) = \sum^{\infty}_{t=0} \gamma^{\; t} r(x_t, u_t) $$
 where $\gamma \in [0,1)$ is a discount factor that discounts rewards further in the future.
 
-Many tasks in robotics can thus be formulated as choosing a optimal control
-policy $\pi^*$ that maximized the expected accumulated reward
+Many tasks in robotics can thus be formulated as choosing an optimal control
+policy $\pi^*$ that maximizes the expected accumulated reward
 
 $$ J_{\pi} = \mathbb{E}[R(\tau) | \pi] = \int R(\tau) p_{\pi}(\tau) d\tau $$
 where $R(\tau)$ defines the objectives of the task, and $p_{\pi}(\tau)$ is the
@@ -156,9 +159,8 @@ Formulating robotic tasks in this way allows us to use methods from
 reinforcement learning. 
 
 \subsection{Challenges}
-Reinforcement learning in general is a difficult problem, it can be harder
-to make RL work compared to supervised or unsupervised learning. One reason
-for this is that the reward signal may only be given occasionally and
+Reinforcement learning is in general a difficult problem. One reason
+for this is that the reward signal may be given only occasionally and
 even then it may be unclear which of
 the agents actions were responsible for a certain
 reward signal. 
@@ -175,7 +177,7 @@ real sensors further introduces discrepancy between sensing and
 execution.
 
 Most traditional methods from RL like
-TD-learning \cite{sutton2018reinforcement}
+TD-learning \citep{sutton2018reinforcement}
 have been unfit for these particular requirements of robotic tasks.
 Stressing the importance of robotics as a testing ground for RL that
 demands new developments and innovative research.
@@ -189,7 +191,7 @@ he explored optimal control in higher dimensions and encountered
 an exponential explosion of the states and actions.
 For example, for the evaluation of our algorithm we run a simulation of a
 simple planar reaching task
-with a 5 link robot arm using DMPs
+with a 5 link robot arm using Dynamic Movement Primitives \citep{ijspeert2002learning}
 for policy representation and get a 25 state dimension.
 Especially modern anthropomorphic robots tend to have many degrees of
 freedom.
@@ -199,29 +201,29 @@ state-space to ensure global optimization, for robotics dealing with
 three dimensional space makes this very difficult.
 To alleviate this problem  a widespread idea is to use expert demonstration
 to get a good initialization for the agents policy, this
-eliminates the need to search the entire search space, instead the
-agent can focus on locally optimizing the initialized policy.
+eliminates the need to explore the entire search space, instead the
+agent can focus on locally optimizing the initial policy.
 This concept of imitation learning focuses on the problem of ``learning
 from demonstrations'' which plays an important role
-for robotics \citet{Osaetal18}. Imitation learning
+for robotics \citep{Osaetal18}. Imitation learning
 will enable domain experts to teach motions and
 skills without special knowledge about robotics, which will be crucial
 when robots start making their way from factories into everyday life.
 
 \subsubsection{Curse of Real-world Samples}
 Robot hardware is expensive and suffers from wear and tear, making
-costly maintenance necessary. Hence safe methods for real robots
+costly maintenance necessary. Hence, safe methods for real robots
 should avoid big jumps in policy updates, as such sudden changes may
 result in unpredictable movements and consequently damage the robot.
 This problem is commonly referred to as \textit{safe exploration}.
 Whereas in traditional reinforcement learning
 safe exploration does not receive much attention,
-it has become a key issue for robot learning \citet{schneider1997exploiting}.
+it has become a key issue for robot learning \citep{schneider1997exploiting}.
 Different external factors like temperature may change the robot dynamics and
 additional uncertainty from the sensors makes it difficult to reproduce and
 compare results.
 
-Most task also require a ``human in the loop'' who either supervises the robot
+Most tasks also require a ``human in the loop'' who either supervises the robot
 or resets the setup after one episode. Even if this can be avoided the learning
 speed simply cannot be sped up.
 For a single robot the training time has a natural limit
@@ -230,9 +232,9 @@ One method for gathering more data is ``collective robot learning'' described in
 \citet{kehoe2015survey}. The idea is for multiple robots to
 share their data on trajectories, policies and outcomes. Currently this seems only
 viable for large corporations with significant capital.
-Thus in robot learning the constraint of using only a small number of trials
+Thus, in robot learning the constraint of using only a small number of trials
 is given more weight than limiting memory consumption or computational complexity.
-Thus sample efficient algorithms are essential.
+Stressing the importance of developing sample efficient algorithms.
 Generally the state represented by sensors slightly lags behind the real
 state due to processing and communication delays. This is in stark contrast to
 most other reinforcement learning algorithms, which assume actions to take effect
@@ -244,32 +246,32 @@ difficult and often needs a lot of domain knowledge and expertise.
 There are certain trade-offs to keep in mind, for example performing
 a powerful swing for a hitting task may yield high reward but may damage
 or shorten the life-time the robot.
-Reinforcement learning algorithms also tend to solve tasks
-in unintended ways exploiting the reward function in some unforeseen way.
+Reinforcement learning algorithms may solve tasks
+in unintended ways exploiting the reward function in an unforeseen style
+\citep{ng1999policy}.
 
-Inverse reinforcement learning \citet{russell1998learning}
+Inverse reinforcement learning \citep{russell1998learning}
 provides an alternative  to specifying the reward function manually.
 The goal of inverse reinforcement learning is to recover the unknown
 reward function from the expert's trajectories.
 
-Still learning algorithms are rarely employed on robots
+Still, learning algorithms are rarely employed on robots
 for real daily usage. Also most
 algorithms are over fitted to a particular robot architecture
 and do not generalize to other robots easily.
-A large number of different methods exist, but
-in general there is no clear recipe for robot learning.
-Showing that robot learning still has a lot open problems,
-and will continue to grow as a research field.
 Even minor flaws or errors in the employed method can completely prevent
 success of learning.
 Nonetheless appropriately chosen algorithms and rewards functions
-already achieve promising results.
+can already achieve promising results, but as 
+a large number of different methods exist 
+there is no clear recipe for robot learning.
+Stressing that robot learning still has a lot open problems,
+and will continue to grow as a research field.
 
-
-\subsection{Policy search}
+\subsection{Policy Search}
 Many traditional methods in RL try to estimate the
 expected long-term reward of a policy for each state $\mathbf{x}$
-and time step $t$, this leads to formulation of the value function $V^{\pi}_t(\mathbf{x})$.
+and time step $t$, which leads to formulation of the value function $V^{\pi}_t(\mathbf{x})$.
 With the value function we can asses the quality of executing action
 $\mathbf{u}$ in state $\mathbf{x}$. This assessment is used
 to directly compute the policy by action selection or to update
@@ -283,7 +285,7 @@ high-dimensional continuous action spaces encountered
 in robotics by reducing the search space of possible policies.
 Policy search further allows the usage of predefined
 task-appropriate policy representations like Dynamic
-Movement Primitives \citet{schaal2005learning}, as well
+Movement Primitives \citep{schaal2005learning}, as well
 as easily integrating imitation learning
 for policy initialization.
 
@@ -293,10 +295,13 @@ Model-free policy search uses trajectories from the robot directly
 for updating the policy. Model-based methods use the data
 from the robot to learn a model of the robot. This model is then used
 to generate trajectories that are used for policy updates.
+Due to their simplicity and by avoiding the need of learning a model,
+which further introduces the problem of under-modeling,
+model-free methods have been widely employed.
 
-- TODO: include figure for policy search taxonomy
-  (recreated from \citet{deisenroth2013survey})
-  also include examples for each type (REINFORCE, REPS, PILCO,...)
+% - TODO: include figure for policy search taxonomy
+  % (recreated from \citet{deisenroth2013survey})
+  % also include examples for each type (REINFORCE, REPS, PILCO,...)
 
 The most important concept is computing the policy updates.
 Both model-free and model-based policy search use policy gradients (PG),
@@ -306,9 +311,7 @@ information-theoretic insights (Inf.Th.).
 In this thesis we will focus on model free policy search methods
 where the trajectories are generated by ``sampling'' from
 the robot.
-Due to their simplicity and ease of use of these algorithms
-are used more frequently than model-based policy search methods.
-Specifically we will focus on stochastic
+More specifically we will focus on stochastic
 search algorithms, which are general black-box optimizers.
 They are used in a wide range of fields like operations research,
 machine learning and also policy search.
@@ -319,30 +322,28 @@ apply them to policy search in the episode-based formulation.
 Using stochastic search algorithms we keep an upper-level policy
 $\pi_{\omega}(\theta)$ which selects the parameters of the
 actual control policy $\pi_{\theta}(\mathbf{u} | \mathbf{x})$ of the robot.
-With this instead of directly finding the parameters $\theta$ of the
+Instead of directly finding the parameters $\theta$ of the
 lower-level policy we want to find the parameter vector $\omega$ which
-defines a distribution over $\theta$. We can then use this
+defines a search distribution over $\theta$. We can then use this
 search distribution to directly explore the parameter space.
 
 
 \section{Kullback-Leibler (KL) Divergence}
-Many algorithms in policy search rely on the Kullback-Leibler Divergence, also
+Several Algorithms used for policy search like
+NES \citep{wierstra2014natural} and REPS \citep{peters2010relative}
+rely on the Kullback-Leibler Divergence, also
 known as the relative entropy, for controlling
-the difference between the the old and updated policy.
-Working with real robots additionally requires to perform safe exploration, big
-exploration steps, may result in damaging the hardware.
+the difference between the old and updated policy.
+Working with real robots additionally requires to perform safe exploration. Big
+exploration steps may result in damaging the hardware.
 Specifically, it measures the Shannon entropy of one distribution relative to the
-other.
-
-$$ KL(p || q) = \int p(\theta) \text{log} \frac{p(\theta)}{q(\theta)} d \theta $$
-
-Note that in general the relative entropy is not symmetric under interchange of the
+other. The KL divergence from $q$ to $p$ is defined as
+$$ KL(p || q) = \int p(\theta) \text{ log} \left(\frac{p(\theta)}{q(\theta)}\right)
+d \theta $$
+where $p$ and $q$ are continuous probability distributions.
+Note, that in general the relative entropy is not symmetric under interchange of the
 distributions $p$ and $q$. In general $KL(p || q) \neq KL(q || p) $, therefore
 in a mathematically sense it is not strictly a distance.
-
-The KL-bound has been used successfully for many algorithms (cite REPS, Natural gradient)
-It is widely used in Machine Learning algorithms. (cite..)
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Constraint Optimization}
@@ -375,69 +376,95 @@ It is widely used in Machine Learning algorithms. (cite..)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{MORE Algorithm}
-The MORE algorithm is a stochastic search algorithm. It can be used for
-model-free policy search. The key idea is
+Model-Based Relative Entropy Stochastic Search (MORE) \citep{abdolmaleki2015model} is a
+stochastic search algorithm, that can be used
+as a policy search method for episodic reinforcement
+learning tasks. The key idea is
 using information-theoretic policy updates
 by bounding the relative entropy (Kullback Leibler divergence)
 between two subsequent policies.
+As MORE uses no gradient information and requires only function evaluations
+of the objective function for the optimization.
 The essential difference of MORE compared to previous algorithms using
-the KL-bound like REPS \citet{peters2010relative} lies in the quadratic
-surrogate model of the objective function which enables us to 
-satisfy the KL-bound in closed form without approximations. On top of that it
+the KL-bound like REPS \citep{peters2010relative} lies in utilizing
+a quadratic surrogate model of the objective function
+to  satisfy the KL-bound in closed form without approximations.
+On top of that it
 introduces a lower bound constraint on the entropy of the new distribution
 to avoid premature convergence.
 
-- TODO: include 3D figure of more algorithm
+When using the MORE algorithm we want to maximize an objective function
+$f(\mathbf{x}): \mathbb{R}^n \rightarrow \mathbb{R}$. The goal is
+to find a parameter vector $\mathbf{x} \in \mathbb{R}^n$ with the
+highest possible objective value. For this the
+MORE algorithm iteratively samples from  a search distribution, implemented
+as a multivariate Gaussian distribution, i.e.
+$\pi(\mathbf{x}) = \mathbf{N}(\mathbf{x} | \mu, \Sigma)$.
+This distribution corresponds to an upper-level policy
+parameterized by the mean and covariance matrix.
+In each iteration $N$ samples are drawn from the
+search distribution. Each sample $\mathbf{x}$ is then
+evaluated on the objective function yielding the corresponding
+objective value $r$, this constitutes the data
+$\{\mathbf{x}^{\;k}, r^{\;k}\}_{k=1...N}$ which is
+used to compute a new search distribution.
+This iterative process is run until the algorithm converges.
+
+
+
+% TODO: 3 pictures on sphere function
+% 1. MORE sampling from search distrib
+% 2. resulting surrogate model
+% 3. updated search distribution
 
 \subsection{MORE Framework}
-The MORE algorithm maintains a search distribution, which corresponds
-to the upper-level policy.
-We can use the method of constraint optimization
+We can use constraint optimization
 to formulate an optimization problem \Cref{more_opt} for
 obtaining a new search distribution that
 maximizes the expected objective value while
 upper-bounding the KL-divergence and
-lower-bounding the entropy of the distribution.
-
+lower-bounding the entropy of the distribution. \\
 \begin{equation}
   \label{more_opt}
   \begin{aligned}
-    \max_{\pi} \int \pi(\theta) \mathbf{R}_{\theta} d\theta, \\
+    \max_{\pi} \int \pi(\theta) \mathcal{R}_{\theta} d\theta, \\
     \; \text{ s.t. KL}(\pi(\theta)||q(\theta)) \leq \epsilon, \\
     \quad H(\pi) \geq \beta, \\
     \quad 1 = \int \pi(\theta) d\theta
   \end{aligned}
 \end{equation}
-
 where $H(\pi) = - \int \pi(\theta) \log \pi(\theta) d\theta$ denotes
-the entropy of the search distribution. 
-Forming the Lagrangian we get
-\begin{align} \mathfrak{L}(\pi, \eta, \omega) = 
-\int \pi(\theta) R_{\theta} d\theta \; + \; 
+the entropy of the search distribution.
+The parameters $\epsilon$ and $\beta$ can be changed to control the
+exploration-exploitation trade-off of the algorithm.
+We will now proceed to derive the solution to the constraint optimization
+problem using the theory of Lagrange multipliers and duality.
+
+Forming the Lagrangian for our optimization problem we get
+\begin{align*} \mathfrak{L}(\pi, \eta, \omega) = 
+\int \pi(\theta) \mathcal{R}_{\theta} d\theta \; + \; 
 \eta  \left(\epsilon - \int \pi(\theta) \text{ log}
  \frac{\pi(\theta)}{q(\theta)} d\theta\right)
  - \; \omega \left(\beta + \int \pi(\theta) \text{ log}(\pi(\theta)) d\theta\right)
-\end{align}
+\end{align*}
 
-The solution is
-\begin{align}
+Optimizing the Lagrangian by computing the derivative with respect
+to the mean and covariance matrix yields
+\begin{align*}
 \pi(\theta) \propto q(\theta)^{\eta/(\eta+\omega)} 
-\text{exp}\left(\frac{R_\theta}{\eta + \omega}\right)
-\end{align}
-it depends on the quadratic and linear term of the surrogate model and the
+\text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right)
+\end{align*}
+the solution depends on the quadratic and linear term
+of the surrogate model and the
 Lagrangian multipliers
-$\eta$ and $\omega$. These can be obtained by minimizing the dual function:
-
-\begin{align}
+$\eta$ and $\omega$. These in turn can be obtained by
+minimizing the dual function:
+\begin{align*}
   g(\eta,\omega) = \eta\epsilon - \omega\beta + (\eta - \omega) \text{log}
 \left(\int q(\theta)^{\frac{\eta}{\eta + \omega}}
-  \text{exp}\left(\frac{R_\theta}{\eta + \omega}\right) d\theta \right)
-\end{align}
-We get the closed form solution for the equation
-(see full derivation in Appendix).
-
-With these equations we can formulate an iterative algorithm for updating the
-policy.
+  \text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right) d\theta \right)
+\end{align*}
+For full derivation of the equations see \Cref{more_appendix}.
 
 \subsubsection{Entropy constraint}
 The bound $\beta$ is defined such that relative difference between the entropy
@@ -450,93 +477,78 @@ $$ H(\pi) - H(\pi_0) \geq \gamma (H(q) - H(\pi_0))
 \subsection{Surrogate Model}
 The key idea of the MORE algorithm is using a surrogate model
 of the objective function
-for satisfying the bound set by the optimization problem. It has proven to be
+for satisfying the bound on the KL-divergence. It has proven to be
 sufficient to use a quadratic model, since the exponent
 of Gaussian distribution
 is also quadratic, it is not possible to exploit the information of a more
 complex surrogate model.
-The original approach of MORE is based on weighted Bayesian linear model with
-dimensionality reduction.
+The surrogate model has an quadratic amount of parameters,
+estimating these parameters poses a
+bottle-neck in terms of sample efficiency for the algorithm.
+The original approach of MORE employs a Bayesian dimensionality
+reduction method and linear regression.
 
 \subsection{Analytic Solution for Dual-Function and Policy}
 Assuming we are given a quadratic surrogate model
-$$ R_\theta \approx \theta^T \mathbf{R} \theta + \theta^T \mathbf{r} + r_0 $$
-we can now solve the dual function in closed form.
+$$ \mathcal{R}_\theta \approx \theta^T \mathbf{R} \theta + \theta^T \mathbf{r} + r_0 $$
+we can solve the dual function in closed form.
 $$ g(\eta, \omega) = \eta \epsilon - \beta \omega
 + \frac{1}{2} \left(\mathbf{f}^T \mathbf{F} \mathbf{f}
   - \eta \mathbf{b}^T \mathbf{Q}^{-1}
-  \mathbf{b} - \eta \log |2\pi \mathbf{Q}|
+  \mathbf{b} - \eta \log |2\pi \mathbf{Q}|p
   + (\eta + \omega) \log |2\pi (\eta + \omega)
 \mathbf{F}| \right) $$
 with $\mathbf{F} = (\eta \Sigma^{-1} - 2 \mathbf{R})^{-1}$ and
 $\mathbf{f} = \eta \Sigma^{-1} \mu + \mathbf{r}$
 
-Assuming $\pi$ is Gaussian we get the solution \Cref{policy_update}
+With the assumption of $\pi$ being Gaussian we
+get the solution \Cref{policy_update}
 for updating the mean and covariance matrix
 of the search distribution.
 
 \begin{equation}
   \label{policy_update}
   \begin{aligned}
-    \pi_{t+1} &= \mathbf{N}(\mu_{t+1}, \Sigma_{t+1}) \\
-    \mu_{t+1} &= (\eta \Sigma_{t}^{-1}\mu_t + r) / (\eta + \omega) \\
-    \Sigma_{t+1} &= (\eta \Sigma_t^{-1} + R) / (\eta + \omega)
+    \pi_{t+1} &= \text{N}(\mu_{t+1}, \Sigma_{t+1}) \\
+    \mu_{t+1} &= (\eta \Sigma_{t}^{-1}\mu_t + \mathbf{r}) / (\eta + \omega) \\
+    \Sigma_{t+1} &= (\eta \Sigma_t^{-1} + \mathbf{R}) / (\eta + \omega)
   \end{aligned}
 \end{equation}
 
-With these equations we can iteratively update our search distribution.
-MORE can be used as a stochastic search algorithm,
-a ``black box solver'' because only the samples and objective function value
-is needed to update the search distribution.
-In Robotics it can be used to learn motor tasks
-by using Dynamic Movement Primitives
-(DMPs) as a policy representation.
+With these equations we can iteratively update the search distribution.
 
 \section{Bayesian Filtering}
 Optimal filtering is concerned with estimating the state
 of a time-varying system
-which is only partially observed through noisy measurements.
-We will focus on optimal filtering from a Bayesian perspective
-as formulated in \citet{sarkka2013bayesian}.
+which is indirectly observed through noisy measurements.
+This section will focus on optimal filtering from a Bayesian perspective
+and is largely based on \citet{sarkka2013bayesian}.
 
 The term ``Bayesian'' refers to inference methods that represent
 ``degrees of certainty'' using probability theory, based on applying
-\textbf{Bayes' rule} to update the degree of certainty given data.
+Bayes' rule to update the degree of certainty given data.
 More generally as \citet{gelman2013bayesian} puts its, Bayesian inference
 is the process of fitting a probability model
 to a set of data and summarizing the result by a probability distribution
 on the parameters of the model and on unobserved quantities such
 as predictions for new observations.
 
-Filtering methods are important in robotics
-for handling the uncertainty in the
-environment.
-In addition methods like the Kalman Filter are extensively used
-since we are dealing with noisy sensors.
-Robots need to make decisions based on only small amounts
-of data for this Bayesian methods can be used to encode the
-uncertainty about the environment \citet{thrun2002probabilistic}.
+Filtering methods are widely used in robotics
+to deal with noisy sensor measurements. This
+includes tasks like object tracking, robot control and
+robot localization \citep{chen2011kalman}.
+Since robots need to make decisions based on relatively small amounts
+of data, it is common to adopt an Bayesian perspective when
+using filtering methods and for 
+reasoning about the environment in general \citep{thrun2002probabilistic}.
 
-\subsection{Optimal filtering as Bayesian inference}
-- optimal recursive estimators first presented for linear systems (simplicity)
+\subsection{Bayesian Parameter Estimation}
+In general when using Bayesian models for estimating
+\textit{unknown parameters} $\theta$ the following probability distributions
+are used.
 
-- most natural optimality criterion is the least squares optimality,
-minimum mean squared error
-
-- statistical inversion problem: estimate hidden states from observed
-measurements in Bayesian sense we want to compute joint posterior distribution.
-Straightforward application of Bayes rule
-
-- Bayesian viewpoint sees probabilities as degree of belief.
-
-- Bayes rule can be used to update our information about a quantity
-
-- Bayesian probability building blocks
-
-\subsection{Building Blocks of Bayesian models}
-In general all Bayesian models have some basic components to them.
-
-\subsubsection{prior distribution}
+\begin{itemize}
+\item \textbf{Prior Distribution:}
 Encodes the information on parameter $\theta$ before seeing any
 observations. When we are uncertain about our prior information
 we can choose a high variance of the distribution or use a
@@ -545,189 +557,300 @@ on the data).
 $$ p(\theta) = \text{information on parameter } \theta
 \text{before seeing any observations} $$
 
-\subsubsection{measurement model}
+\item \textbf{Measurement Model:}
 Models the relationship between true parameters and the measurements.
 $$ p(y | \theta) = \text{distribution of observation } y
 \text{given the parameters} \theta $$
 
-\subsubsection{posterior distribution}
+\item \textbf{Posterior Distribution}
 The conditional distribution of the parameters given the observations.
 It represents the updated belief about the parameters
 after obtaining the measurements. It can be computed by using Bayes' rule.
-
 $$ p(\theta | y) = \frac{p(y | \theta) p(\theta)}{p(y)}
 \propto p(y | \theta) p(\theta) $$
+\end{itemize}
 
-The normalization constant can be computed by integrating $\theta$ out.
+\subsection{Optimal filtering as Bayesian inference}
+The goal of optimal filtering can be seen as solving a statistical
+inversion problem where
+the unknown quantity is a potentially vector valued
+time series $\{\mathbf{x}_0, \mathbf{x}_1, \mathbf{x}_2,...\}$ which
+is observed through a set of noisy measurements
+$\{\mathbf{y}_1, \mathbf{y}_2,...\}$.
 
-$$ p(y) = \int p(y | \theta) p(\theta) d\theta $$
+% TODO: reproduce figure of hidden variables and observations
+% in Tikz side by side
+% with  simple signal example  and measurement
 
--TODO: create graphic (2d or 3d) for merging prior with observation to get
-    posterior (show with multivariate Gaussian distribution)
+We want to estimate the hidden states from the observed
+measurements. Solving this problem in a Bayesian
+sense means we 
+need to compute the joint posterior distribution of all
+states given all the measurements, for this we can simply
+use Bayes' rule.
+This results in batch solution to the statistical estimation problem,
+with the following steps.
 
-    
+$$
+p(\mathbf{x}_{0:T} | y_{1:T})
+= \frac{p(y_{1:T} | \mathbf{x}_{0:T}) p(\mathbf{x}_{0:T})}
+{p(y_{1:T})}
+$$
+
+where $p(\mathbf{x}_{0:T})$ is the prior distribution defined by the dynamic
+model, $p(y_{1:T} | \mathbf{x}_{0:T})$ is the likelihood model for the
+measurements and $p(y_{1:T})$ is the normalization constant defines as
+$$ p(y_{1:T}) = \int p(y_{1:T} | \mathbf{x}_{0:T})
+p(\mathbf{x}_{0:T}) d \mathbf{x}_{0:T}.$$
+This formulation is unfit for dynamic estimation task where
+we receive measurements one at a time, since
+at each time step we would have to
+recompute the full posterior distribution. As the number of
+time steps increases, also the dimensionality of the full posterior
+would increase making computations intractable.
+If we instead only compute selected marginal distributions we can
+make computation feasible again. For this we need to restrict
+our dynamic models to probabilistic Markov sequences, with a
+transition probability distribution $p(\mathbf{x}_k | \mathbf{x}_{k-1})$.
+
+In \textit{Bayesian filtering and smoothing} the following marginal
+distributions are considered
+
+\begin{itemize}
+\item \textit{Filtering distributions} computed by the
+  Bayesian filter are the marginal distributions of the
+  current state $\mathbf{x}_k$ given the current and previous measurements
+  $y_{1:k} = \{y_1,...,y_k\}$
+  $$ p(\mathbf{x}_k | y_{1:k}), \quad k = 1,...,T.$$
+\item \textit{Prediction distributions} which can be computed with
+  the prediction step of the Bayesian filter are the marginal
+  distributions of the future state $\mathbf{x}_{k+n}$, with $n$ steps
+  after the current time step
+  $$ p(\mathbf{x}_{k+n} | y_{1:k}), \quad k = 1,...,T \;\;\; n = 1,2,...$$
+\item \textit{Smoothing distributions} computed by the Bayesian smoother
+  are the marginal distributions of the state $\mathbf{x}_k$ given
+  a certain interval $y_{1:T} = \{y_1,...,y_T\}$ of measurements with
+  $T > k$
+  $$ p(\mathbf{x}_k | y_{1:T}), \quad k = 1,...,T$$
+\end{itemize}
+
+For our surrogate model estimation problem in the iterative MORE
+algorithm we use the filtering distribution.
+By limiting us to the filtering distribution we can now
+formulate the recursive Bayesian solution
+to the statistical inversion problem as follow:
+\begin{enumerate}
+\item The distribution of measurements is modeled by the likelihood
+  function $p(y_k | \mathbf{x}_k)$ and the measurements are assumed
+  to be conditionally independent
+\item In the beginning at time step 0 all information about $\mathbf{x}$
+  is contained in the prior distribution $p(\mathbf{x}_0)$
+\item The measurements are assumed to be obtained one at a time,
+  first $y_1$ then $y_2$ and so on. The key idea is to use the posterior
+  distribution from the previous time step as the current prior
+  distribution
+  \begin{align*}
+    p(\mathbf{x}_1 | y_{1}) &= \frac{1}{Z_1} p(y_1 | \mathbf{x}_1) p(\mathbf{x}_0) \\
+    p(\mathbf{x}_2 | y_{1:2}) &= \frac{1}{Z_2} p(y_2 | \mathbf{x}_2) p(\mathbf{x}_1 | y_1) \\
+                            &\vdots \\
+    p(\mathbf{x}_k | y_{1:k}) &= \frac{1}{Z_k} p(y_k | \mathbf{x}_k)
+                                p(\mathbf{x}_k | y_{1:k-1}) \\
+                            &\vdots \\
+    p(\mathbf{x}_T | y_{1:T}) &= \frac{1}{Z_T} p(y_T | \mathbf{x}_T) p(\mathbf{x}_{T-1} | y_{1:T-1})
+  \end{align*}
+  With the normalization term $Z_k = \int p(y_k | \mathbf{x}_k)
+  p(\mathbf{x}_k | y_{1:k-1})
+  d \mathbf{x}_k$. 
+\end{enumerate}
+
+This recursive formulation of Bayesian estimation has several useful
+properties. First of all this can be considered as the
+\textit{online learning} solution to the Bayesian learning problem.
+As each step in the recursive estimation is a full Bayesian update step,
+\textit{batch} Bayesian inference is a special case of recursive Bayesian
+inference. Due to the sequential nature of the estimation we can model
+what happens to the unknown quantity $\mathbf{x}$. This turns out
+to be the basis of filtering theory, where time behavior is modeled
+by assuming the quantity to be a time-dependent stochastic process
+$\mathbf{x}(t)$.
+
 \subsection{Least squares}
-To later ease the application of Bayesian Filtering to our surrogate
-model estimation problem we will first look
-at a simple regression problem and derive the least squares solution.
+To ease the application of Bayesian Filtering to our specific problem
+at a later stage we will now discuss a simple regression problem.
+First we are going to derive the least squares solution, as
+we use an least squares approach for comparison in our experiments.
 
 We consider a simple linear regression problem,
-$$ y_k = \theta_1 + \theta_2 x_k + \epsilon_k $$
+\begin{equation}
+  \label{regression_problem}
+  y_k = x_1 + x_2 r_k + \epsilon_k
+\end{equation}
+where we assume that the measurement noise is zero mean Gaussian with
+a given variance $\epsilon_k \sim \text{N}(0, \sigma^2)$ and that the
+prior distribution of the
+parameters $\mathbf{x} = (x_{1} \; x_{2})^T$ is
+Gaussian with known mean and covariance
+$\mathbf{x} \sim \text{N}(\mathbf{m}_0, \mathbf{P}_0)$. Note that
+in this sections the parameters $\mathbf{x}$ are assumed to stay constant.
+We now want to estimate
+the parameters $\mathbf{x}$ from a set of measurement
+data $\mathcal{D} = \{(t_1, y_1),...,(t_T, y_T)\}$.
 
-note that the response $y_k$ is only dependent on one regressor $x_k$.
-
-Writing this in probabilistic terms we get:
-\begin{align}
-  p(y_k | \theta) &= \text{N}(y_k | H_k \theta, \sigma^2) \\
-  p(\theta) &= \text{N}(\theta | \text{m}_0, \text{P}_0)
-\end{align}
-
-Here $H_k = (1 x_k)$ and N$(\dot)$ is the Gaussian probability density function.
+In compact in probabilistic terms we can write this as
+\begin{equation}
+  \label{regression_model_1}
+  \begin{aligned}
+    p(y_k | \mathbf{x}) &= \text{N}(y_k | \mathbf{H}_k \mathbf{x}, \sigma^2) \\
+    p(\mathbf{x}) &= \text{N}(\mathbf{x} | \text{m}_0, \text{P}_0)
+  \end{aligned}
+\end{equation}
+Here $H_k = (1 \;t_k)$ is the design matrix and
+contains the regressors and N$(\cdot)$ denotes
+the Gaussian probability density
+function (see \Cref{gauss_pdf}). The row vector $\mathbf{H}_k$ is denoted
+in matrix notation, to avoid using different notatoin for scalar
+and vector measurements.
 The batch solution can then be easily obtained by application of Bayes'rule
 
-$$ p(\theta | y_{1:T})  \propto p(\theta) \prod^T_{k=1} p (y_k | \theta) $$
-$$ = N(\theta | m_0, P_0) \prod^T_{k=1} N(y_k | \textbf{H}_k \theta, \sigma^2) $$
+$$ p(\mathbf{x} | y_{1:T})  \propto p(\mathbf{x}) \prod^T_{k=1} p (y_k | \mathbf{x}) $$
+$$ = N(\mathbf{x} | m_0, P_0) \prod^T_{k=1} N(y_k | \textbf{H}_k \mathbf{x}, \sigma^2) $$
 
 Because the prior and likelihood are Gaussian, the \textit{posterior distribution}
-will also be Gaussian
-$$ p(\theta | y_{1:T}) = \text{N}(\theta | m_t, P_t) $$
+in turn is also Gaussian
+$$ p(\mathbf{x} | y_{1:T}) = \text{N}(\mathbf{x} | m_t, P_t) $$
 
-\subsubsection{Gaussian probability function}
-A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
-$m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
-probability density has the form
-$$ \text{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
-\text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
-where $|P|$ is the determinant of the matrix $P$.
+By completing the quadratic form in the exponent
+we get the equations (\ref{LS}) for the mean and covariance
+of the posterior distribution.
+%- TODO: Do calculation in Appendix, (use canonical form)
 
-Mean and covariance obtained by completing the quadratic form in the exponent:
-- TODO: Do calculation in Appendix, (use canonical form)
-
-\begin{align}
-  \mathbf{m}_T &= \left[ \mathbf{P}^{-1}_0 + \frac{1}{\sigma^2} \mathbf{H}^T \mathbf{H}
-                 \right]^{-1} \left[\frac{1}{\sigma^2} \mathbf{H}^T \mathbf{y} +
-  \mathbf{P}^{-1}_0 \mathbf{m}_0 \right] \\
-  \mathbf{P}_T &= \left[\mathbf{P}_0^{-1} + \frac{1}{\sigma^2} \mathbf{H}^T \mathbf{H}
+\begin{equation}
+  \label{LS}
+  \begin{aligned}
+    \mathbf{m}_T &= \left[ \mathbf{P}^{-1}_0 + \frac{1}{\sigma^2} \mathbf{H}^T \mathbf{H}
+                   \right]^{-1} \left[\frac{1}{\sigma^2} \mathbf{H}^T \mathbf{y} +
+                   \mathbf{P}^{-1}_0 \mathbf{m}_0 \right] \\
+    \mathbf{P}_T &= \left[\mathbf{P}_0^{-1} + \frac{1}{\sigma^2} \mathbf{H}^T \mathbf{H}
                  \right]^{-1}
-\end{align}
-
-This gives us the batch least squares solution.
-
-\subsection{Recursive least squares} \label{RLS}
-With the Bayesian formulation we can now  introduce a recursive
-solution to the regression problem, resulting in a recursive least squares
-algorithm.
-
-For this we have to assume the next step only
-depends on the previous state, (markovian assumption).
-The main idea is using the previous posterior as the prior in the estimation
-step.
-The measurements are assumed to be conditionally independent.
-
-To get the \textit{recursive Bayesian solution} we proceed as follows:
-In the beginning of estimation all the information about the parameter $\theta$
-are contained in the prior distribution $p(\theta)$.
-The measurements are obtained on at a time, to
-obtain the next posterior distribution we use the measurement and the information
-from the previous posterior distribution as the prior.
-
-\begin{align*}
-  p(\theta | y_{1}) &= \frac{1}{Z_1} p(y_1 | \theta) p(\theta) \\
-  p(\theta | y_{1:2}) &= \frac{1}{Z_2} p(y_2 | \theta) p(\theta | y_1) \\
-                    &\vdots \\
-  p(\theta | y_{1:T}) &= \frac{1}{Z_T} p(y_T | \theta) p(\theta | y_{1:T-1})
-\end{align*}
-Normalization term: $Z_k = \int p(\theta) p(y_k | \theta) d\theta$ % normalize likelihood 
-
-
-Using this approach to solve our simple linear regression model we get
-\begin{align}
-  p(\theta | y_{1:k}) &\propto p(y_k | \theta) p(\theta | y_{1:k-1}) \\
-                      &\propto \text{N}(\theta | \mathbf{m}_k, \mathbf{P}_k)
-\end{align}
-from which we get:
-\begin{align}
-  \mathbf{m}_k &= \left[ \mathbf{P}^{-1}_{k-1}
-                 + \frac{1}{\sigma^2} \mathbf{H}^T_k \mathbf{H}_k \right]^{-1}
-                 \left[\frac{1}{\sigma^2} \mathbf{H}^T_k \mathbf{y}_k +
-                 \mathbf{P}^{-1}_{k-1} \mathbf{m}_{k-1} \right] \\
-  \mathbf{P}_k &= \left[\mathbf{P}_{k-1}^{-1}
-                 + \frac{1}{\sigma^2} \mathbf{H}^T_k \mathbf{H}_k \right]^{-1}
-\end{align}
-
-TODO: do calculation with matrix inversion lemma (in appendix?)
-
-By using the \textit{matrix inversion lemma} the covariance calculation can be
-written as
-$$ P_k = P_{k-1} - P_{k-1} H_k^T [H_k P_{k-1} H_k^T + \sigma^2]^{-1} H_k P_{k-1} $$
-
-By introducing temporary variables $S_k$ and $\mathbf{K}_k$ the calculation of
-the mean and covariance can be written in the form
-\begin{align*}
-     S_k &= \textbf{H}_k \textbf{P}_{k-1} \textbf{H}^T_k + \sigma^2 \\
-     \textbf{K}_k &= \textbf{P}_{k-1} \textbf{H}^T_k S_k^{-1} \\
-     \textbf{m}_k &= \textbf{m}_{k-1} + \textbf{K}_k [y_k - \textbf{H}_k \textbf{m}_{k-1}] \\
-     \textbf{P}_k &= \textbf{P}_{k-1} - \textbf{K}_k S_k \textbf{K}_k^T
-\end{align*}
-Here $\mathbf{K}$ is the Kalman gain that controls the weight we give to new
-measurements.
-
-For estimating the surrogate model for the MORE algorithm we have to
-deal with dynamic parameters instead. In the next chapter we will therefore
-introduce a drift model for the parameters.
-
-\subsubsection{Drift model}
-We assume the parameter $\theta$ performs a \textit{Gaussian Random Walk} after
-each time step.
-\begin{align}
-  p(y_k | \theta) &= \text{N}(y_k | \mathbf{H}_k \theta_k, \sigma^2) \\
-  p(\theta_k | \theta_{k-1}) &= \text{N} (\theta_k | \theta_{k-1}, Q) \\
-  p(\theta_0) &= \text{N}(\theta_0 | \mathbf{m}_0, \mathbf{P}_0)
-\end{align}
-
-Where $\mathbf{Q}$ is the covariance of the random walk. 
-Starting with the distribution
-
-$$ p(\theta_{k-1} | y_{1:k-1})
-= \text{N}(\theta_{k-1} | \mathbf{m}_{k-1}, \mathbf{P}_{k-1}) $$
-
-the joint distribution of $\theta_k$ and $\theta_{k-1}$ is
-
-$$ p(\theta_k, \theta_{k-1} | y_{1:k-1})
-= p(\theta_k | \theta{k-1}) | y_{1:k-1})
+  \end{aligned}
+\end{equation}
+where $\mathbf{H}_k = (1 \;t_k)$ and
+$$ \mathbf{H} =
+\begin{pmatrix} \mathbf{H}_1 \\ \vdots \\ \mathbf{H}_T \end{pmatrix}
+= \begin{pmatrix}
+  1 \quad t_1 \\
+  \vdots \quad \vdots \\
+  1 \quad t_t
+\end{pmatrix},
+\quad \quad y = \begin{pmatrix} y_1 \\ \vdots \\ y_T \end{pmatrix}
 $$
 
-The distribution of $\theta_k$ given the measurement history up to time
-step $k - 1$ can be calculated by integrating over
-$\theta_{k-1}$:
-$$ p(\theta_k | y_{1:k-1})
-= \int p(\theta_k | \theta_{k-1}) p(\theta_{k-1} | y_{1:k-1}) d\theta_{k-1}
+% TODO: write about realtionship to ordinary least squares and
+% that we solve this with simply system of linear equations
+% solving algorithm
+
+\subsection{Kalman Filter} \label{KF}
+%TODO: rework this section to use Kalman Filter instead of RLS
+For the least squares solution the parameters
+$\mathbf{x} = (x_{1} \; x_{2})$ of
+the regression model (\ref{regression_problem}) are assumed to stay constant.
+Now we assume the parameters are allowed to perform
+a Gaussian random walk between measurements.
+\begin{align*}
+  p(y_k | \mathbf{x}_k) &= \text{N}(y_k | \mathbf{H}_k \mathbf{x}_k, \sigma^2) \\
+  p(\mathbf{x}_k | \mathbf{x}_{k-1}) &= \text{N}(\mathbf{x}_k |
+                               \mathbf{x}_{k-1}, \mathbf{Q}) \\
+  p(\mathbf{x}_0) &= \text{N}(\mathbf{x}_0 | \mathbf{m}_0, \mathbf{P}_0)
+\end{align*}
+where $\mathbf{Q}$ is the covariance of the random walk. \\
+We will now formulate the
+linear regression model as a time-invariant model
+by avoiding explicit covariates $t_k$.
+Which has the advantage that the model is not dependent on
+the absolute time, but only on the relative positions of states
+and measurments in time.
+We denote the time difference between consecutive times as
+$\Delta t_{k-1} = t_k - t_{k-1}$. The idea is that if
+the underlying phenomenon (signal, state, parameter) $x_k$ was
+exactly linear, the difference between adjacent time points could be
+written exactly as
+$$ x_k - x_{k-1} = \dot{x} \; \Delta t_{k-1} $$
+where $\dot{x}$ is the derivative, which is constant in the linear case.
+\begin{align*}
+  x_{1,k} &= x_{1,k-1} + \Delta t_{k-1} x_{2,k-1} + q_{1,k-1} \\
+  x_{2,k} &= x_{2,k-1} + q_{2,k-1} \\
+  y_k &= x_{1,k} + s_k
+\end{align*}
+where the signal is the first component of the state
+($x_{1,k} = x_k$) and the derivative is the second
+($x_{2,k} = \dot{x_k}$).
+The noises are $s_k \sim \text{N}(0, \sigma^2)$ and
+$(q_{2,k-1}, q_{2,k-1}) \sim \text{N}(0,\mathbf{Q})$.
+Now the linear regression model (\ref{regression_model_1}) can be written
+in the form
+\begin{align*}
+  p(y_k | \mathbf{x}_k) &= \text{N}(y_k | \mathbf{H}
+                          \mathbf{x}_k, \sigma^2) \\
+  p(\mathbf{x}_k | \mathbf{x}_{k-1}) &= \text{N}(\mathbf{x}_k |
+                                       \mathbf{A}_{k-1} \mathbf{x}_{k-1},
+                                       \mathbf{Q})
+\end{align*}
+where
+$$
+\mathbf{A}_{k-1} =
+\begin{pmatrix}
+  1 & \Delta t_{k-1} \\
+  0 & 1
+\end{pmatrix}, \quad \quad \mathbf{H} = (1 \quad 0)
 $$
 
-This relationship is sometimes called \textit{Chapman-Kolmogorov equation}
-The result of the marginalization is Gaussian
 
-$$ p(\theta_k | y_{1:k-1}) = \text{N}(\theta_k | m_k^{-}, P_k^{-}) $$
-
-with
-\begin{align}
-  m_k^{-} &= m_{k-1} \\
-  P_k^{-} &= P_{k-1} + Q
-\end{align}
-
-Now we simply replace $P_{k-1}$ with $P_k^{-}$ in our update equations:
+Which makes it a special case of generic linear Gaussians
+models of the form, 
 \begin{align*}
-     S_k &= \textbf{H}_k \textbf{P}_{k}^{-} \textbf{H}^T_k + \sigma^2 \\
-     \textbf{K}_k &= \textbf{P}_{k}^{-} \textbf{H}^T_k S_k^{-1} \\
-     \textbf{m}_k &= \textbf{m}_{k}^{-} + \textbf{K}_k [y_k - \textbf{H}_k \textbf{m}_{k}^{-}] \\
-     \textbf{P}_k &= \textbf{P}_{k}^{-} - \textbf{K}_k S_k \textbf{K}_k^T
+  p(y_k | \mathbf{x}_k) &= \text{N}(y_k | \mathbf{H}_k \mathbf{x}_k,
+                          \mathbf{R}_k) \\
+  p(\mathbf{x}_k | \mathbf{x}_{k-1}) &= \text{N}(\mathbf{x}_k
+                                      | \mathbf{A}_{k-1} \mathbf{x}_{k-1},
+                                      \mathbf{Q}_{k-1})
 \end{align*}
+for which the Kalman Filter is the optimal recursive solution
+(for derivation see  \cref{KF_appendix}).
 
+The Kalman filter equations can be expressed as
+prediction and update steps as follows.
+\begin{itemize}
+\item The prediction step
+  \begin{equation}
+    \label{KF_prediction}
+    \begin{aligned}
+      \mathbf{m}_k^- &= \mathbf{A}_{k-1} \mathbf{m}_{k-1} \\
+      \mathbf{P}_k^- &= \mathbf{A}_{k-1} \mathbf{P}_{k-1} \mathbf{A}^T_{k-1}
+      + \mathbf{Q}_{k-1}
+    \end{aligned}
+  \end{equation}
 
-These equations are a special case of the Kalman Filter, only doing
-a adding noise to the parameters in the prediction step and using
-an identity matrix as the state transition model. There is no
-obvious state transition model for the general case, maybe some
-method based on an momentum approach on the differences in subsequent
-estimated parameters. Otherwise this could be engineered to a certain
-objective function, but this is part of future work.
+\item The update step
+  \begin{equation}
+    \label{KF_update}
+    \begin{aligned}
+      v_k &= y_k - \mathbf{H}_k \mathbf{m}_k^- \\
+      \mathbf{S}_k &= \mathbf{H}_k \mathbf{P}_k^T \mathbf{H}^T_k +
+      \mathbf{R}_k \\
+      \mathbf{K}_k &= \mathbf{P}_k^- \mathbf{H}_k^T \mathbf{S}_k^{-1} \\
+      \mathbf{m}_k &= \mathbf{m}_k^- + \mathbf{K}_k v_k \\
+      \mathbf{P}_k &= \mathbf{P}_k^- - \mathbf{K}_k \mathbf{S}_k \mathbf{K}_k^T
+    \end{aligned}
+  \end{equation}
+\end{itemize}
+
+% TODO: For the full derivation see appendix (cite)
+
+We did not find a good state transition model for our problem of
+estimating the parameters of the quadratic model of the objective function.
+We tried some momentum based approaches during our evaluation but
+did not receive any promising results. Therefore we limit our approach to
+adding model noise in the prediction step and
+using an Identity matrix as the state transition matrix $\mathbf{A}$.
+Hence, our approach can be more fittingly described as
+a recursive least squares with a drift model instead of a Kalman filter.

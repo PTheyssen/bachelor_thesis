@@ -12,9 +12,15 @@ recursive estimation of the surrogate model.
 Next we discuss various data preprocessing techniques we use or explored.
 
 \section{Motivation}
-We want to be sample efficiently, because of high cost of real world samples.
-
-- do 3D example on simple sphere function
+So far, the surrogate model has been estimated from scratch in each
+iteration using the samples and objective values. 
+Real world samples are very costly we want to be sample efficient.
+Further subsequent models are correlated
+(TODO: add Figure of surrogate model) due to the locality of the
+data, because the KL-divergence is used to bound the distance between
+subsequent search distributions. Therefore recursive estimation
+techniques may be used to exploit the information of previous
+surrogate models and thus reduce the total amount of samples needed.
 
 Previously estimating the surrogate model for the MORE algorithm has been solely based
 on samples and corresponding rewards. There was a sample pool used to be more
@@ -34,15 +40,13 @@ The surrogate model has the form
 With a quadratic term $A$, a spd(semi positive definite) matrix, a
 linear term $b$ and a scalar $c$.
 
-- TODO: include 2D contour line, use original MORE to show surrogate
-  model is correlated
+% TODO: include 2D contour line or 3d version of subsequent models
+
 
 The learned quadratic models are locally correlated and thus we can use recursive
 filtering algorithms to exploit the information of previous models at
 the current time step, this has the potential to result in using less samples
 and also reducing the overall runtime of the algorithm.
-
-- do 3 figures: first mean and samples, then resulting surrogate, then updated mean
 
 \section{Surrogate Model Estimation}
 
@@ -58,6 +62,26 @@ and the rewards $y$. We also assume that
 the measurement noise $\epsilon_k$ is zero mean Gaussian $\epsilon_k \sim N(0, \sigma^2)$ distributed.
 
 In our algorithm we solve this problem by using the Recursive Least squares equations \Cref{RLS}.
+
+
+\section{Recursive Least Squares}
+Recursive least squares with drift model for estimated parameters
+as special case of Kalman Filter
+$$ p(\theta_k | y_{1:k-1}) = \text{N}(\theta_k | m_k^{-}, P_k^{-}) $$
+
+with
+\begin{align}
+  m_k^{-} &= m_{k-1} \\
+  P_k^{-} &= P_{k-1} + Q
+\end{align}
+
+Now we simply replace $P_{k-1}$ with $P_k^{-}$ in our update equations:
+\begin{align*}
+     S_k &= \textbf{H}_k \textbf{P}_{k}^{-} \textbf{H}^T_k + \sigma^2 \\
+     \textbf{K}_k &= \textbf{P}_{k}^{-} \textbf{H}^T_k S_k^{-1} \\
+     \textbf{m}_k &= \textbf{m}_{k}^{-} + \textbf{K}_k [y_k - \textbf{H}_k \textbf{m}_{k}^{-}] \\
+     \textbf{P}_k &= \textbf{P}_{k}^{-} - \textbf{K}_k S_k \textbf{K}_k^T
+\end{align*}
 
 \section{Data Preprocessing Techniques}
 TODO: move this whole section into evaluation/experiments?
@@ -130,58 +154,6 @@ used. For higher dimensional task this is around 5-10 times.
 Still the use of a sample pool is theoretically unsound and problematic,
 instead a accurate state transition model could be introduced.
 
-\subsection{Normalization}
-Original MORE approach uses standard score normalization, doing it
-in a batch way at each iteration for all samples in the sample pool.
-
-This is not fit for recursive estimation.
-- different types of reward functions difficulties:
-- rosenbrock (high range of values)
-- sharp spikes, in rewards (punishing term for reaching task)
-
-- simply online calculation of mean and var for normalization is not
-a good fit (include plots and results of investigation)
-
-- instead use moving average to calculate mean and var only of window (discard old
-  data) 
-
-We can use a moving mean average to normalize the data for example
-the weighted moving average or exponential moving average
-
-\paragraph{moving average}
-- Write analysis about using different methods and showing that the mean
-is not what we want but the weighted average
-
-
-\section{MORE with Recursive Surrogate-Modeling}
-\begin{algorithm}[H]
-\DontPrintSemicolon
-\SetAlgoLined
-\KwIn{Parameters $\epsilon$ and $\beta$, initial distribution, \\ $K$ number of iterations, $N$ samples per iteration}
-
-\For{$k = 1,...,K$}
-{
-  \For{$n = 1,...,N$}
-  {
-    Draw parameters $\theta_n \sim \pi$\;
-    Execute task with $\theta_n$ and receive $R(\theta_n)$\;
-  }
-  \Begin(Learn quadratic model with Recursive Least Squares)
-  {
-    \For{$n = 1,...,N$}
-    {
-      Whitening: $\mathbf{W}\theta_n$\;
-      Compute surrogate model parameters with RLS
-    }
-  }
-  Minimize dual function $g(\eta, \omega)$ using Eq.\;
-  Update search distribution $\pi$ using \Cref{policy_update} \;
-}
-\caption{MORE Algorithm with Recursive Surrogate-Modeling}
-\end{algorithm}
-
-- Add 3d Graphic of search distribution mean path
-
 \subsection{Higher model noise for older samples}
 Using the recursive least squares algorithm we had to maintain a sample
 pool, because otherwise the resulting estimation was not
@@ -204,25 +176,70 @@ to the RLS version with constant model noise for all samples.
 In each MORE iteration first the oldest samples from the sample pool
 are used, meaning the recent samples with lowest model noise are
 processed last by RLS.
+\subsection{Normalization}
+Original MORE approach uses standard score normalization, doing it
+in a batch way at each iteration for all samples in the sample pool.
 
-\subsection{Moving back to prior}
-One technique we investigated is 
-- to prior calculation (optimal for whitened space)
+This is not fit for recursive estimation.
+- different types of reward functions difficulties:
+- rosenbrock (high range of values)
+- sharp spikes, in rewards (punishing term for reaching task)
 
-- set up equation
+- simply online calculation of mean and var for normalization is not
+a good fit (include plots and results of investigation)
 
-\subsection{State Transition Model}
-Let us quickly state the full Kalman filter equations, the
-derivation can be found in the appendix (TODO ref)
+- instead use moving average to calculate mean and var only of window (discard old
+  data) 
 
-Prediction step:
+- describe moving average computation of normalization
 
-Update step:
+\section{MORE with Recursive Surrogate-Modeling}
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\SetAlgoLined
+\KwIn{Parameters $\epsilon$ and $\beta$, initial distribution, \\ $K$ number of iterations, $N$ samples per iteration}
 
-Introducing a an accurate state transition model to incorporate the
-prediction step of the kalman filter would be ideal.
-We tried some simple momentum approaches based on the differences of
-subsequent surrogate model parameters, but those did not yield
-good results.
-Our Recursive least squares algorithm is a special case of these
-equations using an state transition model matrix $\mathbf{A} = \mathbf{I}$.
+\For{$k = 1,...,K$}
+{
+  \For{$n = 1,...,N$}
+  {
+    Draw parameters $\theta_n \sim \pi$\;
+    Execute task with $\theta_n$ and receive $R(\theta_n)$\;
+  }
+  \Begin(Learn quadratic model with Recursive Least Squares)
+  {
+    \For{$n = 1,...,N$}
+    {
+      Whitening: $\mathbf{W}\theta_n$\;
+      Increase model noise for older samples\;
+      Compute surrogate model parameters with RLS\;
+    }
+  }
+  Minimize dual function $g(\eta, \omega)$ using Eq.\;
+  Update search distribution $\pi$ using \Cref{policy_update} \;
+}
+\caption{MORE Algorithm with Recursive Surrogate-Modeling}
+\end{algorithm}
+
+%\subsection{Moving back to prior}
+%One technique we investigated is 
+%- to prior calculation (optimal for whitened space)
+%
+%- set up equation
+%
+%\subsection{State Transition Model}
+%Let us quickly state the full Kalman filter equations, the
+%derivation can be found in the appendix (TODO ref)
+%
+%Prediction step:
+%
+%Update step:
+%
+%Introducing an accurate state transition model to incorporate the
+%prediction step of the kalman filter would be ideal.
+%We tried some simple momentum approaches based on the differences of
+%subsequent surrogate model parameters, but those did not yield
+%good results.
+%Our Recursive least squares algorithm is a special case of these
+%equations using an state transition model matrix $\mathbf{A} = \mathbf{I}$.
+%
