@@ -576,7 +576,33 @@ inversion problem where
 the unknown quantity is a potentially vector valued
 time series $\{\mathbf{x}_0, \mathbf{x}_1, \mathbf{x}_2,...\}$ which
 is observed through a set of noisy measurements
-$\{\mathbf{y}_1, \mathbf{y}_2,...\}$.
+$\{\mathbf{y}_1, \mathbf{y}_2,...\}$, as depicted in \cref{fig:inversion}.
+
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}
+      \draw (0, 0) node {hidden:};
+      \draw [->][dashed, thick] (0.7, 0) -- (2, 0);
+      \draw (2.5, 0) node (x1) {$\mathbf{x}_{k-1}$};
+      \draw [->][thick] (3, 0) -- (4.2, 0);
+      \draw (4.5, 0) node (x2) {$\mathbf{x}_k$};
+      \draw [->][thick] (4.8, 0) -- (6, 0);
+      \draw (6.5, 0) node (x3) {$\mathbf{x}_{k+1}$};
+      \draw [->][dashed, thick] (7, 0) -- (8.3, 0);
+
+      \draw (0, -1.5) node {observed:};
+
+      \draw (2.5, -1.5) node (y1) {$\mathbf{y}_{k-1}$};
+      \draw [->][thick] (x1) -- (y1);
+      \draw (4.5, -1.5) node (y2) {$\mathbf{y}_k$};
+      \draw [->][thick] (x2) -- (y2);
+      \draw (6.5, -1.5) node (y3) {$\mathbf{y}_{k+1}$};
+      \draw [->][thick] (x3) -- (y3);
+    \end{tikzpicture}
+ \caption{A sequence of  hidden states $\mathbf{x}_k$ is indirectly
+ observed through noisy measurements. Drawing recreated from \citet{sarkka2013bayesian}}
+    \label{fig:inversion}
+\end{figure}
 
 % TODO: reproduce figure of hidden variables and observations
 % in Tikz side by side
@@ -708,7 +734,7 @@ Here $H_k = (1 \;t_k)$ is the design matrix and
 contains the regressors and N$(\cdot)$ denotes
 the Gaussian probability density
 function (see \Cref{gauss_pdf}). The row vector $\mathbf{H}_k$ is denoted
-in matrix notation, to avoid using different notatoin for scalar
+in matrix notation, to avoid using different notation for scalar
 and vector measurements.
 The batch solution can then be easily obtained by application of Bayes'rule
 
@@ -718,6 +744,8 @@ $$ = N(\mathbf{x} | m_0, P_0) \prod^T_{k=1} N(y_k | \textbf{H}_k \mathbf{x}, \si
 Because the prior and likelihood are Gaussian, the \textit{posterior distribution}
 in turn is also Gaussian
 $$ p(\mathbf{x} | y_{1:T}) = \text{N}(\mathbf{x} | m_t, P_t) $$
+
+%\newpage
 
 By completing the quadratic form in the exponent
 we get the equations (\ref{LS}) for the mean and covariance
@@ -768,7 +796,7 @@ linear regression model as a time-invariant model
 by avoiding explicit covariates $t_k$.
 Which has the advantage that the model is not dependent on
 the absolute time, but only on the relative positions of states
-and measurments in time.
+and measurements in time.
 We denote the time difference between consecutive times as
 $\Delta t_{k-1} = t_k - t_{k-1}$. The idea is that if
 the underlying phenomenon (signal, state, parameter) $x_k$ was
@@ -805,7 +833,7 @@ $$
 $$
 
 
-Which makes it a special case of generic linear Gaussians
+Which makes it a special case of generic linear Gaussian
 models of the form, 
 \begin{align*}
   p(y_k | \mathbf{x}_k) &= \text{N}(y_k | \mathbf{H}_k \mathbf{x}_k,
@@ -814,8 +842,8 @@ models of the form,
                                       | \mathbf{A}_{k-1} \mathbf{x}_{k-1},
                                       \mathbf{Q}_{k-1})
 \end{align*}
-for which the Kalman Filter is the optimal recursive solution
-(for derivation see  \cref{KF_appendix}).
+for which the Kalman Filter \citep{Kalman:1960} is the optimal recursive solution
+(for the full derivation see  \cref{KF_appendix}).
 
 The Kalman filter equations can be expressed as
 prediction and update steps as follows.
@@ -853,4 +881,4 @@ did not receive any promising results. Therefore we limit our approach to
 adding model noise in the prediction step and
 using an Identity matrix as the state transition matrix $\mathbf{A}$.
 Hence, our approach can be more fittingly described as
-a recursive least squares with a drift model instead of a Kalman filter.
+a recursive least squares algorithm with a drift model instead of a Kalman filter.

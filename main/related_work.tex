@@ -3,60 +3,56 @@
 % !TeX root = ../thesis.tex
 
 \chapter{Related Work}
-
-\section{Policy Search Algorithms}
-Generally model-free policy search algorithms have have been used
-for their ease of use, at often being black box optimizers.
-
-For model-free policy search the agent generates trajectories
-evaluates them and uses the reward and the trajectories to
-iteratively update the policy such that the expected reward is maximized.
-
-There are different methods for computing the update of the
-policy, common strategies are based on gradient ascent
-\citet{peters2006policy}.
-
-- natural gradient by NES (update direction of parameters like standard
-gradient but still in bound by KL-divergence)
-
-- evolutionary strategies
-
-- expectation-maximization algorithms
-
-The MORE algorithm is part of information theoretic approaches
-to PS.
-Information theoretic approaches use
-the Kullback-Leibler Divergence in an optimization problem
+The MORE algorithm can be used as a model-free policy
+search algorithm with an information theoretic approach for
+updating the policy.
+Information-theoretic policy algorithms use
+the Kullback-Leibler Divergence in a constrained optimization problem
 to bound the distance of the old policy to the new one.
-There are different techniques to solve the Integrals that arise
-when optimizing the problem.
-The REPS algorithm proposed in \cite{peters2010relative} uses a
-sample-based approximation for the KL-divergence.
-Using Taylor-expansions for the KL-divergence resulted in the natural
-evolutionary strategies (NES) \cite{wierstra2014natural}.
-
-Some additions to the original MORE have been explored like formulating
-a contextual version CMORE \citet{tangkaratt2017policy}, enabling learning from high-dimensional
-context variables like camera images.
+Whereas MORE uses a surrogate model to compute the new search distribution
+in closed form other methods like
+the relative entropy policy search algorithm (REPS)
+proposed in \citet{peters2010relative} uses a
+sample-based approximation for the KL-divergence. While in
+\citet{peters2010relative} a step-based policy search
+algorithm is proposed the episode-based
+version of REPS is presented in \citet{kupcsik2013data} which is equivalent
+to stochastic search.
+Using Taylor approximations of the KL-divergence leads to the
+natural evolutionary strategies (NES)
+presented in \citet{wierstra2014natural}. 
+NES uses the concept of the natural gradient, where the update is performed
+according to the standard gradient while simultaneously satisfying the
+KL-bound between subsequent search distributions.
 
 The Covariance Matrix Adaptation-Evolutionary Strategy (CMA-ES)
+\citep{hansen2006cma}
 is a widely used stochastic search algorithm. That is based on
 heuristics to update the search distribution. In our experiments
-we try to beat the sample efficency of this algorithm.
+we try to beat benchmark for sample efficiency set by this algorithm.
 
+A contextual version of MORE has been
+explored in \citet{tangkaratt2017policy}, where
+variables that do not change for a given task
+but vary from one task to another
+give the notion of context. Enabling
+learning from high-dimensional
+context variables like camera images.
 
-\section{Surrogate modeling}
 Model-based methods for approximating the objective function
 with a local surrogate have been used in
 derivative free optimization \citet{nocedal2006numerical}.
-Local surrogate models have been used in trust region methods like \citet{powell2009bobyqa}. These methods maintain a point estimate
+Also, local surrogate models have been used in trust region
+methods like \citet{powell2009bobyqa}.
+These methods maintain a point estimate
 and a trust region around this point instead
-of a search distribution, they update the point estimate by optimizing
+of a search distribution. The point estimate is updated by optimizing
 the surrogate and staying in the trust region.
 
 Recursive estimation with methods like
-the Kalman Filter is extensively used in robotics, mostly to deal with
-noisy measurements. Probabilistic methods from
-a Bayesian especially with a focus on decision making
-is introduced in \citet{thrun2002probabilistic}.
+the Kalman Filter is extensively used in robotics \citep{chen2011kalman},
+mainly to estimate the state and environment of the robot
+from noisy sensor measurements.
+%The Kalman Filter has also been used in recent probabilistic deep
+%learning for deep time series modeling \citet{NIPS2016_697e382c}.
 
