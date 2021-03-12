@@ -33,7 +33,7 @@ $$ f(x) = \sum^{n-1}_{i=1} [100(x_{i+1} - x_i^2)^2 + (1-x_i)^2] $$
 
 \begin{figure}[ht!]
     \centering
-    \includesvg[width=0.5\textwidth]{figures/rosenbrock}
+    % \includesvg[width=0.5\textwidth]{figures/rosenbrock}
     \caption{rosenbrock function}
     \label{fig:rosenbrock}
 \end{figure}
@@ -55,7 +55,7 @@ the LS approach manages to
 
 \begin{figure}[ht!]
      \centering
-     \includegraphics[width=1\textwidth]{figures/15dim}
+     % \input{figures/rosenbrock15dim}
      \hspace{1cm}                       
      \caption{This figure shows the median of (10 runs) for RLS, LS and BLR (original MORE) on 15 dimensional Rosenbrock}
      \label{fig:15dim}  
@@ -125,9 +125,8 @@ Problem of 351 parameters for recursive least squares
      \label{fig:blr_via}  
 \end{figure}
 
-\subsection{Hole Reaching Task}
-5 link robot, that has to reach into hole at [2,0] without collision
-with ground or walls.
+\subsection{Mujoco Reaching Task}
+Using mujoco we use a simulated reaching task.
 
 \subsection{Tests on preprocessing techniques}
 Here I want to include some tests on different versions
@@ -136,6 +135,7 @@ Like using weighted model noise on older samples, and
 normalization but also different KL-bounds etc.
 
 % do sections for different tests performed
+% put most tests, graphs into appendix
 %- TODO: place this into appendix?
 
 Tests on data preprocessing methods, different normalization techniques.

@@ -3,101 +3,183 @@
 % !TeX root = ../thesis.tex
 
 \chapter{Recursive Surrogate-Modeling for MORE}
-In this chapter we will first motivate the idea of using recursive filtering
-for estimating the surrogate model. Then we formulate the surrogate estimation
-as a regression problem and derive the recursive
-least squares approach for the drift model.
-Then we formulate our version of the MORE algorithm with
-recursive estimation of the surrogate model.
-Next we discuss various data preprocessing techniques we use or explored.
-
-\section{Motivation}
-So far, the surrogate model has been estimated from scratch in each
-iteration using the samples and objective values. 
-Real world samples are very costly we want to be sample efficient.
-Further subsequent models are correlated
-(TODO: add Figure of surrogate model) due to the locality of the
-data, because the KL-divergence is used to bound the distance between
-subsequent search distributions. Therefore recursive estimation
-techniques may be used to exploit the information of previous
-surrogate models and thus reduce the total amount of samples needed.
-
-Previously estimating the surrogate model for the MORE algorithm has been solely based
-on samples and corresponding rewards. There was a sample pool used to be more
-sample efficient. By using an recursive filtering approach
-we want to utilize the information of previous surrogate models instead
-of using only samples and rewards for estimation.
-
-Since the MORE algorithm uses the KL-bound to limit the distance from the previous search
-distribution the subsequent surrogate models are also locally correlated.
-
-The surrogate model has the form
-\begin{align}
-  \label{surrogate}
-  \mathbf{M}(\mathbf{x}) = -\frac{1}{2} \mathbf{x}^T A \mathbf{x}
-  + \mathbf{x}^T b + c 
-\end{align}
-With a quadratic term $A$, a spd(semi positive definite) matrix, a
-linear term $b$ and a scalar $c$.
-
-% TODO: include 2D contour line or 3d version of subsequent models
-
-
-The learned quadratic models are locally correlated and thus we can use recursive
-filtering algorithms to exploit the information of previous models at
-the current time step, this has the potential to result in using less samples
-and also reducing the overall runtime of the algorithm.
+In this chapter we will first motivate the idea of recursively
+estimating the surrogate model for the MORE algorihtm.
+We formulate the surrogate model estimation
+as a regression problem and present our solution.
+Then we combine our appoach with the MORE algorithm
+Finally we discuss various data preprocessing techniques.
 
 \section{Surrogate Model Estimation}
 
+\subsection{Motivation}
+So far, the surrogate model has been estimated from scratch in each
+iteration using samples and corresponding
+values of the objective function. 
+However, subsequent models are correlated
+(TODO: add Figure of surrogate model) due to the locality of the
+data. This arises from the fact that the KL-divergence is
+used to bound the distance between
+subsequent search distributions. Therefore recursive estimation
+techniques may be able to utilize the information of previous
+surrogate models and thus reduce the total amount of samples needed.
+Additionaly this may also reduce the runtime of the algorithm.
+
+The surrogate model is a quadratic model of the form
+\begin{align}
+  \label{surrogate}
+  \mathcal{R}(\mathbf{x}) = -\frac{1}{2} \mathbf{x}^T \mathbf{R} \mathbf{x}
+  + \mathbf{x}^T \mathbf{r} + r 
+\end{align}
+With a quadratic term $\mathbf{R} \in \mathbb{R}^{n \times n}$,
+a linear term $\mathbf{r} \in \mathbb{R}^{n}$ and a scalar $r$,
+here $n$ denotes the dimension of the objective function.
+Using a quadratic model is sufficient as the exponential of the
+Gaussian is also quadratic and hence could not utilize information
+from more complex models \citep{abdolmaleki2015model}.
+
+
+% TODO: include 2D contour line or 3d version of subsequent models
+
 \subsection{Regression problem}
-
-If we formulate this as a regression problem we get:
+If we formulate this as a regression problem we get, by forming
+a feature function $\phi(\mathbf{x})$ which returns all
+a bias term, all linear and all quadratic terms. The dimensionalty of
+$\phi(\mathbf{x})$ is $D = 1 + d + d(d + 1) / 2$, where $d$
+is the dimensionality of the parameter space.
 \begin{align*}
-  y_k &=  \mathbf{x}^T \mathbf{A} \mathbf{x} + \mathbf{x}^T \mathbf{b} + c + \epsilon_k
+  y = \phi(\mathbf{x}) \beta + \epsilon
 \end{align*}
+The surrogate model parameters are in $\beta$
+a vector of length $D$ containing first the
+scaler than $d$ linear terms and then $d(d+1) /2$ quadratic terms
+(the lower triangular matrix).
 
-So we want to estimate the surrogate model parameters $\theta = (\mathbf{A}, \mathbf{b}, c)$ from the samples $\mathbf{x}$
-and the rewards $y$. We also assume that
-the measurement noise $\epsilon_k$ is zero mean Gaussian $\epsilon_k \sim N(0, \sigma^2)$ distributed.
+Our data are the samples and correspondings objective function
+values $\mathcal{D} = \{(\mathbf{x}_1, y_1),...,(\mathbf{x}_n, y_n)\}$.
+To solve we regression problem we set up
+the design matrix $\mathbf{X}$ which contains 
+ones for the bias term, than the sample for linear term and then
+$d(d+1) /2$ terms for quadratic model in each row.
 
-In our algorithm we solve this problem by using the Recursive Least squares equations \Cref{RLS}.
+For the Least squares approach with $n \geq D$ samples
+we get the following system of linear equations. 
+$$
+\begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix}
+=
+\underbrace{
+\begin{bmatrix}
+  1 & x_1^1 & \cdots & x_d^1  & x_{d+1}^1 & \cdots &  x_{D}^1 \\
+  1 & x_1^2 & \cdots &  x_d^2 & x_{d+1}^2 & \cdots &  x_{D}^2 \\
+  \vdots  & \vdots & \ddots & \vdots &  \vdots & \ddots & \vdots \\
+  1 & x_1^n & \cdots &  x_d^n & x_{d+1}^n & \cdots &  x_{D}^n
+\end{bmatrix}}_{\mathbf{X}}
+\begin{bmatrix}
+  \beta_1 \\ \beta_2 \\ \vdots \\ \beta_D
+\end{bmatrix}
++
+\begin{bmatrix}
+  \epsilon_1 \\
+  \epsilon_2 \\
+  \vdots \\
+  \epsilon_n
+\end{bmatrix}
+$$
 
+with $x_1,...,x_d$ corresponding to one sample $\mathbf{x}$
+and $x_{d+1},...,x_D$ to
+the lower triangular matrix elements of
+ $\mathbf{x} \mathbf{x}^T$.
+(TODO:this is not correct, but currently I do not
+understand the code in quadmodel polyfeat)
+This can be solved with ordinary least squares
+$\beta = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X} \mathbf{y}$.
+For our evaluation we use a form of ridge regression.
+
+
+
+The solution vector $\beta$ contains the surrogate model parameters
+$(r, \mathbf{r}, \mathbf{R})$. We also assume that
+the measurement noise $\epsilon_k$ is zero mean Gaussian
+$\epsilon_k \sim N(0, \sigma^2)$ distributed.
+
+Using recursive estimation we
+can process each pair of samples and rewards $(\mathbf{x}_k, y_k)$ one
+at a time.
+$$
+ y_k =
+ (1 \;  x_1^k \; \cdots
+ \; x_d^k  \; x_{d+1}^k \; \cdots \;  x_{D}^k)
+\begin{pmatrix}
+  \beta_1 \\ \beta_2 \\ \vdots \\ \beta_D
+\end{pmatrix} 
++ \epsilon_k
+$$
 
 \section{Recursive Least Squares}
-Recursive least squares with drift model for estimated parameters
-as special case of Kalman Filter
-$$ p(\theta_k | y_{1:k-1}) = \text{N}(\theta_k | m_k^{-}, P_k^{-}) $$
+Let us now show how we use the recursive least squares approach
+to compute the solution vector $\beta$ to the regression problem.
 
-with
-\begin{align}
-  m_k^{-} &= m_{k-1} \\
-  P_k^{-} &= P_{k-1} + Q
-\end{align}
+Our approach is a special case of the Kalman Filter equations
+\href{KF_update}, as we assume the state transition model to be
+an identity matrix.
 
-Now we simply replace $P_{k-1}$ with $P_k^{-}$ in our update equations:
-\begin{align*}
-     S_k &= \textbf{H}_k \textbf{P}_{k}^{-} \textbf{H}^T_k + \sigma^2 \\
-     \textbf{K}_k &= \textbf{P}_{k}^{-} \textbf{H}^T_k S_k^{-1} \\
-     \textbf{m}_k &= \textbf{m}_{k}^{-} + \textbf{K}_k [y_k - \textbf{H}_k \textbf{m}_{k}^{-}] \\
-     \textbf{P}_k &= \textbf{P}_{k}^{-} - \textbf{K}_k S_k \textbf{K}_k^T
-\end{align*}
+We want to compute
+$$ p(\beta_k | y_{1:k-1}, \mathbf{x}_{1:k-1}) = \text{N}(\beta_k | m_k, P_k) $$
+
+Our prior $m_0$ is choosen such that for the
+first surrogate model parameters
+we set the quadratic term to an identity matrix $\mathbf{R} = \mathbf{I}$
+and the other terms to zero $ \mathbf{r} = \mathbf{0}$ and $ r = 0$.
+The covariance matrix is initialized as  $P_0 = \delta \mathbf{I}$ with
+the parameter $\delta$ controlling how confident
+we are in our prior. By limiting the prediction step of the Kalman Filter
+\cref{KF_prediction} to adding model noise we get the basic
+version of Recursive Least squares \Cref{RLS:basic} with a drift model for the
+parameters to be estimated.
+
+\begin{algorithm}[H]
+\SetKw{KwInit}{Initialization:}
+\DontPrintSemicolon
+\SetAlgoLined
+
+\KwIn{$\{(\mathbf{x}_1,y_1),\cdots,(\mathbf{x}_N,y_N)\}$
+  stream of samples and rewards, \\
+  $Q$ model noise, $\sigma^2$ measurement noise}
+\KwInit{$\mathbf{m}_0$,  $\mathbf{P}_0 = \delta \mathbf{I}$}
+
+\For{$n = 1,...,N$}
+{
+  $\mathbf{P}_n^- = \mathbf{P}_{n-1} + Q$ \;
+  $~$ \;
+  \Begin(Update Step)
+  {
+    $S_n = \phi(\mathbf{x}_n) \mathbf{P}_n^- \phi(\mathbf{x}_n)^T + \sigma^2$ \;
+    $\textbf{K}_n = \textbf{P}_{n}^{-} \textbf{H}^T_n S_n^{-1}$ \;
+    $\textbf{m}_n = \textbf{m}_{n-1} + \textbf{K}_n [y_n - \textbf{H}_n \textbf{m}_{n-1}]$ \;
+    $\textbf{P}_n = \textbf{P}_{n}^{-} - \textbf{K}_n S_n \textbf{K}_n^T $ \;
+  }
+}
+\caption{Recursive Least squares with Drift Model}
+\label{RLS:basic}
+\end{algorithm}
 
 \section{Data Preprocessing Techniques}
-TODO: move this whole section into evaluation/experiments?
-
-To improve the performance of the algorithm we examined several data processing techniques.
-Here talk theoretically about the methods and in evaluation part
-show experiments about different techniques (for example show whitened model
-parameters)
+To improve the performance of the algorithm we examined several
+data processing techniques. Some key challenges
+that arise in the data  are
+high range of objective values,
+and dealing with sharp bumps in reward from
+penalties (e.g collisions).
 
 \subsection{Whitening}
 Whitening is common data preprocessing method in statistical analysis
 to transform a correlated random vector into an uncorrelated one
 \citet{kessy2018optimal}.
 
-We employ whitening for our algorithm, because uncorrelated
-random variables often greatly simplify  multivariate data analysis (cite).
+We employ whitening to our algorithm, because uncorrelated
+random variables often simplify  tracking
+the parameters (cite).
 
 \textit{Whitening} is a linear transformation that converts a $d$-dimensional
 random vector $\mathbf{x} = (x_1,...,x_d)^T$ with mean
@@ -133,10 +215,22 @@ $$ \mathbf{W}^{\text{Chol}} = \mathbf{L}^T $$.
 
 If the cholesky whitening is unsuccessful we fall back to standardizing
 the random vector meaning $\text{var}(\mathbf{z}) = 1$ but the correlations
-are not removed.
+are not removed. In \cref{fig:whitening} we provide an example on using
+whitening for our parameter estimation task.
 
-- TODO: include example samples before and after whitening
-
+\begin{figure}[t]
+  \centering
+  \subfigure[][without whitening]{\input{figures/LS_no_whitening}}
+  \subfigure[][in whitened space]{\input{figures/LS_whitening}}
+  \subfigure[][unwhitened parameters]{\input{figures/LS_unwhitened}}
+  \caption{Example of using LS on 2-dimensional
+   Rosenbrock function. The plots show the predicted surrogate model
+   parameters $\mathbf{\beta}$. We can see that
+   the parameters in whitend space stay in a smaller range 
+   making the estimation task easier.}
+ \label{fig:whitening}
+\end{figure}
+  
 \subsection{Sample pool}
 The original MORE algorithm and other policy search algorithms (REPS) we
 use a sample pool.
@@ -154,7 +248,7 @@ used. For higher dimensional task this is around 5-10 times.
 Still the use of a sample pool is theoretically unsound and problematic,
 instead a accurate state transition model could be introduced.
 
-\subsection{Higher model noise for older samples}
+\subsubsection{Higher model noise for older samples}
 Using the recursive least squares algorithm we had to maintain a sample
 pool, because otherwise the resulting estimation was not
 satisfactory. From a theoretic perspective this sloppy and ideally we
@@ -176,6 +270,10 @@ to the RLS version with constant model noise for all samples.
 In each MORE iteration first the oldest samples from the sample pool
 are used, meaning the recent samples with lowest model noise are
 processed last by RLS.
+
+\subsubsection{No Sample Pool}
+
+
 \subsection{Normalization}
 Original MORE approach uses standard score normalization, doing it
 in a batch way at each iteration for all samples in the sample pool.
@@ -202,7 +300,7 @@ a good fit (include plots and results of investigation)
 \For{$k = 1,...,K$}
 {
   \For{$n = 1,...,N$}
-  {
+p  {
     Draw parameters $\theta_n \sim \pi$\;
     Execute task with $\theta_n$ and receive $R(\theta_n)$\;
   }
@@ -210,13 +308,14 @@ a good fit (include plots and results of investigation)
   {
     \For{$n = 1,...,N$}
     {
-      Whitening: $\mathbf{W}\theta_n$\;
-      Increase model noise for older samples\;
-      Compute surrogate model parameters with RLS\;
+      Whitening: $\mathbf{W}\phi(\mathbf{x}_n)$\;
+      Optionally: Use normalization\;
+      Optionally: Increase model noise for older samples\;      
+      compute surrogate model parameters with RLS (\ref{RLS:basic})\;
     }
   }
   Minimize dual function $g(\eta, \omega)$ using Eq.\;
-  Update search distribution $\pi$ using \Cref{policy_update} \;
+  Update search distribution $\pi$ using \Cref{policy_update}\;
 }
 \caption{MORE Algorithm with Recursive Surrogate-Modeling}
 \end{algorithm}

@@ -31,6 +31,12 @@ parskip]{scrreprt} % scrartcl
 \usepackage{color}
 \usepackage{subfigure}
 \usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\DeclareUnicodeCharacter{2212}{−}
+\usepgfplotslibrary{groupplots,dateplot}
+\usetikzlibrary{patterns,shapes.arrows}
+\pgfplotsset{compat=newest}
 \usetikzlibrary{calc}
 \usepackage{eso-pic}
 \usepackage{booktabs}
