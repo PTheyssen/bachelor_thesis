@@ -8,12 +8,50 @@
 - add derivation of lagragian function for MORE with clear
 steps
 
+Forming the Lagrangian for our optimization problem we get
+\begin{align*} \mathfrak{L}(\pi, \eta, \omega) = 
+\int \pi(\theta) \mathcal{R}_{\theta} d\theta \; + \; 
+\eta  \left(\epsilon - \int \pi(\theta) \text{ log}
+ \frac{\pi(\theta)}{q(\theta)} d\theta\right)
+ - \; \omega \left(\beta + \int \pi(\theta) \text{ log}(\pi(\theta)) d\theta\right)
+\end{align*}
+
+Optimizing the Lagrangian by computing the derivative with respect
+to the mean and covariance matrix yields
+\begin{align*}
+\pi(\theta) \propto q(\theta)^{\eta/(\eta+\omega)} 
+\text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right)
+\end{align*}
+the solution depends on the quadratic and linear term
+of the surrogate model and the
+Lagrangian multipliers
+$\eta$ and $\omega$. These in turn can be obtained by
+minimizing the dual function:
+\begin{align}
+  \label{eq:dual}
+  g(\eta,\omega) = \eta\epsilon - \omega\beta + (\eta - \omega) \text{log}
+\left(\int q(\theta)^{\frac{\eta}{\eta + \omega}}
+  \text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right) d\theta \right)
+\end{align}
+
+Assuming we are given a quadratic surrogate model
+$$ \mathcal{R}_\theta \approx \theta^T \mathbf{R} \theta + \theta^T \mathbf{r} + r_0 $$
+we can solve the dual function in closed form.
+$$ g(\eta, \omega) = \eta \epsilon - \beta \omega
++ \frac{1}{2} \left(\mathbf{f}^T \mathbf{F} \mathbf{f}
+  - \eta \mathbf{b}^T \mathbf{Q}^{-1}
+  \mathbf{b} - \eta \log |2\pi \mathbf{Q}|p
+  + (\eta + \omega) \log |2\pi (\eta + \omega)
+\mathbf{F}| \right) $$
+with $\mathbf{F} = (\eta \Sigma^{-1} - 2 \mathbf{R})^{-1}$ and
+$\mathbf{f} = \eta \Sigma^{-1} \mu + \mathbf{r}$
+
 
 \section{Gaussian probability function}\label{gauss_pdf}
 A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
 $m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
 probability density has the form
-$$ \text{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
+$$ \mathcal{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
 \text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
 where $|P|$ is the determinant of the matrix $P$.
 
