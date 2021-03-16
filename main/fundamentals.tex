@@ -104,14 +104,15 @@ a mapping from states to actions that
 maximizes the expected return $J$.
 Optimal behavior can be modeled in
 different ways, resulting in different
-definitions for expected return. \\
-Finite-horizon model, for horizon $H$ meaning the next $H$ timesteps:
-$$ J = E \left\{\sum^H_{t=0} R_t \right\} $$
+definitions for expected return:
+\begin{itemize}
+\item for a finite-horizon model with horizon $H$ we get
+$$ J = E \left\{\sum^H_{t=0} R_t \right\}, $$
 
-Discounted reward, discounting future rewards by a discount factor $\gamma$
-(with $0 \leq \gamma < 1)$:
-$$ J = E \left\{\sum^{\infty}_{t=0} \gamma^{\; t} R_t \right\} $$
-
+\item a discounted reward can be modeled with
+  a discount factor $\gamma$ (with $0 \leq \gamma < 1)$, which yields
+$$ J = E \left\{\sum^{\infty}_{t=0} \gamma^{\; t} R_t \right\}. $$
+\end{itemize}
 
 Reinforcement learning can also be seen as
 general case of optimal control as in \citet{sutton1992reinforcement}.
@@ -318,25 +319,32 @@ Both model-free and model-based policy search use policy gradients (PG),
 expectation-maximization (EM)-based updates, or
 information-theoretic insights (Inf.Th.).
 
-- TODO: finish figure or simply give some examples in text
+- For model-free algorithm the REINFORCE
+
+- markov chain based Expectation maximzation (MC-EM)
+
+- Inf. Theoretic REPS and MORE
+
+\Cref{fig:policy}
+gives an overview of the different policy search methods
+and some example algorithms.
+
 
 \begin{figure}[ht!]
-    \centering
-    \begin{tikzpicture}
-      \draw (0, 0) node (data) {Data};
-      
-      \draw (-3, -1) node (free) {Stoch. Traj.};
-      \draw [-] (data) -- (free);
-      
-
-      \draw (3, -1) node (model) {Model Building};
-      \draw [-] (data) -- (model);      
-
-
-    \end{tikzpicture}
-    \caption{Categorization of policy search with examples for
-      some categories.}
-    \label{fig:inversion}
+  \centering
+  \input{figures/policy_search_tax}
+    \caption{\small
+      Categorization of policy search into model-free policy
+      search and model-based policy search.
+      In stochastic trajectory generation 
+      trajectories are directly sampled from the robot or
+      in the model-based case from the learned model of the robot.
+      Some Model-based methods also use deterministic trajectory prediction 
+      and analytically predict the trajectory distribution
+      instead of sampling from the system. Drawing based on
+      \citet{deisenroth2013survey}
+    }
+    \label{fig:policy}
 \end{figure}
 
 % - TODO: include figure for policy search taxonomy

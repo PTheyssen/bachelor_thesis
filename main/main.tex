@@ -246,9 +246,10 @@ model parameters.
 
 - Still in our experiments the performance better with pool
 
+- talk about doing warm start with no pool
+
 - without pool simply performs worse (but still possible --> maybe
 better model noise, prediction parameters)
-
 
 Idea of increasing the model noise for older samples, encoding the fact that
 older samples should have a higher covariance, meaning we are less
@@ -292,10 +293,15 @@ different ways of normalization:
 
 \section{MORE with Recursive Surrogate-Modeling}
 \begin{algorithm}[H]
+
 \DontPrintSemicolon
 \SetAlgoLined
-\KwIn{Parameters $\epsilon$ and $\beta$, initial distribution, \\ $K$ number of iterations, $N$ samples per iteration}
-
+\KwIn{Parameters $\epsilon$ and $\beta$, \\ $K$ number of iterations, $N$ samples per iteration}
+\Begin{Initialization:}
+{
+  Initialize search distribution $\pi$
+  Initialize RLS$(\mathbf{m}_0, \mathbf{P}_0)$
+}
 \For{$k = 1,...,K$}
 {
   \For{$n = 1,...,N$}
