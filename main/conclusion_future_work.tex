@@ -8,6 +8,9 @@
 \section{Conclusion}
 - managed to improve sample efficiency on simple test functions
 
+- epsilon for kl-bound should have effect on effectiveness of RLS
+  since the surrogate models become more or less locally correlated
+
 We achieved some good results on the rosenbrock test function
 considerably improving the sample efficiency. Nonetheless for
 the planar reaching tasks we did not manage to achieve a
@@ -20,6 +23,9 @@ task.
 The data seems to be difficult to Still
 
 - inexperience of author with kalman filter (setting up matrices, choosing good state transition model)
+
+- use some form of dimensionality reduction as we deal with
+high dimensional --> need to estimate $1 + 25 + (25 \times 26 / 2) = 351$
 
 \section{Future Work}
 - remove sample pool

@@ -40,18 +40,19 @@
       % Examples
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       \draw (-4.75, -5) node (examples) {\small \textbf{Examples:}};      
-      \draw (-3.7, -5.6) node (reinforce) {REINFORCE};
-      \draw (-1.5, -5.75) node (mc-em) {MC-EM};
-      \draw (-0.5, -5) node (reps) {REPS};
-      \draw (1, -5.4) node (more) {MORE};      
+      \draw (-3.25, -5.6) node (reinforce) {REINFORCE};
+      \draw (-1.25, -5.2) node (power) {PoWER};
+      \draw (0.6, -5.4) node (reps) {REPS};
+      \draw (2.2, -5.1) node (more) {MORE};      
       \draw [thick, dotted] (free_pg) to[out=-90,in=90] (reinforce);
-      \draw [thick, dotted] (free_em) to[out=-90,in=90] (mc-em);
+      \draw [thick, dotted] (free_em) to[out=-90,in=90] (power);
       \draw [thick, dotted] (free_inf) to[out=-90,in=90] (reps);
-      \draw [thick, dotted] (free_inf) to[out=-90,in=90] (more);      
+      \draw [thick, dotted] (free_inf) to[out=-75,in=90] (more);      
 
       
-      \draw (4, -5.75) node (pegasus) {PEGASUS};
-      \draw (6.5, -5) node (pilco) {$~~~~~~~$ PILCO $~~~~~~~$};
+      % \draw (4, -5.75) node (pegasus) {PEGASUS};
+      \draw (5.5, -5) node (pilco)
+      {$~~~~~~~~\quad\quad\quad\quad\quad$ PILCO $~~~~~~~\quad\quad\quad\quad\quad$};
       \draw [thick, dotted] (det_pg) to[out=-90,in=90] (pilco);
 
       \begin{scope}[on background layer]
@@ -69,7 +70,7 @@
       \begin{scope}[on background layer]
         \node [thick, draw=black,fit=
         (examples)
-        (reinforce) (mc-em)
-        (reps) (pegasus) (pilco)]{};
+        (reinforce) (power)
+        (reps) (pilco)]{};
       \end{scope}
     \end{tikzpicture}

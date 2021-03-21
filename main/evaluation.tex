@@ -3,59 +3,78 @@
 % !TeX root = ../thesis.tex
 
 \chapter{Evaluation}
-This chapter will introduce the setup for the experiments and the tasks.
+In this chapter we will describe the setup for our experiments and discuss
+the results we obtained.
 
 \section{Setup}
 All algorithms were implemented in python,
 the optimization algorithm for MORE is Low-storage BFGS
-from nlopt\footnote{\href{https://nlopt.readthedocs.io/en/latest/}{https://nlopt.readthedocs.io/en/latest/}}.
-The clusterwork2 (cw2) framework, developed at the ALR group, was used for running experiments.
+from nlopt\footnote{\href{https://nlopt.readthedocs.io/en/latest/}
+  {https://nlopt.readthedocs.io/en/latest/}}.
+The clusterwork2 (cw2) framework, developed at the ALR group, was used for
+running experiments in an convenient way.
 The experiments were conducted on a machine with two 8-core
 AMD Ryzen 2700X processores clocked at 2.6 GHz and 31GB of RAM.
 
-- code is uploaded to gitlab/github (archive repo)
+\subsection{Hyperparameter Search}
+% - do this better --> compare ALGO II theses
 
-\subsection{Hyperparameter search}
+% - do great graphics, tables, figures for this
+
+% - try doing a sweep with wandb (or manually)
+
+% - research how to do good algorithm engineering
+% make table of parameters to tune
+% look for best way to show results (table with highlighted numbers)
+
 We did a mixture of manual hyperparameter tuning and grid search
 with the cw2 framework. (name some number of different parameter
 sets tested)
+The parameters used for optimization are listed.
+\subsubsection{MORE parameters}
+\begin{itemize}
+\item KL-Bound $\epsilon$
+\item entropy-loss bound $\beta$
+\end{itemize}
+\subsubsection{RLS parameters}
+\begin{itemize}
+\item model noise $\mathbf{Q}$
+\item measurement noise $\sigma^2$
+\end{itemize}
 
 \section{Experiments}
-We now evaluate the performance of our algorithms on various problems.
-
 \subsection{Test Functions for Optimization}
-Based on \citet{molga2005test}.
+\label{sec:test_func}
+Test functions provide artificial landscapes to evaluate the
+performance of optimization algorithms. They can be used to
+assess robustness, convergence speed and general performance of the
+algorithms \citep{molga2005test}.
 
-\Cref{fig:rosenbrock} shows the rosenbrock function, a uni-model optimization function. The global minimum $f(\mathbf{x}) = 0$. In the experiments
-the mean of the initial distribution has been chosen randomly.
-
-$$ f(x) = \sum^{n-1}_{i=1} [100(x_{i+1} - x_i^2)^2 + (1-x_i)^2] $$
+The Rosenbrock function (\cref{fig:rosenbrock}) is unimodal and convex.
+It has one global optimum which is inside a parabolic shaped flat valley.
+It is usually easy to find the valley,
+however finding the global optimum is particularly difficult,
+which makes this function popular with testing algorithms’ performance.
+It is defined as 
+\begin{equation*}
+ f(x) = \sum^{n-1}_{i=1} [100(x_{i+1} - x_i^2)^2 + (1-x_i)^2].
+\end{equation*}
 
 \begin{figure}[ht!]
     \centering
-    % \includesvg[width=0.5\textwidth]{figures/rosenbrock}
-    \caption{rosenbrock function}
+    \includesvg[width=0.4\textwidth]{figures/rosenbrock_function}
+    \caption{2D Rosenbrock function}
     \label{fig:rosenbrock}
 \end{figure}
 
-In figures \Cref{fig:5dim} and \Cref{fig:15dim} we show the best results
-achieved on 5 dimensional and 15 dimensional rosenbrock. We observe that
-the our RLS approach uses the least amount of samples. For 5 dimensional
-rosenbrock the BLR approach is ommitted due to considerably worse
-performance.
-One observation to make is that RLS converges only to around 1e-9, while
-the LS approach manages to 
-\begin{figure}[ht!]
-     \centering
-     \includegraphics[width=1\textwidth]{figures/5dim}
-     \hspace{1cm}                       
-     \caption{This figure shows the median of (10 runs) for RLS and LS on 5 dimensional Rosenbrock}
-     \label{fig:5dim}
-\end{figure}
+We test our algorithm on a 8 dim and 15 dimensional version of the
+rosenbrock function
 
+% TODO add result on rosenbrock 8 dim on the side
+% TODO look for styling plots --> make them look better
 \begin{figure}[ht!]
      \centering
-     % \input{figures/rosenbrock15dim}
+     \input{figures/rosenbrock15dim}
      \hspace{1cm}                       
      \caption{This figure shows the median of (10 runs) for RLS, LS and BLR (original MORE) on 15 dimensional Rosenbrock}
      \label{fig:15dim}  
@@ -81,7 +100,6 @@ the LS approach manages to
 %  \end{figure}
 
 \subsection{Planar Reaching Tasks}
-
 \subsubsection{Dynamic Movement Primitives}
 - dynamic system-based motor primitives based on work [Ijspeert 2002, Schaal 2003,2007]
 improved imitation and reinforcementlearning
@@ -128,7 +146,7 @@ Problem of 351 parameters for recursive least squares
 % \subsection{Mujoco Reaching Task}
 % Using mujoco we use a simulated reaching task.
 
-\subsection{Tests on preprocessing techniques}
+\subsection{Tests on Performance}
 Here I want to include some tests on different versions
 of final algorithm and what we learned form experiments.
 Like using weighted model noise on older samples, and

@@ -7,10 +7,17 @@
 
 \begin{axis}[
 legend cell align={left},
-legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+legend style={
+  fill opacity=0.8,
+  draw opacity=1,
+  text opacity=1,
+  nodes={scale=0.6, transform shape},
+  draw=white!80!black},
 log basis y={10},
+ticklabel style = {font=\scriptsize},
 tick align=outside,
 tick pos=left,
+height=6cm,
 x grid style={white!69.0196078431373!black},
 xmin=-962, xmax=21082,
 xtick style={color=black},
