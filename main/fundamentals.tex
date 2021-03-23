@@ -351,11 +351,11 @@ is the Policy learning by Weighting Exploration with the Returns (PoWER)
 algorithm \citep{kober2011policy}.
 The third category of policy updates we look at
 are information-theoretic (Inf. Th.) approaches
-based on the Kullback-Leibler Divergence (\cref{sec:kl}).
+based on the Kullback-Leibler Divergence (\Cref{sec:kl}).
 The relative entropy policy search algorithm (REPS)
 \citep{peters2010relative}
-and the MORE algorithm (\cref{sec:more}) fit into this category.
-In \cref{fig:policy}
+and the MORE algorithm (\Cref{sec:more}) fit into this category.
+In \Cref{fig:policy}
 we give a graphical overview of the different policy search methods.
 
 $~$
@@ -548,7 +548,7 @@ $$ H(\pi) - H(\pi_0) \geq \gamma (H(q) - H(\pi_0))
 \rightarrow \beta = \gamma (H(q) - H(\pi_0) + H(\pi_0) $$
 We obtain the solution to the constraint optimization
 problem using the theory of Lagrange multipliers and duality
-(for details see \cref{more_appendix}).
+(for details see \Cref{more_appendix}).
 
 % With the assumption of $\pi$ being Gaussian we
 % get the solution \Cref{policy_update}
@@ -564,7 +564,7 @@ With assuming $\pi$ being Gaussian solving the dual problems yields
     \Sigma_{t+1} &= (\eta \Sigma_t^{-1} + \mathbf{R}) / (\eta + \omega),
   \end{aligned}
 \end{equation}
-where $\eta$ and $\omega$ are the lagragian multipliers obtained by minimizing
+where $\eta$ and $\omega$ are the Lagrangian multipliers obtained by minimizing
 the corresponding dual function. In addition
 the linear term  $\mathbf{r} \in \mathbb{R}^n$ and
 the quadratic term $\mathbf{R} \in \mathbb{R}^{n\times n}$  of the current surrogate model are
@@ -923,9 +923,8 @@ models of the form,
                                       |\, \mathbf{A}_{k-1} \mathbf{x}_{k-1},
                                       \mathbf{Q}_{k-1})
 \end{align*}
-for which the Kalman Filter \citep{Kalman:1960} is the optimal recursive solution
-(for the full derivation see  \cref{KF_appendix}).
-
+for which the Kalman Filter \citep{Kalman:1960} is the optimal recursive
+solution.
 % \newpage
 % $$~$$
 
@@ -959,7 +958,7 @@ prediction and update steps as follows:
 % TODO: For the full derivation see appendix (cite)
 
 \section{Data Preprocessing Techniques}
-We now examine several data preprocessing techniques. Some key challenges
+We now examine data preprocessing techniques. Some key challenges
 that arise in our data  are
 high range of objective values,
 and dealing with sharp bumps in reward from
@@ -987,7 +986,7 @@ of the same dimension $d$ and with unit diagonal ``white'' covariance
 var$(\mathbf{z}) = \mathbf{I}$. The square $d \times d$
 matrix $\mathbf{W}$ is called the whitening matrix.
 
-The whitening transformation defined in Equation \Cref{whitening} requires
+The whitening transformation defined in \Cref{whitening} requires
 the choice of a suitable whitening matrix $W$.
 Since $\text{var}(z) = \mathbf{I}$ it follows that
 $\mathbf{W}\Sigma \mathbf{W}^T = \mathbf{I}$ and thus
@@ -1005,22 +1004,3 @@ possible matrices $\mathbf{W}$, because it allows for rotational freedom.
 % - standard score
 % - exponential weighted average
 
-
-
-
-
-%In \cref{fig:whitening} we provide an example on using
-%whitening for our parameter estimation task.
-%\begin{figure}[t]
-%  \centering
-%  \subfigure[][without whitening]{\input{figures/LS_no_whitening}}
-%  \subfigure[][in whitened space]{\input{figures/LS_whitening}}
-%  \subfigure[][unwhitened parameters]{\input{figures/LS_unwhitened}}
-%  \caption{Example of using LS on 2-dimensional
-%   Rosenbrock function. The plots show the predicted surrogate model
-%   parameters $\mathbf{\beta}$. We can see that
-%   the parameters in whitened space stay in a smaller range 
-%   making the estimation task easier.}
-% \label{fig:whitening}
-%\end{figure}
-%

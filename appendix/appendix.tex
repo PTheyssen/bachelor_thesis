@@ -5,10 +5,7 @@
 \chapter{Appendix}
 
 \section{MORE: Equations}\label{more_appendix}
-- add derivation of lagragian function for MORE with clear
-steps
-
-Forming the Lagrangian for our optimization problem we get
+Forming the Lagrangian for the constraint optimization problem we get
 \begin{align*} \mathfrak{L}(\pi, \eta, \omega) = 
 \int \pi(\theta) \mathcal{R}_{\theta} d\theta \; + \; 
 \eta  \left(\epsilon - \int \pi(\theta) \text{ log}
@@ -55,5 +52,83 @@ $$ \mathcal{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
 \text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
 where $|P|$ is the determinant of the matrix $P$.
 
-\section{Kalman Filter Derivation} \label{KF_appendix}
-% TODO also LS or RLS solution with extensive math
+\section{Hyperparameter Search}
+\label{appendix:par_search}
+Here we first describe the different parameters
+that are optimized
+then present results and observations from
+our hyperparameter search.
+
+\subsubsection{MORE parameters}
+\begin{itemize}
+\item KL-Bound $\epsilon$
+\item entropy-loss bound $\beta$
+\end{itemize}
+\subsubsection{RLS parameters}
+\begin{itemize}
+\item model noise $\mathbf{Q}$
+\item measurement noise $\sigma^2$
+\end{itemize}
+
+\subsubsection{Configurations}
+The best configurations we found for our tasks
+
+- table Rosenbrock
+
+- table reaching task
+
+\begin{table}[htp]
+  \centering
+  \begin{tabular}{lccc} \toprule
+    Task (1500 MORE Iterations)
+    & Least Squares & RLS with Pool \\ \midrule
+    Rosenbrock Function 15D & 16 & 30 \\ \bottomrule
+  \end{tabular}
+  \caption{
+    Computational time for Rosenbrock function.
+  }
+  \label{tab:table}
+\end{table}
+
+\begin{table}[htp]
+  \centering
+  \begin{tabular}{lccc} \toprule
+    Task (300 MORE Iterations)
+    & Least Squares & RLS with Pool & RLS without Pool  \\ \midrule
+    Via-point Reaching Task & 52 & 102 & 50 \\ \bottomrule
+  \end{tabular}
+  \caption{
+    Computational time for via-point task.
+  }
+  \label{tab:table}
+\end{table}
+
+- configurations of best results list parameters used
+for best performing algorithm used in plots
+
+- include extensive hyperparameter search figures and tables
+
+- table for runtimes
+
+\subsection{Further Tests and Observations}
+In \Cref{fig:noise_weighting} the influence of adding model noise is
+illustrated
+
+ \begin{figure}[ht!]
+  \centering
+     \input{figures/rls_model_noise}
+     \hspace{1cm}                       
+     \caption{
+       We see LS approach, RLS approach with and without a pool.
+       On the right we see the resulting movement of the RLS with pool.
+     }
+     \label{fig:noise_weighting}  
+\end{figure}
+
+- influence of KL bound on algorithm
+
+- influence entropy loss and initial entropy, variance
+
+- test whitening and normalization
+
+

@@ -16,15 +16,15 @@ Previously the surrogate model has been estimated from scratch in each
 iteration using samples and corresponding
 values of the objective function. 
 However, subsequent models are correlated
-due to the locality of the data, see \cref{fig:sur_model} for an example.
+due to the locality of the data, see \Cref{fig:sur_model} for an example.
 \begin{figure}[t]
   \centering
-  \subfigure[][objective function]{\input{figures/rosenbrock_mean}}
-  \subfigure[][surrogate model (iteration $i$)]{\input{figures/model_1}}
-  \subfigure[][surrogate model (iteration $i+1$)]{\input{figures/model_2}}
+  \subfigure[][Objective Function]{\input{figures/rosenbrock_mean}}
+  \subfigure[][Surrogate Model (iteration $i$)]{\input{figures/model_1}}
+  \subfigure[][Surrogate Model (iteration $i+0$)]{\input{figures/model_2}}
   \caption{\small
     In (a) the original objective function,
-    a 2 dimensional Rosenbrock function (\cref{sec:test_func}) is shown.
+    a 2 dimensional Rosenbrock function (\Cref{sec:test_func}) is shown.
     In (b) and (c) we see the search distribution mean,
     the surrogate model and the samples used to estimate
     the model from two subsequent MORE iterations.}
@@ -203,10 +203,8 @@ which computes the model parameters in a recursive fashion.
 
 \For{$n = 1,...,N$}
 {
-  \Begin(Adding the model noise)
-  {
-    $\mathbf{P}_n^- = \mathbf{P}_{n-1} + \mathbf{Q}$ \;
-  }
+  $\mathbf{P}_n^- = \mathbf{P}_{n-1} + \mathbf{Q}$
+  \textit{  // Adding the model noise}\;
   $~$ \;
   \Begin(Update step)
   {
@@ -224,26 +222,26 @@ which computes the model parameters in a recursive fashion.
 The original MORE algorithm uses a sample pool, which contains samples
 from previous iterations, for estimating the surrogate model.
 In theory when using a recursive estimation approach
-the information in a sample pool is redundant.
+the information in a sample pool is redundant and should be avoided.
 
-In our experiments we did not receive good results when
+Nonetheless in our experiments we did not receive good results when
 using only new samples without a sample pool, since
 the predictions for the surrogate models are to inaccurate.
-The first adjustment is to use a warm start, meaning we get
-a accurate prediction in the first iteration by processing
-a large batch of samples. This prediction can then be subsequently
+To overcome this we tried using a warm start, meaning we
+process a large batch of samples in the first iteration to get 
+an accurate prediction. This prediction can then be subsequently
 updated.
 
 On optimization test functions like the Rosenbrock
-function \cref{eq:rosenbrock} we also did not receive
-promising results using a warm start.
+function \cref{sec:test_func} we did not receive
+promising results using only a warm start.
 Thus we also tried using a sample pool for our recursive estimation approach.
 From a theoretical standpoint this is rather imprecise,
-this improved our results regardless.
+but using it improved our result.
 When using a sample pool we generally process the newest samples
-last.
-Additionally we explored giving older samples 
-a greater model noise and by this encoding our uncertainty about them.
+last. Additionally to justify using a sample pool
+we explored giving older samples 
+a greater model noise,  encoding our uncertainty about them.
 For this we simply introduce a counter for each sample,
 indicating how many times the sample has been used.
 For older samples (higher counter) we increased the model noise controlled
@@ -253,8 +251,9 @@ RLS algorithm by computing
 $$ \mathbf{Q} + \gamma \,\cdot \text{counter} \, \cdot \mathbf{I} $$
 before adding the model noise to the covariance
 matrix of the parameters.
-This improved our results on the Rosenbrock test function compared
+We could improve our results on the Rosenbrock test function compared
 to the RLS version with constant model noise for all samples.
+% cite comparison in evaluation chapter
 Still the use of a sample pool is theoretically unsound and part
 of future work is to explore ways to avoid it.
 
@@ -277,18 +276,18 @@ If the Cholesky whitening is unsuccessful due to numerical problems,
 we instead standardize
 the random vector meaning $\text{var}(\mathbf{z}) = 1$ but the correlations
 are not removed.
-In \cref{fig:whitening} we provide an example illustrating the effect of 
+In \Cref{fig:whitening} we provide an example illustrating the effect of 
 whitening for our parameter estimation task.
 
 \begin{figure}[t]
   \centering
-  \subfigure[][without whitening]{\input{figures/LS_no_whitening}}
-  \subfigure[][in whitened space]{\input{figures/LS_whitening}}
-  \subfigure[][unwhitened parameters]{\input{figures/LS_unwhitened}}
+  \subfigure[][Without Whitening]{\input{figures/LS_no_whitening}}
+  \subfigure[][In Whitened Space]{\input{figures/LS_whitening}}
+  \subfigure[][Unwhitened Parameters]{\input{figures/LS_unwhitened}}
   \caption{\small
     Example of using MORE with a least squares approach for
     surrogate-modeling with and without whitening on the 2-dimensional
-    Rosenbrock function (\cref{sec:test_func}).
+    Rosenbrock function (\Cref{sec:test_func}).
     The plots show the predicted surrogate model
     parameters $\mathbf{\beta}$. In (a) the parameters are estimated
     without whitening the data. In (b) a whitening transformation is
@@ -307,15 +306,15 @@ We now present the MORE algorithm with recursive surrogate-modeling.
 First we initialize the search distribution 
 $\pi(\mathbf{x}) = \mathcal{N}(\mathbf{x} |\, \mu, \Sigma)$ and
 the RLS algorithm. In the robot
-learning setting the search distribution may be intialized
+learning setting the search distribution may be initialized
 through imitation learning.
 In each iteration the search distribution is then used to create
 samples which are evaluated on the objective function.
 The samples are used to create the design matrix $\mathbf{X}$
 (as in \ref{eq:lgs}).
-Data preprocessing techniques like whitening (\cref{sec:whitening})
+Data preprocessing techniques like whitening (\Cref{sec:whitening})
 and normalization
-may be apllied to the design matrix and rewards before they
+may be applied to the design matrix and rewards before they
 are given to the RLS algorithm to learn the surrogate model, which in turn
 is used to compute the update to the search distribution in closed form.
 MORE with Recursive Surrogate-Modeling is summarized in \Cref{alg:more}.

@@ -6,33 +6,62 @@
 
 
 \section{Conclusion}
-- managed to improve sample efficiency on simple test functions
-
-- epsilon for kl-bound should have effect on effectiveness of RLS
-  since the surrogate models become more or less locally correlated
-
-We achieved some good results on the rosenbrock test function
-considerably improving the sample efficiency. Nonetheless for
-the planar reaching tasks we did not manage to achieve a
-significant improvement.
-Also our proposed algorithm did not work with multi modal and noisy objective functions.
-
-- One main problem seems to be tuning the recursive estimation for one specific
-task.
-
-The data seems to be difficult to Still
-
-- inexperience of author with kalman filter (setting up matrices, choosing good state transition model)
-
-- use some form of dimensionality reduction as we deal with
-high dimensional --> need to estimate $1 + 25 + (25 \times 26 / 2) = 351$
+In this work, we have presented a approach for combining the MORE algorithm
+\citep{abdolmaleki2015model} with recursive surrogate-modeling
+using the RLS algorithm with drift model (\Cref{RLS:basic}).
+The main goal of this approach is to improve the sample efficiency of
+MORE, as real world samples are expensive and
+previously learning the surrogate model has been data-intensive.
+We tested our algorithm on an Rosenbrock function and
+a simple planar reaching task.
+While we were able to improve sample efficiency on the Rosenbrock
+function, we did not manage to achieve a
+significant improvement on the planar reaching task.
+Nevertheless the results with the proposed algorithm reveals potential for
+using recursive surrogate-modeling for the MORE algorithm.
+Our approach leaves much room for improvement in terms of finding
+the optimal combination of hyperparameters and different data
+preprocessing techniques.
+With more research the improved sample efficiency observed
+on the optimization test functions may be transferred to
+complex robotic tasks.
 
 \section{Future Work}
-- remove sample pool
+This section lists possibilities for further improvements of using
+recursive surrogate modeling for the MORE algorithm.
 
-- usage of state transition model (kalman filter prediction step)
+\textbf{Using a State Transition Model.}
+As a next step finding a fitting state transition matrix $\mathbf{A}$ and
+using the prediction step of the Kalman filter may improve results. 
+The author had little experience with Kalman filters prior
+to this project, hence work on optimizing the algorithm for
+recursive estimation may lead to significant improvements.
 
-- make learning more stable for reaching tasks (safe exploration)
+\textbf{Re-evaluating optimize hyperparameters.}
+One disadvantage of MORE is the number of parameters, our
+recursive surrogate-modeling algorithm introduced additional parameters.
+As we relied mainly on manual and grid search for hyperparameters a
+more sophisticated approach could yield considerable improvements.
+Though the stochastic nature of the algorithm makes comparing
+different configurations difficult and a more thorough evaluation
+could reveal new insights.
 
-- learning the model noise: run original MORE approach and do backpropagation with pytorch over the
-weights
+\textbf{Learning the Model Noise.}
+When using no pool the model noise
+parameter stays constant for all MORE
+iterations. Although we optimized this constant value it makes more sense to
+dynamically adjust the model
+noise in some way related to the changes values of the objective function.
+In the future exploring different techniques for learning the model drift
+may proof successful in increasing the performance.
+
+\textbf{Testing on Complex Robot Learning Tasks}
+We only conducted experiments on a simple simulated planar reaching
+task. The obvious next step is to benchmark the algorithm on more
+complicated robotic tasks. This might reveal shortcomings of the approach
+for dealing with unsmooth objective functions and fulfilling the goal
+of safe exploration.
+Additionally for higher dimensional tasks it may be necessary to
+introduce some form of dimensionality reduction as for our
+5-link reaching task the RLS already has to estimate
+351 parameters.
