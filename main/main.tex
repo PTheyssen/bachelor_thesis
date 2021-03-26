@@ -3,25 +3,62 @@
 % !TeX root = ../thesis.tex
 
 \chapter{Recursive Surrogate-Modeling for MORE}
-In this chapter we will first motivate the idea of recursively
-estimating the surrogate model for the MORE algorithm.
-We formulate the surrogate model estimation task
-as a regression problem and present our solution to it.
-Finally we connect our approach with the MORE algorithm.
+In this chapter, we will first discuss the quadratic surrogate model
+and motivate the idea of recursively
+estimating it.
+Then we formulate the surrogate model estimation task
+as a regression problem.
+Next we introduce a batch solution
+that is based on ridge regression and
+the Recursive Least Squares with Drift Model algorithm
+as our recursive approach for solving the problem.
+% Finally we describe how to connect our approaches
+% with the MORE algorithm.
 
-\section{Surrogate Model Estimation}
+\section{Quadratic Surrogate Model}
 \label{sec:surrogate}
-\subsection{Motivation}
-Previously the surrogate model has been estimated from scratch in each
+To compute the policy update the MORE algorithm
+uses a quadratic surrogate model of the objective function.
+The surrogate model has the following form
+\begin{align*}
+  % TODO: explain why using 1/2 or not?
+  f(\mathbf{x}) \approx \hat{f}(\mathbf{x}) =
+  %-\frac{1}{2}
+  \mathbf{x}^T \mathbf{R} \mathbf{x}
+  + \mathbf{x}^T \mathbf{r} + r
+\end{align*}
+where $f(\mathbf{x}) : \mathbb{R}^n \rightarrow \mathbb{R}$
+is the original objective function.
+The surrogate model $\hat{f}(\mathbf{x})$
+has a quadratic term $\mathbf{R} \in \mathbb{R}^{n \times n}$,
+a linear term $\mathbf{r} \in \mathbb{R}^{n}$ and a scalar $r$.
+Since we assume that the search distribution is Gaussian,
+we need to use a quadratic model in order to derive the closed
+form solution for the update of the search distribution.
+Using a Gaussian search distribution combined with a
+quadratic model is sufficient as the exponential of the
+Gaussian is also quadratic in the parameters and
+a more complex model could not be exploited by
+a Gaussian distribution \citep{abdolmaleki2015model}.
+The original approach for estimating the surrogate model
+employs a form of Bayesian dimensionality
+reduction combined with linear regression.
+This is done from scratch in each
 iteration using samples and corresponding
 values of the objective function. 
-However, subsequent models are correlated
-due to the locality of the data, see \Cref{fig:sur_model} for an example.
+This approach turns out to be very data-intensive and computationally
+expensive.
+By employing the data preprocessing techniques introduced in
+\Cref{sec:data_pre} we can instead
+solve the problem in the original dimension.
+Additionally, subsequent models are correlated
+due to the locality of the data, see \Cref{fig:sur_model} for an example of
+two subsequent surrogate model.
 \begin{figure}[t]
   \centering
   \subfigure[][Objective Function]{\input{figures/rosenbrock_mean}}
   \subfigure[][Surrogate Model (iteration $i$)]{\input{figures/model_1}}
-  \subfigure[][Surrogate Model (iteration $i+0$)]{\input{figures/model_2}}
+  \subfigure[][Surrogate Model (iteration $i+1$)]{\input{figures/model_2}}
   \caption{\small
     In (a) the original objective function,
     a 2 dimensional Rosenbrock function (\Cref{sec:test_func}) is shown.
@@ -35,34 +72,18 @@ used to bound the distance between
 subsequent search distributions. Therefore recursive estimation
 techniques may be able to utilize the information contained in the previous
 surrogate model and thus reduce the total amount of samples needed.
-Additionally this may also reduce the runtime of the algorithm.
-
-The surrogate model has the following form
-\begin{align*}
-  % TODO: explain why using 1/2 or not?
-  f(\mathbf{x}) \approx \hat{f}(\mathbf{x}) =
-  %-\frac{1}{2}
-  \mathbf{x}^T \mathbf{R} \mathbf{x}
-  + \mathbf{x}^T \mathbf{r} + r.
-\end{align*}
-where $f(\mathbf{x}) : \mathbb{R}^n \rightarrow \mathbb{R}$
-is the original objective function.
-The surrogate model $\hat{f}(\mathbf{x})$
-has a quadratic term $\mathbf{R} \in \mathbb{R}^{n \times n}$,
-a linear term $\mathbf{r} \in \mathbb{R}^{n}$ and a scalar $r$.
-Using a quadratic model is sufficient as the exponential of the
-Gaussian is also quadratic in the parameters.
-A more complex model could not be exploited by
-a Gaussian distribution \citep{abdolmaleki2015model}.
+This also may reduce the runtime of the algorithm.
 Nevertheless estimating the surrogate model is a challenging task as we
 have to estimate $\mathcal{O}(n^2)$ many parameters while using a minimal
-amount of samples in each MORE Iteration.
+amount of samples in each MORE Iteration. 
 
 
-% TODO: include 2D contour line or 3d version of subsequent models
-
-\subsection{Regression Problem}
-We can formulate the task of estimating the surrogate model as
+\section{Ridge Regression}
+\label{sec:ridge}
+Let us now introduce a batch solution for learning the model,
+which we will use as a comparison
+to the recursive approach in our experiments.
+Therefore we formulate the task of estimating the surrogate model as
 a regression problem (\ref{eq:regression}). For this we use
 a feature function $\phi(\mathbf{x})$ which returns
 a bias term, all linear and all quadratic terms. The dimensionality of
@@ -92,7 +113,7 @@ which we denote by tril$(\mathbf{x}_k \mathbf{x}_k^T)$.
 % where we multiply each sample entry with itself and all entries with
 % higher index. 
 
-For the least squares (LS) approach with $n \geq D$ samples
+For the batch solution with $n \geq D$ samples
 we get the following system of linear equations
 
 \begin{equation}
@@ -118,43 +139,90 @@ we get the following system of linear equations
 \end{bmatrix}.
 \end{equation}
 
+
 We assume that the measurement noise $\epsilon_k$ is zero mean Gaussian
 $\epsilon_k \sim N(0, \sigma^2)$ distributed.
-\Cref{eq:lgs} can be solved with ordinary least squares
-$\beta = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X} \mathbf{y}$.
-For our experiments we use a form of ridge regression \citep{hoerl1975ridge}
-for comparison to our recursive estimation approach.
-
-
+To solve the system of linear equations in \ref{eq:lgs} we use
+a form of ridge regression \citep{hoerl1975ridge}.
+$$ \beta = (\mathbf{X}^T \mathbf{X} +
+\lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y} $$
+where $\lambda$ is the ridge parameter chosen as $1 \times 10^{-12}$.
 The solution vector $\beta$ contains the surrogate model parameters
-$(r, \mathbf{r}, \mathbf{R})$.
+$(r, \mathbf{r}, \mathbf{R})$. As the regression is done
+in the original problem space, which tends to be high dimensional especially
+for robotic tasks, we now explore how data preprocessing techniques
+can make the estimation task easier.
 
+\begin{figure}[t]
+  \centering
+  \subfigure[][Without Whitening]{\input{figures/LS_no_whitening}}
+  \subfigure[][In Whitened Space]{\input{figures/LS_whitening}}
+  \subfigure[][Unwhitened Parameters]{\input{figures/LS_unwhitened}}
+  \caption{\small
+    Example of using MORE with a least squares approach for
+    surrogate-modeling with and without whitening on the 2-dimensional
+    Rosenbrock function (\Cref{sec:test_func}).
+    The plots show the predicted surrogate model
+    parameters $\mathbf{\beta}$. In (a) the parameters are estimated
+    without whitening the samples. In (b) a whitening transformation is
+    applied to the samples before parameter estimation
+    and (c) shows the parameters from (b) after reversing
+    the whitening transformation.
+    We can see that the parameters in whitened space
+    stay in a smaller range 
+    making the estimation task easier.}
+ \label{fig:whitening}
+\end{figure}
 
-Using recursive estimation we
-can process each pair of samples and rewards $(\mathbf{x}_k, y_k)$ one
-at a time.
+For the samples we use \textit{Cholesky whitening} which is based on
+Cholesky factorization of the precision matrix
+$\mathbf{L}\mathbf{L}^T = \Sigma^{-1}$, which leads to the whitening
+matrix $\mathbf{W}^{\text{Chol}} = \mathbf{L}^T$.
+If the Cholesky whitening is unsuccessful due to numerical problems,
+we instead standardize
+the random vector meaning $\text{var}(\mathbf{z}) = 1$ but the correlations
+are not removed.
+In \Cref{fig:whitening} we provide an example which illustrates the effect of 
+whitening for our parameter estimation task.
+
+To reduce the number of samples needed per iteration we use a sample
+pool, which contains samples from previous iterations.
+To deal with data from unsmooth reward functions
+caused by penalties (e.g. self-collision of the robot) we
+normalize the reward.
+For this the mean and standard deviation of the sample pool is used to compute
+the z-score for each objective value $y$ as follows
+\begin{equation*}
+  \label{eq:norm}
+  z = \frac{y - \mu_{\text{pool}}}{\sigma_{\text{pool}}}.
+\end{equation*}
+In our robotic tasks the reward signal can have sharp jumps due to
+penalties (e.g. self-collision of the robot).
+To avoid getting stuck after receiving a penalty we additionally
+experimented with clipping the rewards.
+
+% - talk about connection to batch solution from fundamentals
+% the prior is not used (stays the same)
+\section{Recursive Least Squares with Drift Model}
+\label{sec:rls}
+% We call our approach recursive least squares with drift model
+% for the parameters (\Cref{RLS:basic}).
+Let us now explain how we use the recursive least squares (RLS) with
+drift model algorithm 
+to compute the solution vector $\beta$ to the regression problem.
+Using a recursive estimation approach we
+process each pair of samples and rewards $(\mathbf{x}_k, y_k)$ one at
+a time
 $$
  y_k =
  \big(1 \;  \mathbf{x}_k \; \text{tril}(\mathbf{x}_k \mathbf{x}_k^T) \big)
 \begin{pmatrix}
   \beta_1 \\ \beta_2 \\ \vdots \\ \beta_D
 \end{pmatrix} 
-+ \epsilon_k
++ \epsilon_k.
 $$
-\section{Recursive Least Squares}
-As we did not find a good state transition model
-we only use the update step of the Kalman filter \cref{KF_update}.
-We tried some momentum based approaches during our evaluation but
-did not receive any promising results. 
-Therefore our approach is a special case of the Kalman filter
-equations with
-an Identity matrix as the state transition matrix $\mathbf{A}$.
-We call our approach recursive least squares with drift model
-for the parameters (\Cref{RLS:basic}).
-
-Let us now explain how we use the recursive least squares (RLS) algorithm
-to compute the solution vector $\beta$ to the regression problem.
-As the model parameters do not stay constant we assume they perform
+As the model parameters do not stay constant between MORE iterations
+we assume they perform
 a Gaussian random walk between measurements and for an arbitrary
 step $k$ we get
 \begin{align*}
@@ -182,15 +250,72 @@ We want to compute the filtering distribution
   &\propto \mathcal{N}(\beta_k | \, \mathbf{m}_k, \mathbf{P}_k), 
 \end{align*}
 for this we can use the update equation
-of the Kalman filter (\ref{KF_update}).
-Increasing the covariance matrix of the parameters
-by the model noise combined with
+of the Kalman filter (\ref{KF_update}). 
+Using the model noise to increase the covariance matrix of the parameters
+combined with
 the Kalman filter update step
-gives us \cref{RLS:basic},
-which computes the model parameters in a recursive fashion.
+forms the basis of \Cref{RLS:basic}.
 
+We further explored adding various data preprocessing techniques
+to the algorithm.
+First of all, like the ridge regression we also use whitening on the samples.
+To cope with sharp jumps in the objective function due to penalties
+we normalize the reward $y_k$.
+For computing the mean and standard deviation
+we use the exponential moving average (EMA) (\Cref{eq:ema}),
+thus for the standard score of the reward we get 
+\begin{equation*}
+  \label{eq:norm}
+  z = \frac{y - \mu_{\text{EMA}}}{\sigma_{\text{EMA}}}.
+\end{equation*}
+By using the EMA the normalization can be computed iteratively
+in an on-line fashion. In addition we can use the
+weighting factor $\alpha$ of the EMA to control how fast
+older rewards should be discounted.
+% which computes the model parameters in a recursive fashion.
+% To make the numerically more stable we also
+% employ whitening for our recursive approach.
 
-\begin{algorithm}[H]
+Opposed to the ridge regression we do not want to use a sample pool
+for the RLS and instead rely on the information contained in
+the previous surrogate model.
+% In theory when using a recursive estimation approach
+% the information in a sample pool is redundant and should be avoided.
+Nonetheless in our experiments we did not receive good results when
+using only new samples without a sample pool.
+The predictions for the surrogate models were to inaccurate.
+To overcome this we tried using a warm start, meaning we
+process a large batch of samples in the first iteration to get 
+an accurate prediction. The prediction can then be subsequently
+updated with new samples. This improved the results but
+it still performed worse than the batch solution.
+% For our reaching task this produced worth investigating
+% and then learning the model noise
+% On optimization test functions like the Rosenbrock
+% function \cref{sec:test_func} we did not receive
+% promising results using only a warm start.
+Thus we also tried using a sample pool for our recursive estimation approach.
+% From a theoretical standpoint this is rather imprecise,
+% but using it improved our result.
+When using a sample pool we generally process the newest samples
+last. Additionally, we explored giving older samples 
+a greater model noise, encoding our increased uncertainty about them.
+For this we simply introduced a counter for each sample,
+indicating how many times the sample has been used.
+For older samples (higher counter) we increase the model noise controlled
+by a weight factor $\gamma$.
+When using this sample weighting we increase the model noise by computing
+$$ \mathbf{Q} + \gamma \,\cdot \text{counter} \, \cdot \mathbf{I} $$
+before adding the model noise to the covariance
+matrix of the parameters.
+% We could improve our results on the Rosenbrock test function compared
+% to the RLS version with constant model noise for all samples.
+% cite comparison in evaluation chapter
+Still using a sample pool is theoretically imprecise and part
+of future work is to explore ways to avoid it.
+One way to achieve this might be learning the model noise
+or dynamically adjusting it to the changes in the objective values.
+\begin{algorithm}[h]
 \renewcommand{\algorithmcfname}{Algorithm}
 \SetKw{KwInit}{Initialization:}
 \DontPrintSemicolon
@@ -203,9 +328,14 @@ which computes the model parameters in a recursive fashion.
 
 \For{$n = 1,...,N$}
 {
+  \Begin(Data Preprocessing)
+  {
+  Use whitening on $\mathbf{X}_n$\;
+  Compute exponential moving average and normalize $y_n$ \;
+  }
+  % $~$ \;
   $\mathbf{P}_n^- = \mathbf{P}_{n-1} + \mathbf{Q}$
-  \textit{  // Adding the model noise}\;
-  $~$ \;
+  \textit{  // Add the model noise}\;
   \Begin(Update step)
   {
     $S_n = \mathbf{X}_n \; \mathbf{P}_n^- \, \mathbf{X}_n^T + \sigma^2$ \;
@@ -213,169 +343,51 @@ which computes the model parameters in a recursive fashion.
     $\textbf{m}_n = \textbf{m}_{n-1} + \textbf{K}_n [y_n - \textbf{X}_n \textbf{m}_{n-1}]$ \;
     $\textbf{P}_n = \textbf{P}_{n}^{-} - \textbf{K}_n \, S_n \, \textbf{K}_n^T $ \;
   }
+
 }
+Reverse whitening transformation for $\mathbf{m}_N$ \;
+\KwRet{$\mathbf{m}_N$}
 \caption{Recursive Least Squares with Drift Model}
 \label{RLS:basic}
 \end{algorithm}
-  
-\subsection{Sample pool}
-The original MORE algorithm uses a sample pool, which contains samples
-from previous iterations, for estimating the surrogate model.
-In theory when using a recursive estimation approach
-the information in a sample pool is redundant and should be avoided.
 
-Nonetheless in our experiments we did not receive good results when
-using only new samples without a sample pool, since
-the predictions for the surrogate models are to inaccurate.
-To overcome this we tried using a warm start, meaning we
-process a large batch of samples in the first iteration to get 
-an accurate prediction. This prediction can then be subsequently
-updated.
+During our research we did not find a good state transition model, therefore
+we only use the update step of the Kalman filter \cref{KF_update}.
+We tried some momentum based approaches but
+did not receive any promising results. 
+Therefore our approach is a special case of the Kalman filter
+equations with
+an Identity matrix as the state transition matrix $\mathbf{A}$.
+Exploring different state transition models and thereby incorporating
+the prediction step of the Kalman filter is part of future work.
 
-On optimization test functions like the Rosenbrock
-function \cref{sec:test_func} we did not receive
-promising results using only a warm start.
-Thus we also tried using a sample pool for our recursive estimation approach.
-From a theoretical standpoint this is rather imprecise,
-but using it improved our result.
-When using a sample pool we generally process the newest samples
-last. Additionally to justify using a sample pool
-we explored giving older samples 
-a greater model noise,  encoding our uncertainty about them.
-For this we simply introduce a counter for each sample,
-indicating how many times the sample has been used.
-For older samples (higher counter) we increased the model noise controlled
-by a weight factor $\gamma$.
-When using this sample weighting we increase the model noise in the
-RLS algorithm by computing
-$$ \mathbf{Q} + \gamma \,\cdot \text{counter} \, \cdot \mathbf{I} $$
-before adding the model noise to the covariance
-matrix of the parameters.
-We could improve our results on the Rosenbrock test function compared
-to the RLS version with constant model noise for all samples.
-% cite comparison in evaluation chapter
-Still the use of a sample pool is theoretically unsound and part
-of future work is to explore ways to avoid it.
-
-%\subsection{Normalization}
-%We explored different ways of normalization. First a simple
-%standard score.
-%
-%We also tested exponential weighting normalization.
-%
-%- exponential weighting (search for citation)
-%
-%- standard score
-%
-\subsection{Whitening}
-We used \textit{Cholesky whitening} which is based on
-Cholesky factorization of the precision matrix
-$\mathbf{L}\mathbf{L}^T = \Sigma^{-1}$, which leads to the whitening
-matrix $\mathbf{W}^{\text{Chol}} = \mathbf{L}^T$.
-If the Cholesky whitening is unsuccessful due to numerical problems,
-we instead standardize
-the random vector meaning $\text{var}(\mathbf{z}) = 1$ but the correlations
-are not removed.
-In \Cref{fig:whitening} we provide an example illustrating the effect of 
-whitening for our parameter estimation task.
-
-\begin{figure}[t]
-  \centering
-  \subfigure[][Without Whitening]{\input{figures/LS_no_whitening}}
-  \subfigure[][In Whitened Space]{\input{figures/LS_whitening}}
-  \subfigure[][Unwhitened Parameters]{\input{figures/LS_unwhitened}}
-  \caption{\small
-    Example of using MORE with a least squares approach for
-    surrogate-modeling with and without whitening on the 2-dimensional
-    Rosenbrock function (\Cref{sec:test_func}).
-    The plots show the predicted surrogate model
-    parameters $\mathbf{\beta}$. In (a) the parameters are estimated
-    without whitening the data. In (b) a whitening transformation is
-    applied to the data before parameter estimation
-    and (c) shows the parameters from (b) after reversing
-    the whitening transformation.
-    We can see that the parameters in whitened space
-    stay in a smaller range 
-    making the estimation task easier.}
- \label{fig:whitening}
-\end{figure}
+Our final approach for recursive surrogate-modeling is summarized
+in \Cref{RLS:basic}.
+The RLS with drift model algorithm and the ridge regression
+from \cref{sec:ridge} can easily be combined with the MORE algorithm,
+for this only the part for learning the quadratic 
+surrogate model $\hat{f}$ has to be changed in the original MORE
+(\Cref{alg:more_appendix}).
 
 
-\section{MORE with Recursive Surrogate-Modeling}
-We now present the MORE algorithm with recursive surrogate-modeling.
-First we initialize the search distribution 
-$\pi(\mathbf{x}) = \mathcal{N}(\mathbf{x} |\, \mu, \Sigma)$ and
-the RLS algorithm. In the robot
-learning setting the search distribution may be initialized
-through imitation learning.
-In each iteration the search distribution is then used to create
-samples which are evaluated on the objective function.
-The samples are used to create the design matrix $\mathbf{X}$
-(as in \ref{eq:lgs}).
-Data preprocessing techniques like whitening (\Cref{sec:whitening})
-and normalization
-may be applied to the design matrix and rewards before they
-are given to the RLS algorithm to learn the surrogate model, which in turn
-is used to compute the update to the search distribution in closed form.
-MORE with Recursive Surrogate-Modeling is summarized in \Cref{alg:more}.
-
-\begin{algorithm}[H]
-\renewcommand{\algorithmcfname}{Algorithm}
-\DontPrintSemicolon
-\SetAlgoLined
-\KwIn{Parameters $\epsilon$ and $\beta$, \\ $K$ number of iterations,
-  $N$ samples per iteration}
-\Begin(Initialization:)
-{
-  Initialize search distribution $\pi$ \;
-  Initialize RLS with $\mathbf{m}_0, \mathbf{P}_0$ \;
-}
-\For{$k = 1,...,K$}
-{
-  \For{$n = 1,...,N$}
-  {
-    Draw sample $\mathbf{x}_n \sim \pi$\;
-    Evaluate $\mathbf{x}_n$ on objective function $f(\mathbf{x}_n) = y_n$\;
-  }
-  \Begin(Estimate quadratic model $\hat{f}$)
-  {
-    \For{$n = 1,...,N$}
-    {
-      Whitening: $\mathbf{X}_n = \mathbf{W} \, \mathbf{X}_n$\;
-      % TODO: normalization maybe in fundamentals
-      % Optionally: Use normalization\;
-      Optionally: Increase model noise for older samples\;      
-      Compute surrogate model parameters using \Cref{RLS:basic} \;
-      % RLS$(\mathbf{X}_n, y_n, \mathbf{Q}, \sigma^2)$ \;
-    }
-  }
-  Solve  $\text{argmin}_{\eta >0, \omega > 0} \, g(\eta, \omega)$
-  using \Cref{eq:dual} \;
-  Update search distribution $\pi$ using \Cref{policy_update}\;
-}
-\caption{MORE with Recursive Surrogate-Modeling}
-\label{alg:more}
-\end{algorithm}
-
-%\subsection{Moving back to prior}
-%One technique we investigated is 
-%- to prior calculation (optimal for whitened space)
-%
-%- set up equation
-%
-%\subsection{State Transition Model}
-%Let us quickly state the full Kalman filter equations, the
-%derivation can be found in the appendix (TODO ref)
-%
-%Prediction step:
-%
-%Update step:
-%
-%Introducing an accurate state transition model to incorporate the
-%prediction step of the kalman filter would be ideal.
-%We tried some simple momentum approaches based on the differences of
-%subsequent surrogate model parameters, but those did not yield
-%good results.
-%Our Recursive least squares algorithm is a special case of these
-%equations using an state transition model matrix $\mathbf{A} = \mathbf{I}$.
-%
+%\begin{algorithm}[H]
+%\renewcommand{\algorithmcfname}{Algorithm}
+%\DontPrintSemicolon
+%\SetAlgoLined
+%\KwIn{Parameters $\epsilon$ and $\beta$, initial search distribution $\pi$ \;
+%  \\ $K$ number of iterations,  $N$ samples per iteration}
+%\For{$k = 1,...,K$}
+%{
+%  \For{$n = 1,...,N$}
+%  {
+%    Draw sample $\mathbf{x}_n \sim \pi$\;
+%    Evaluate $\mathbf{x}_n$ on objective function $f(\mathbf{x}_n) = y_n$\;
+%  }
+%  Learn the quadratic model $\hat{f}$ \;
+%  Solve  $\text{argmin}_{\eta >0, \omega > 0} \, g(\eta, \omega)$
+%  using \Cref{eq:dual} \;
+%  Update the search distribution $\pi$ using \Cref{policy_update}\;
+%}
+%\caption{MORE}
+%\label{alg:more}
+%\end{algorithm}

@@ -36,23 +36,22 @@ state-of-the-art results in terms of optimization accuracy
 the surrogate model estimation is data-intensive.
 The metric we focus on is sample efficiency for which we use the heuristic
 $s = 4 + \lfloor 3 \log(n) \rfloor$ of the CMA-ES
-algorithm \citep{hansen2016cma} as a benchmark, with $n$ being the dimension
+algorithm \citep{hansen2016cma}, with $n$ being the dimension
 of the problem and $s$ the number of samples drawn from the
-search distribution in each iteration. Besides that
-we test the runtime of our algorithm.
+search distribution in each iteration.
 
-We compare our recursive approach to a batch solution
-based on least squares (LS).
-We use ridge regression with a ridge factor of
-$1 \times 10^{12}$ that uses the
-CMA-ES heuristic for number of samples and a sample pool.
-This approach also uses normalization
-on the objective values and whitening on the samples.
+We compare our recursive least squares (RLS) appraoch
+to the ridge regression (RR) and
+the original MORE algorihtm, which uses Bayesian dimensionality
+reduction approach combined with linear regression (BLR).
+Generally, we use the
+CMA-ES heuristic to determine the number of samples.
 As we are working with a stochastic search algorithm we do
 10 runs with each approach and calculate the \textit{arithmetic} mean.
 
-For an exhaustive hyperparameter search and a listing the obtained results
-see \Cref{appendix:par_search}.
+% TODO: skip or really use systematic data in appendix
+% For an exhaustive hyperparameter search and a listing of the obtained results
+% see \Cref{appendix:par_search}.
 
 \subsection{Test Functions for Optimization}
 \label{sec:test_func}
@@ -74,7 +73,7 @@ It is defined as
 
 \begin{figure}[ht!]
     \centering
-    \includesvg[width=0.4\textwidth]{figures/rosenbrock_function}
+    % \includesvg[width=0.4\textwidth]{figures/rosenbrock_function}
     \caption{2D Rosenbrock function}
     \label{fig:rosenbrock}
 \end{figure}
@@ -88,11 +87,12 @@ Rosenbrock function, the results are shown in \Cref{fig:rosen_result}.
 % TODO look for styling plots --> make them look better
 \begin{figure}[ht!]
      \centering
-     \input{figures/rosenbrock15dim}
+     % \input{figures/rosenbrock15dim}
      \hspace{1cm}                       
      \caption{
        This figure shows the mean of 10 runs for RLS, LS and
-       the original MORE algorithm with Bayesian Linear Regression (BLR)
+       the original MORE algorithm, which uses
+       Bayesian Linear Regression (BLR),
        on 15 dimensional Rosenbrock.
      }
      \label{fig:rosen_result}  
@@ -132,7 +132,7 @@ control policy. The end-effector of the robot has
 to reach a via-point $v_{100} = [1,1]$ at time step 100
 and at the final time step $T = 200$ the via-point $v_{\, 200} = [5,0]$.
 The reward is given by a quadratic cost term for
-the two via-points.
+the two via-points, for self-collision a penalty of 100 is given.
 As the the via-points are defined in end effector space the objective
 function is highly non-quadratic in the parameters. Using
 5 basis functions per degree of freedom for the DMPs results
@@ -144,7 +144,7 @@ movement.
     \centering
     \begin{minipage}{0.45\textwidth}
       \centering
-      \input{figures/reaching_results}
+      % \input{figures/reaching_results}
       \hspace{1cm}                       
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
@@ -179,3 +179,46 @@ movement.
 % - research how to do good algorithm engineering
 % make table of parameters to tune
 % look for best way to show results (table with highlighted numbers)
+
+\subsection{Ball in a Cup}
+The motor skill game Ball-in-a-Cup consists
+of small cup that has a string with a ball attached to it.
+Initially the ball hangs down vertically in a resting position.
+The goal is to toss the ball up and catch it inside the cup.
+The reward is calculated as the distance from the center of the cup
+to the ball. 
+We ran a simulation with the Barret WAM robot arm with three
+degree of freedom (DoF) using the
+MuJoCo\footnote{\href{http://www.mujoco.org/}{http://www.mujoco.org/}}
+physics engine.
+\begin{figure}
+    \centering
+    \begin{minipage}{0.5\textwidth}
+      \centering
+      \includegraphics[scale=0.7]{figures/ball_in_a_cup.png}
+      \hspace{1cm}                       
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+      \centering
+      \hspace{1cm}                       
+    \end{minipage}
+     \caption{\small
+       {\color{gray!25!black!60} Left:}
+       Picture of the task in simulation framework.       
+       {\color{gray!25!black!60} Right:}
+       Results from running RLS on Ball-in-a-Cup.       
+     }
+     \label{fig:reaching_result}      
+\end{figure}
+
+%\subsection{Further Investigations}
+%In our experiments we have to deal with unsmooth reward functions
+%due to penalties. For our batch solution we normalize our data
+%using the standard score, for this we use the we calculate
+%the mean and variance of the current batch of rewards.
+%
+%
+%- tried exponential moving average, the goal was
+%to have the same mean as using a pool for normalization
+%
+%- show plots from notion

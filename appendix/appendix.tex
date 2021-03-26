@@ -7,17 +7,17 @@
 \section{MORE: Equations}\label{more_appendix}
 Forming the Lagrangian for the constraint optimization problem we get
 \begin{align*} \mathfrak{L}(\pi, \eta, \omega) = 
-\int \pi(\theta) \mathcal{R}_{\theta} d\theta \; + \; 
-\eta  \left(\epsilon - \int \pi(\theta) \text{ log}
- \frac{\pi(\theta)}{q(\theta)} d\theta\right)
- - \; \omega \left(\beta + \int \pi(\theta) \text{ log}(\pi(\theta)) d\theta\right)
+\int \pi(\mathbf{x}) f(\mathbf{x}) d\mathbf{x} \; + \; 
+\eta  \left(\epsilon - \int \pi(\mathbf{x}) \text{ log}
+ \frac{\pi(\mathbf{x})}{q(\mathbf{x})} d\mathbf{x}\right)
+ - \; \omega \left(\beta + \int \pi(\mathbf{x}) \text{ log}(\pi(\mathbf{x})) d\mathbf{x}\right)
 \end{align*}
 
 Optimizing the Lagrangian by computing the derivative with respect
 to the mean and covariance matrix yields
 \begin{align*}
-\pi(\theta) \propto q(\theta)^{\eta/(\eta+\omega)} 
-\text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right)
+\pi(\mathbf{x}) \propto q(\mathbf{x})^{\eta/(\eta+\omega)} 
+\text{exp}\left(\frac{f(\mathbf{x})}{\eta + \omega}\right)
 \end{align*}
 the solution depends on the quadratic and linear term
 of the surrogate model and the
@@ -27,12 +27,12 @@ minimizing the dual function:
 \begin{align}
   \label{eq:dual}
   g(\eta,\omega) = \eta\epsilon - \omega\beta + (\eta - \omega) \text{log}
-\left(\int q(\theta)^{\frac{\eta}{\eta + \omega}}
-  \text{exp}\left(\frac{\mathcal{R}_\theta}{\eta + \omega}\right) d\theta \right)
+\left(\int q(\mathbf{x})^{\frac{\eta}{\eta + \omega}}
+  \text{exp}\left(\frac{f(\mathbf{x})}{\eta + \omega}\right) d\mathbf{x} \right)
 \end{align}
 
 Assuming we are given a quadratic surrogate model
-$$ \mathcal{R}_\theta \approx \theta^T \mathbf{R} \theta + \theta^T \mathbf{r} + r_0 $$
+$$ f(\mathbf{x}) \approx \hat{f}(\mathbf{x}) = \mathbf{x}^T \mathbf{R} \mathbf{x} + \mathbf{x}^T \mathbf{r} + r_0 $$
 we can solve the dual function in closed form.
 $$ g(\eta, \omega) = \eta \epsilon - \beta \omega
 + \frac{1}{2} \left(\mathbf{f}^T \mathbf{F} \mathbf{f}
@@ -44,7 +44,7 @@ with $\mathbf{F} = (\eta \Sigma^{-1} - 2 \mathbf{R})^{-1}$ and
 $\mathbf{f} = \eta \Sigma^{-1} \mu + \mathbf{r}$
 
 
-\section{Gaussian probability function}\label{gauss_pdf}
+\section{Gaussian Distribution}\label{gauss_pdf}
 A random variable $x \in \mathbb{R}^n$ has a Gaussian distribution with mean
 $m \in \mathbb{R}^n$ and covariance $P \in \mathbb{R}^{n\times n}$ if its
 probability density has the form
@@ -52,83 +52,107 @@ $$ \mathcal{N}(x | m, P) = \frac{1}{(2\pi)^{n / 2} |P|^{1/2}}
 \text{exp} \left( -\frac{1}{2} (x - m)^T P^{-1} (x-m) \right) $$
 where $|P|$ is the determinant of the matrix $P$.
 
-\section{Hyperparameter Search}
-\label{appendix:par_search}
-Here we first describe the different parameters
-that are optimized
-then present results and observations from
-our hyperparameter search.
+%\section{Hyperparameter Search}
+%\label{appendix:par_search}
+%Here we first describe the different parameters
+%that are optimized
+%then present results and observations from
+%our hyperparameter search.
+%
+%\subsubsection{MORE parameters}
+%\begin{itemize}
+%\item KL-Bound $\epsilon$
+%\item entropy-loss bound $\beta$
+%\end{itemize}
+%\subsubsection{RLS parameters}
+%\begin{itemize}
+%\item model noise $\mathbf{Q}$
+%\item measurement noise $\sigma^2$
+%\end{itemize}
+%
+%\subsubsection{Configurations}
+%The best configurations we found for our tasks
+%
+%- table Rosenbrock
+%
+%- table reaching task
+%
+%\begin{table}[htp]
+%  \centering
+%  \begin{tabular}{lccc} \toprule
+%    Task (1500 MORE Iterations)
+%    & Least Squares & RLS with Pool \\ \midrule
+%    Rosenbrock Function 15D & 16 & 30 \\ \bottomrule
+%  \end{tabular}
+%  \caption{
+%    Computational time for Rosenbrock function.
+%  }
+%  \label{tab:table}
+%\end{table}
+%
+%\begin{table}[htp]
+%  \centering
+%  \begin{tabular}{lccc} \toprule
+%    Task (300 MORE Iterations)
+%    & Least Squares & RLS with Pool & RLS without Pool  \\ \midrule
+%    Via-point Reaching Task & 52 & 102 & 50 \\ \bottomrule
+%  \end{tabular}
+%  \caption{
+%    Computational time for via-point task.
+%  }
+%  \label{tab:table}
+%\end{table}
+%
+%- configurations of best results list parameters used
+%for best performing algorithm used in plots
+%
+%- include extensive hyperparameter search figures and tables
+%
+%- table for runtimes
+%
+%\subsection{Further Tests and Observations}
+%In \Cref{fig:noise_weighting} the influence of adding model noise is
+%illustrated
+%
+% \begin{figure}[ht!]
+%  \centering
+%     \input{figures/rls_model_noise}
+%     \hspace{1cm}                       
+%     \caption{
+%       We see LS approach, RLS approach with and without a pool.
+%       On the right we see the resulting movement of the RLS with pool.
+%     }
+%     \label{fig:noise_weighting}  
+%\end{figure}
+%
+%- influence of KL bound on algorithm
+%
+%- influence entropy loss and initial entropy, variance
+%
+%- test whitening and normalization
+%
+%
+%
 
-\subsubsection{MORE parameters}
-\begin{itemize}
-\item KL-Bound $\epsilon$
-\item entropy-loss bound $\beta$
-\end{itemize}
-\subsubsection{RLS parameters}
-\begin{itemize}
-\item model noise $\mathbf{Q}$
-\item measurement noise $\sigma^2$
-\end{itemize}
-
-\subsubsection{Configurations}
-The best configurations we found for our tasks
-
-- table Rosenbrock
-
-- table reaching task
-
-\begin{table}[htp]
-  \centering
-  \begin{tabular}{lccc} \toprule
-    Task (1500 MORE Iterations)
-    & Least Squares & RLS with Pool \\ \midrule
-    Rosenbrock Function 15D & 16 & 30 \\ \bottomrule
-  \end{tabular}
-  \caption{
-    Computational time for Rosenbrock function.
+\section{MORE Algorithm}
+\begin{algorithm}[H]
+\renewcommand{\algorithmcfname}{Algorithm}
+\DontPrintSemicolon
+\SetAlgoLined
+\KwIn{Parameters $\epsilon$ and $\beta$, initial search distribution $\pi$ \;
+  \\ $K$ number of iterations,  $N$ samples per iteration}
+\For{$k = 1,...,K$}
+{
+  \For{$n = 1,...,N$}
+  {
+    Draw sample $\mathbf{x}_n \sim \pi$\;
+    Evaluate $\mathbf{x}_n$ on objective function $f(\mathbf{x}_n) = y_n$\;
   }
-  \label{tab:table}
-\end{table}
-
-\begin{table}[htp]
-  \centering
-  \begin{tabular}{lccc} \toprule
-    Task (300 MORE Iterations)
-    & Least Squares & RLS with Pool & RLS without Pool  \\ \midrule
-    Via-point Reaching Task & 52 & 102 & 50 \\ \bottomrule
-  \end{tabular}
-  \caption{
-    Computational time for via-point task.
-  }
-  \label{tab:table}
-\end{table}
-
-- configurations of best results list parameters used
-for best performing algorithm used in plots
-
-- include extensive hyperparameter search figures and tables
-
-- table for runtimes
-
-\subsection{Further Tests and Observations}
-In \Cref{fig:noise_weighting} the influence of adding model noise is
-illustrated
-
- \begin{figure}[ht!]
-  \centering
-     \input{figures/rls_model_noise}
-     \hspace{1cm}                       
-     \caption{
-       We see LS approach, RLS approach with and without a pool.
-       On the right we see the resulting movement of the RLS with pool.
-     }
-     \label{fig:noise_weighting}  
-\end{figure}
-
-- influence of KL bound on algorithm
-
-- influence entropy loss and initial entropy, variance
-
-- test whitening and normalization
-
-
+  Learn the quadratic model $\hat{f}$ \;
+  Solve  $\text{argmin}_{\eta >0, \omega > 0} \, g(\eta, \omega)$
+  using \Cref{eq:dual} \;
+  Update the search distribution $\pi$ using \Cref{policy_update}\;
+}
+\caption{MORE}
+\label{alg:more_appendix}
+\end{algorithm}

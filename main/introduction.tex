@@ -9,9 +9,9 @@ Robots are already used extensively in industry to form production chains,
 where they perform the same task over and over.
 These robots are being programmed and fine tuned
 by a human engineer which requires experience and expertise. \\
-Recently there has been a new development of robots
+Recently, there has been a new development of robots
 becoming part of our daily life's, for example in the form of 
-vacuum cleaner and lawn mowers. In the future areas like care giving and
+vacuum cleaners and lawn mowers. In the future areas like care giving and
 everyday assistance and household work may become successful
 application domains
 of robotics \citep{schaal2007new}.
@@ -20,22 +20,23 @@ they mainly worked in isolated and predefined contexts.
 Especially countries like Japan, facing the problem of an
 aging population, put increasing effort to make robots
 viable in these new application domains.  \\
-In daily life the robots are confronted with different challenges,
-like adapting to different lightening conditions and
+In daily life, the robots are confronted with different challenges,
+like adapting to different lighting conditions and
 objects being moved around.
 The robots which are currently on the market
 like vacuum cleaners and lawn mowers have
 either a ``one size fits all'' approach or need a special setup
-in software or hardware. To solve this issue
+in software or hardware. To solve this issue,
 machine learning and especially
-reinforcement learning will be key technologies to enable robots
+reinforcement learning (RL) will be key technologies to enable robots
 to adjust to dynamic and stochastic environments.
 
 Robotics and reinforcement learning complement each other
-with robotics providing a real world testing ground, and reinforcement learning providing
+with robotics providing a real world testing ground and
+reinforcement learning providing
 the framework for formulating problems and finding solution. The 
 relationship may be similar to the one of  math and physics
-\citep{kober2013reinforcement}. \\
+\citep{kober2013reinforcement}. 
 Compared to other domains, in which reinforcement learning has been
 successfully employed,
 robotics poses a unique set of challenges. This makes
@@ -51,7 +52,7 @@ requirements of robotics, which include:
 
 Robots have the potential to transform our society. By
 bringing robots from the factories into our homes there will be many
-possibilities for improvement. Nonetheless to reap the benefits of this
+possibilities for improvement. To reap the benefits of this
 development we will have to overcome many technical and
 ethical challenges alike.
 
@@ -62,25 +63,34 @@ ethical challenges alike.
 Policy search algorithms have shown promise as an alternative
 to value function-based reinforcement learning, especially for learning motor
 skills in robotics \citep{deisenroth2013survey}.
-The MORE algorithm as a policy search method based on
-information theoretic updates is introduced in \citet{abdolmaleki2015model}.
+The MORE algorithm is introduced in
+\citet{abdolmaleki2015model} as a stochastic search algorithm that
+can be used for policy search.
 The key idea of MORE is to learn a surrogate model of
 the objective function to efficiently compute the updates to
 the policy in closed form. One of
 the contributions of this thesis is to explore recursive estimation 
-for learning the surrogate model of the objective function.
-Withe the goal of  increasing the sample efficiency of the MORE algorithm.
+for learning the surrogate model
+with the goal of increasing the sample efficiency of the MORE algorithm.
 We focus on classical methods of parameter estimation and filtering
 like the Recursive Least Squares algorithm and the Kalman filter,
 considering more advanced methods is part of future work.
-We benchmark our version of the MORE algorithm on optimization test functions
-and simple planar reaching tasks and compare them to previous results.
+We benchmark our version of the MORE algorithm on an optimization test
+function, a simple planar reaching task and on a simulation
+of a ball-in-a-cup task using the barret WAM robot arm
+and compare them to previous results. While we could improve the
+sample efficiency on the optimization test function, we
+did not reach state-of-the-art results for our robotic tasks.
+Nevertheless, we could successfully learn the tasks showing
+that the recursive surrogate-modeling approach may have  the potential to
+yield superior results with more time and research.
 
-\section{Structure of Thesis}
+
+\section{Structure of the Thesis}
 The remainder of this thesis is structured as follows:
 
 \textbf{Chapter 2:} In the fundamentals chapter we lay the foundation for
-the thesis, first introducing the basics of Reinforcement Learning and
+the thesis, first introducing the basics of reinforcement learning and
 then focusing on the specifics of applying RL to robotic tasks.
 Then we discuss policy search as one method for
 solving the robot learning problem.
@@ -90,15 +100,18 @@ techniques used.
 
 \textbf{Chapter 3:} Review of the related work in the field.
 
-\textbf{Chapter 4:} In this chapter we first motivate the idea of
+\textbf{Chapter 4:} In this chapter, we first motivate the idea of
 using recursive estimation for learning the surrogate model.
+Then we present a batch solution for the
+surrogate-model estimation task, which we use for comparison
+in our experiments.
 Then we present our approach of connecting
-the MORE algorithm with recursive estimation techniques for the
-surrogate model. 
+the MORE algorithm with recursive estimation techniques for the 
+surrogate model.
 
 \textbf{Chapter 5:} In the evaluation chapter we conduct experiments
-with our algorithms on several tests function and some simple reaching tasks
-for a planar robot arm. We compare our algorithm with original MORE algorithm
+with our algorithms on several test functions and some simple robot tasks.
+We compare our algorithm with the original MORE algorithm
 and the least squares approach for learning the surrogate model.
 
 \textbf{Chapter 6:} We conclude the thesis with a summary of

@@ -37,7 +37,7 @@ The author had little experience with Kalman filters prior
 to this project, hence work on optimizing the algorithm for
 recursive estimation may lead to significant improvements.
 
-\textbf{Re-evaluating optimize hyperparameters.}
+\textbf{Re-evaluating, optimizing hyperparameters.}
 One disadvantage of MORE is the number of parameters, our
 recursive surrogate-modeling algorithm introduced additional parameters.
 As we relied mainly on manual and grid search for hyperparameters a
@@ -56,12 +56,13 @@ In the future exploring different techniques for learning the model drift
 may proof successful in increasing the performance.
 
 \textbf{Testing on Complex Robot Learning Tasks}
-We only conducted experiments on a simple simulated planar reaching
+We only conducted experiments on a simple simulated robot
 task. The obvious next step is to benchmark the algorithm on more
-complicated robotic tasks. This might reveal shortcomings of the approach
+complicated dimensional robotic tasks.
+This might reveal shortcomings of the approach
 for dealing with unsmooth objective functions and fulfilling the goal
 of safe exploration.
-Additionally for higher dimensional tasks it may be necessary to
-introduce some form of dimensionality reduction as for our
-5-link reaching task the RLS already has to estimate
-351 parameters.
+% Additionally for higher dimensional tasks it may be necessary to
+% introduce some form of dimensionality reduction as for our
+% 5-link reaching task the RLS already has to estimate
+% 351 parameters.

@@ -4,19 +4,19 @@
 
 \chapter{Fundamentals}
 This chapter introduces basic concepts used throughout this thesis.
-First we discuss the basics of reinforcement learning and
+First, we discuss the basics of reinforcement learning and
 the problem of robot learning.
-Next we give an overview of policy search,
+Next, we give an overview of policy search,
 a sub-field of reinforcement learning,
 as one method to solve the robot learning problem.
 The Kullback-Leibler divergence (KL) is
 introduced as an important information theoretic
 measure of similarity metric between probability
 distributions \citep{kullback1951information}.
-Having discussed the underlying basics we can then
+Having discussed the underlying basics, we can then
 introduce the MORE algorithm \citep{abdolmaleki2015model}.
 Next we will look at filtering from a Bayesian Estimation viewpoint and
-review the Kalman filter for parameter estimation. Finally we
+review the Kalman filter for parameter estimation. Finally, we
 look at some data preprocessing techniques employed.
 
 \section{Reinforcement Learning}
@@ -43,7 +43,7 @@ to explore previously unused actions.
 The decision of daring to try new things or to keep performing safe
 well-known actions is known as the
 \textit{exploration-exploitation tradeoff}.
-In general the agent should exploit known actions that
+In general, the agent should exploit known actions that
 give decent reward, but he first
 has to try different things to learn about these actions,
 and then he has to progressively focus in on them.
@@ -61,7 +61,7 @@ MDPs focus on only three aspects
 for reinforcement learning problems.
 MDPs satisfy the Markov property, which
 states that ``the future is independent
-of the past given the present''. In our case this means
+of the past given the present''. In our case, this means
 the next state $s'$ and the reward
 only depend on the previous state $s$ and
 action $a$ \citep{sutton1992reinforcement}.
@@ -144,28 +144,32 @@ and external state (e.g. object locations, lighting). The true state is
 not observable and also not noise free. 
 The robot chooses its next motor control $u$ according to a policy $\pi$.
 This policy $\pi$ may
-be deterministic $u = \pi(s)$ or stochastic $u \sim \pi(s,a) = P(u |\, s)$.
+be deterministic $u = \pi(x)$ or stochastic $u \sim \pi(x,u) = P(u |\,x)$.
 The motor command $u$ alters the state according to the probabilistic
-transition function $p(\mathbf{x}_{t+1} |\, x_t, u_t)$. This transition function
-is not known, in model-based policy search this function is learned from data and
+transition function $p(\mathbf{x}_{t+1} |\, x_t, u_t)$.
+This transition function
+is not known, in model-based policy search this
+function is learned from data and
 used to improve the policy.
-Collectively the states and actions of the robot form a
+Collectively, the states and actions of the robot form a
 trajectory $\tau = (x_0, u_0, x_1, u_1,...)$ which is also called
 a rollout or a path.
 There has to be a numeric scoring system assessing the quality
 of the robots trajectory and returning a reward signal $R(\tau)$.
-For episodic learning tasks the task ends after a given number $T$ of time
-steps. Then the accumulated reward $R(\tau)$ for a trajectory is given by
+For episodic learning tasks, the task ends after a given number $T$ time
+steps. Then, the accumulated reward $R(\tau)$ for a trajectory is given by
 
 $$ R(\tau) = r_T(x_T) + \sum^{T-1}_{t=0} r_t(x_t,u_t) $$
 
-where $r_t$ is an instantaneous reward function (e.g. a punishment for energy consumed)
-and $r_T$ the final reward, when performing a reaching task this may take the
+where $r_t$ is an instantaneous reward function
+(e.g. a punishment for energy consumed)
+and $r_T$ the final reward. When performing a reaching task this may take the
 form of a quadratic punishment term for deviation from the goal posture.
 
 If we consider an infinite-horizon for an on-going task we get
 $$ R(\tau) = \sum^{\infty}_{t=0} \gamma^{\; t} r(x_t, u_t) $$
-where $\gamma \in [0,1)$ is a discount factor that discounts rewards further in the future.
+where $\gamma \in [0,1)$ is a discount factor that discounts
+rewards further in the future.
 
 Many tasks in robotics can thus be formulated as choosing an optimal control
 policy $\pi^*$ that maximizes the expected accumulated reward
@@ -177,23 +181,25 @@ Formulating robotic tasks in this way allows us to apply methods from
 reinforcement learning to them. 
 
 \subsection{Challenges}
-Reinforcement learning is in general a difficult problem. One reason
-for this is that the reward signal may be given only occasionally and
+Except for simple tabular problems reinforcement
+learning can generally be considered a difficult problem.
+One reason for this is that the reward signal may be given
+only occasionally and
 even then it may be unclear which of
 the agents actions were responsible for a certain
 reward signal. 
 
-Robotics is different compared to other fields where Reinforcement Learning
-is used. First of all the states and actions of the robots in the
+Robotics is different compared to other fields where reinforcement learning
+is used. First of all, the states and actions of the robots in the
 real world are inherently continuous requiring us to
 deal with the resolution into a discrete representation.
-In addition the state space can have a high dimensionality and
+In addition, the state space can have a high dimensionality and
 working with real world systems on real hardware is costly and
 makes manual interventions necessary.
 Robots require algorithms to run in real-time and working with
 real sensors further introduces discrepancy between sensing and
 execution.
-Generally the state represented by sensors slightly lags behind the real
+Generally, the state represented by sensors slightly lags behind the real
 state due to processing and communication delays. This is in stark contrast to
 most other reinforcement learning algorithms, which assume actions to
 take effect instantaneously.
@@ -220,8 +226,10 @@ Especially modern anthropomorphic robots tend to have many degrees of
 freedom, which further increases the dimensionality.
 
 The agent in RL generally needs to collect data throughout the entire
-state-space to ensure global optimization, for robotics where agents
-operate in three dimensional space this quickly becomes infeasible.
+state-space to ensure global optimization. In robotics the agent
+often has to deal with high dimensional states and actions
+due to many degrees of freedom which makes this global optimization
+in many cases infeasible.
 To alleviate this problem  a widespread idea is to use expert demonstration
 to get a good initialization for the agent's policy. This
 eliminates the need to explore the entire search space, instead the
@@ -243,7 +251,7 @@ Whereas in traditional reinforcement learning
 safe exploration does not receive much attention,
 it has become a key issue for robot learning \citep{schneider1997exploiting}.
 
-When working with a real physical robot
+When working with a real physical robot,
 different external factors like temperature may change the robot's
 dynamics and
 additionally uncertainty from the sensors makes it difficult to reproduce and
@@ -260,9 +268,9 @@ One method for gathering more data is ``collective robot learning''
 described in
 \citet{kehoe2015survey}. The idea is for multiple robots to
 share their data on trajectories, policies and outcomes.
-Currently this seems only
-viable for large corporations with significant capital.
-Stressing the importance of developing sample efficient algorithms.
+Currently, this seems only
+viable for large corporations with significant capital and therefore
+stresses the importance of developing sample efficient algorithms.
 Thus, in robot learning the constraint of using only a small number of trials
 is given more weight than limiting memory consumption or
 computational complexity.
@@ -274,11 +282,11 @@ difficult and often needs a lot of domain knowledge and expertise.
 There are certain trade-offs to keep in mind, for example performing
 a powerful swing for a hitting task may yield high reward but may damage
 or shorten the life-time of the robot.
-Further reinforcement learning algorithms may solve tasks
+Further, reinforcement learning algorithms may solve tasks
 in unintended ways by exploiting the reward function in an unforeseen fashion
 \citep{ng1999policy}.
 An alternative to specifying the reward function manually
-is Inverse reinforcement learning \citep{russell1998learning}
+is Inverse Reinforcement Learning \citep{russell1998learning}
 The goal of inverse reinforcement learning is to recover the unknown
 reward function from the expert's trajectories.
 
@@ -287,7 +295,7 @@ $$~$$
 The discussed challenges illustrate the difficulty of the optimal control
 problem in robotics.
 Generally, autonomous learning algorithms are rarely employed on robots
-for real daily usage. Also most
+for real daily usage. Also, most
 algorithms are over fitted to a particular robot architecture
 and do not generalize to other robots easily.
 Even minor flaws or errors in the employed method can completely prevent
@@ -295,21 +303,22 @@ success of learning.
 Nonetheless, appropriately chosen algorithms and rewards functions
 can already achieve promising results \citep{kober2013reinforcement}, but as 
 a large number of different methods exist 
-there is no clear general recipe for robot learning.
-Underlining the fact that robot learning still has a lot of open problems,
+there is no clear general recipe for robot learning,
+underlining the fact that robot learning still has a lot of open problems,
 and will continue to grow as a research field.
 
 \subsection{Policy Search}
 Many traditional methods in RL try to estimate the
 expected long-term reward of a policy for each state $\mathbf{x}$
-and time step $t$, which leads to formulation of the value function $V^{\pi}_t(\mathbf{x})$.
+and time step $t$, which leads to formulation of the value
+function $V^{\pi}_t(\mathbf{x})$.
 With the value function we can asses the quality of executing action
 $\mathbf{u}$ in state $\mathbf{x}$. This assessment is used
 to directly compute the policy by action selection or to update
 the policy $\pi$. As value function methods typically require
 to fill the complete action-space they struggle with
 the high dimensionality encountered in robotics.
-Thus policy search methods have become more common
+Thus, policy search methods have become more common
 for applying RL to robotics.
 Policy search methods opposed to value-based methods
 use parameterized policies $\pi_{\theta}$ to search
@@ -363,14 +372,15 @@ $~$
   \centering
   \input{figures/policy_search_tax}
     \caption{\small
-      Categorization of policy search into model-free policy
-      search and model-based policy search.
-      In stochastic trajectory (Stoch. Traj.) generation 
-      the trajectories are directly sampled from the robot or
-      in the model-based case from the learned model of the robot.
-      Some Model-based methods also use deterministic trajectory
-      (Det. Traj.) prediction 
-      and analytically predict the trajectory distribution
+      Categorization of policy search into model-free
+      and model-based with differentiation
+      based on trajectory generation and policy update methods.
+      For model-free methods stochastic trajectory (Stoch. Traj.) generation
+      directly samples the trajectories from the robot
+      and in the model-based case from the learned model of the robot.
+      Some model-based methods also use deterministic trajectory
+      (Det. Traj.) prediction where the goal is to 
+      analytically predict the trajectory distribution
       instead of sampling from the system. 
       The drawing is based on
       \citet{deisenroth2013survey}.
@@ -389,8 +399,8 @@ the robot and information theoretic policy updates are used.
 More specifically we will formulate our approach
 in the setting of stochastic
 search algorithms, which are general black-box optimizers.
-They are used in a wide range of fields like operations research,
-machine learning and also policy search.
+They are applied in a wide range of fields like operations research and
+machine learning.
 Since these algorithms do not use any knowledge about the
 objective function it is straightforward to
 apply them to policy search in the episode-based formulation.
@@ -490,7 +500,7 @@ as a multivariate Gaussian distribution, i.e.
 $\pi(\mathbf{x}) = \mathbf{N}(\mathbf{x} |\, \mu, \Sigma)$.
 This distribution corresponds to an upper-level policy
 and is parameterized by the mean and covariance matrix.
-In each iteration $N$ samples are drawn from the
+In each iteration, $N$ samples are drawn from the
 search distribution. Each sample $\mathbf{x}$ is then
 evaluated on the objective function yielding the corresponding
 objective value $r$, this constitutes the data
@@ -527,17 +537,18 @@ of the search distribution at the same time
 \begin{equation*}
   \begin{aligned}
     \max_{\pi} \quad &\int \pi(\mathbf{x}) f(\mathbf{x}) d\mathbf{x}, \\
-    \text{subject to } \quad &\text{KL }(\pi(\mathbf{x})||q(\mathbf{x})) \leq \epsilon, \\
+    \text{subject to } \quad &\text{KL }(\pi(\mathbf{x})||q(\mathbf{x}))
+    \leq \epsilon, \\
      &H(\pi) \geq \beta, \\
      &1 = \int \pi(\mathbf{x}) d\mathbf{x},
   \end{aligned}
 \end{equation*}
-where $H(\pi) = - \int \pi(\mathbf{x}) \log \pi(\mathbf{x}) d\mathbf{x}$ denotes
-the entropy of the search distribution.
+where $H(\pi) = - \int \pi(\mathbf{x}) \log \pi(\mathbf{x}) d\mathbf{x}$
+denotes the entropy of the search distribution.
 The parameters $\epsilon$ and $\beta$ are hyperparameters to control the
 exploration-exploitation trade-off.
 The $\epsilon$ can be chosen freely to control the step size of the
-policy update. Generally its size will depend on the specific problem
+policy update. Generally, its size will depend on the specific problem
 and the amount of available samples.
 The bound $\beta$ is defined such that the relative difference
 between the entropy
@@ -546,16 +557,35 @@ decreased
 for a certain percentage:
 $$ H(\pi) - H(\pi_0) \geq \gamma (H(q) - H(\pi_0))
 \rightarrow \beta = \gamma (H(q) - H(\pi_0) + H(\pi_0) $$
-We obtain the solution to the constraint optimization
-problem using the theory of Lagrange multipliers and duality
-(for details see \Cref{more_appendix}).
+The key idea of the MORE algorithm is to use a surrogate model
+of the objective function
+for satisfying the bound on the KL-divergence.
+The surrogate model has the following form
+\begin{align*}
+  % TODO: explain why using 1/2 or not?
+  f(\mathbf{x}) \approx \hat{f}(\mathbf{x}) =
+  %-\frac{1}{2}
+  \mathbf{x}^T \mathbf{R} \mathbf{x}
+  + \mathbf{x}^T \mathbf{r} + r.
+\end{align*}
+A quadratic model is sufficient, since the exponent
+of a Gaussian distribution
+is also quadratic and thus it would not be possible to exploit
+the additional information of a more complex surrogate model.
+For estimating the surrogate model the original approach of
+MORE employs a Bayesian dimensionality
+reduction method and linear regression. 
 
 % With the assumption of $\pi$ being Gaussian we
 % get the solution \Cref{policy_update}
 % for updating the mean and covariance matrix
 % of the search distribution.
 
-With assuming $\pi$ being Gaussian solving the dual problems yields
+By using the theory of Lagrange multipliers and duality \citep{boyd2004convex}
+we obtain the solution to the constraint optimization problem 
+(for details see \Cref{more_appendix}).
+Assuming $\pi$ to be Gaussian, solving the dual problems yields
+
 \begin{equation}
   \label{policy_update}
   \begin{aligned}
@@ -564,27 +594,15 @@ With assuming $\pi$ being Gaussian solving the dual problems yields
     \Sigma_{t+1} &= (\eta \Sigma_t^{-1} + \mathbf{R}) / (\eta + \omega),
   \end{aligned}
 \end{equation}
-where $\eta$ and $\omega$ are the Lagrangian multipliers obtained by minimizing
-the corresponding dual function. In addition
-the linear term  $\mathbf{r} \in \mathbb{R}^n$ and
-the quadratic term $\mathbf{R} \in \mathbb{R}^{n\times n}$  of the current surrogate model are
-used to update the policy.
-With these equations we can iteratively update the search distribution.
 
-\subsection{Surrogate Model}
-The key idea of the MORE algorithm is to use a surrogate model
-of the objective function
-for satisfying the bound on the KL-divergence.
-A quadratic model is sufficient, since the exponent
-of a Gaussian distribution
-is also quadratic and thus it would not be possible to exploit
-the additional information of a more complex surrogate model.
-The surrogate model has a quadratic amount of parameters,
-estimating these parameters poses a
-bottle-neck in terms of sample efficiency for the algorithm.
-The original approach of MORE employs a Bayesian dimensionality
-reduction method and linear regression. We discuss our approach
-for estimating the surrogate model in \cref{sec:surrogate}.
+where $\eta$ and $\omega$ are the Lagrangian multipliers obtained
+by minimizing
+the corresponding dual function. In addition,
+the linear term  $\mathbf{r} \in \mathbb{R}^n$ and
+the quadratic term $\mathbf{R} \in \mathbb{R}^{n\times n}$  of
+the current surrogate model are
+used to update the policy.
+With these equations, we can iteratively update the search distribution.
 
 
 \section{Bayesian Filtering}
@@ -598,7 +616,7 @@ The term ``Bayesian'' refers to inference methods that represent
 ``degrees of certainty'' using probability theory. They are fundamentally
 based on applying
 Bayes' rule to update the degree of certainty given data.
-More generally as \citet{gelman2013bayesian} puts its, Bayesian inference
+More generally, as \citet{gelman2013bayesian} puts its, Bayesian inference
 is the process of fitting a probability model
 to a set of data and summarizing the result by a probability distribution
 on the parameters of the model and on unobserved quantities such
@@ -958,19 +976,20 @@ prediction and update steps as follows:
 % TODO: For the full derivation see appendix (cite)
 
 \section{Data Preprocessing Techniques}
-We now examine data preprocessing techniques. Some key challenges
-that arise in our data  are
-high range of objective values,
-and dealing with sharp bumps in reward from
-penalties (e.g collisions).
+\label{sec:data_pre}
+We now review several data preprocessing techniques.
+Some key challenges that arise
+in our data  are high range of objective values,
+and dealing with sharp jumps in
+the reward signal from penalties (e.g collisions).
 
 \subsection{Whitening}
 \label{sec:whitening}
 Whitening is a common data preprocessing method in statistical analysis
 to transform a correlated random vector into an uncorrelated one
 \citep{kessy2018optimal}.
-We employ whitening to our algorithm, to reduce the general complexity of the
-parameters to be estimated. 
+We employ whitening to our algorithm, to make the optimization
+numerically more stable.
 
 \textit{Whitening} is a linear transformation that converts a $d$-dimensional
 random vector $\mathbf{x} = (x_1,...,x_d)^T$ with mean
@@ -997,10 +1016,58 @@ This constrain does not uniquely determine the whitening
 matrix $\mathbf{W}$, instead given $\Sigma$ there are infinitely many
 possible matrices $\mathbf{W}$, because it allows for rotational freedom.
 
+A widely used procedure is \textit{Cholesky whitening} which is based on
+Cholesky factorization of the precision matrix
+$\mathbf{L}\mathbf{L}^T = \Sigma^{-1}$. This leads to the whitening
+matrix $\mathbf{W}^{\text{Chol}} = \mathbf{L}^T$.
 
 % write on next Iteration when main part and evaluation, conclusion
 % is finished
-% \subsection{Normalization}
-% - standard score
-% - exponential weighted average
+\subsection{Normalization}
+\label{sec:normalization}
+In our experiments we deal with data from unsmooth reward functions
+caused by penalties.
+As data with mean zero and variance makes our estimation task easier
+we normalize the data by computing the standard score
+also called z-score \citep{mendenhall2016statistics}
+for each sample $x$ as follows
+\begin{equation*}
+  \label{eq:norm}
+  z = \frac{x - \mu}{\sigma}.
+\end{equation*}
+The true population mean and standard derivation are unknown
+so we use the sample mean and standard deviation instead.
 
+% In our batch solution we keep a pool of samples and
+% compute the mean and standard deviation of this pool to compute
+% the z-score for each sample $x$ as follows
+\subsubsection{Exponential Moving Average}
+For our recursive estimation approach we would like to compute
+the mean and variance in an incremental on-line fashion.
+In \citet{finch2009incremental} a way to 
+compute the exponential moving average recursively is introduced.
+When using an exponential moving average we apply different weighting
+factors to the samples that are processed.
+This can be controlled with the coefficient $0 < \alpha < 1$,
+where a higher $\alpha$ value discounts older samples faster.
+The equations
+for updating the mean and the variance with the sample $x_i$ are
+\begin{equation}
+  \label{eq:ema}  
+  \begin{aligned}
+    \delta_i &= x_i - \mu_{i-1} \\
+    \mu_i &= \mu_{i-1} + \alpha \, \delta_i \\
+    \sigma^2_i &= (1 - \alpha) (\sigma^2_{i-1} + \alpha \, \delta^2_i).
+  \end{aligned}
+\end{equation}
+
+
+% For our recursive approach we want to process the data in an on-line
+% fashion, instead of using a pool we
+% compute the mean and variance for normalization incrementally.
+% We use the exponential moving average based on \citet{finch2009incremental}.
+
+% In our robotic tasks the reward signal can have sharp jumps due to
+% penalties (e.g. self-collision of the robot).
+% To avoid getting stuck after receiving a penalty we additionally
+% explored clipping the data.
