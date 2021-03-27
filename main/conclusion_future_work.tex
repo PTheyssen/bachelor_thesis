@@ -6,24 +6,27 @@
 
 
 \section{Conclusion}
-In this work, we have presented a approach for combining the MORE algorithm
+In this work, we have presented an approach for combining the MORE algorithm
 \citep{abdolmaleki2015model} with recursive surrogate-modeling
 using the RLS algorithm with drift model (\Cref{RLS:basic}).
 The main goal of this approach is to improve the sample efficiency of
 MORE, as real world samples are expensive and
 previously learning the surrogate model has been data-intensive.
-We tested our algorithm on an Rosenbrock function and
-a simple planar reaching task.
-While we were able to improve sample efficiency on the Rosenbrock
-function, we did not manage to achieve a
-significant improvement on the planar reaching task.
-Nevertheless the results with the proposed algorithm reveals potential for
-using recursive surrogate-modeling for the MORE algorithm.
+We tested our algorithm on the Rosenbrock function and
+a two simulated robotic task.
+While we were able to clearly improve sample efficiency on the Rosenbrock
+function, we did not manage to achieve similar
+improvements on the robotic tasks.
+Nevertheless we could successfully learn the planar reaching task and
+the ball-in-a-cup task,
+which shows that the recursive surrogate-modeling approach has
+potential to reach and improve the current state-of-the art in terms
+of sample efficiency.
 Our approach leaves much room for improvement in terms of finding
 the optimal combination of hyperparameters and different data
 preprocessing techniques.
 With more research the improved sample efficiency observed
-on the optimization test functions may be transferred to
+on the optimization test function may be transferred to
 complex robotic tasks.
 
 \section{Future Work}

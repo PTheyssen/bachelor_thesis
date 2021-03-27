@@ -53,7 +53,7 @@ By employing the data preprocessing techniques introduced in
 solve the problem in the original dimension.
 Additionally, subsequent models are correlated
 due to the locality of the data, see \Cref{fig:sur_model} for an example of
-two subsequent surrogate model.
+two subsequent surrogate models.
 \begin{figure}[t]
   \centering
   \subfigure[][Objective Function]{\input{figures/rosenbrock_mean}}
@@ -101,7 +101,7 @@ Our data consists of the samples and corresponding objective
 values $\mathcal{D} = \{(\mathbf{x}_1, y_1),\dots,(\mathbf{x}_n, y_n)\}$.
 To solve the regression problem we set up
 the design matrix $\mathbf{X}$ as depicted in \cref{eq:lgs}.
-One row of $\mathbf{X}$ contains a one as the first entry for the bias term.
+A row of $\mathbf{X}$ contains a 1 as the first entry for the bias term.
 Then the next $d$ entries are made up of the corresponding
 sample $\mathbf{x}_k$ for the linear term.
 The final $d(d + 1) / 2$  entries are

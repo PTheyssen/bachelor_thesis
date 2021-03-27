@@ -5,9 +5,11 @@
 \chapter{Evaluation}
 In this chapter we first describe the setup for our experiments.
 %and list all hyperparameters for our algorithm.
-Then we discuss the Rosenbrock function and the planar
-reaching task and present the best performing
-configuration of our algorithm for each task.
+Then we introduce the Rosenbrock function, the planar
+reaching task and the ball-in-a-cup task. For each problem
+we present the best results
+we could find with our algorithm and compare it to the batch solution
+and the original MORE approach.
 % Afterwards we review various results from our
 % hyperparameter search.
 
@@ -34,15 +36,16 @@ The focus in our experiments is on the sample efficiency of the
 MORE algorithm. While the original MORE algorithm achieves
 state-of-the-art results in terms of optimization accuracy
 the surrogate model estimation is data-intensive.
-The metric we focus on is sample efficiency for which we use the heuristic
+Therefore the metric we focus on is sample efficiency for which we
+use the heuristic
 $s = 4 + \lfloor 3 \log(n) \rfloor$ of the CMA-ES
-algorithm \citep{hansen2016cma}, with $n$ being the dimension
+algorithm \citep{hansen2016cma} as a benchmark, with $n$ being the dimension
 of the problem and $s$ the number of samples drawn from the
 search distribution in each iteration.
 
-We compare our recursive least squares (RLS) appraoch
+We compare our recursive least squares (RLS) approach
 to the ridge regression (RR) and
-the original MORE algorihtm, which uses Bayesian dimensionality
+the original MORE algorithm, which uses Bayesian dimensionality
 reduction approach combined with linear regression (BLR).
 Generally, we use the
 CMA-ES heuristic to determine the number of samples.
@@ -73,7 +76,7 @@ It is defined as
 
 \begin{figure}[ht!]
     \centering
-    % \includesvg[width=0.4\textwidth]{figures/rosenbrock_function}
+    \includesvg[width=0.4\textwidth]{figures/rosenbrock_function}
     \caption{2D Rosenbrock function}
     \label{fig:rosenbrock}
 \end{figure}
@@ -82,16 +85,22 @@ The function has a global minimum at zero $(f(\mathbf{x}) = 0)$.
 In our experiments we initialize the mean of the search distributions
 randomly. We test our algorithm on the 15 dimensional
 Rosenbrock function, the results are shown in \Cref{fig:rosen_result}.
-
+For these results RLS uses 7 samples per iteration and a pool
+of size 100, whereas the ridge regression uses 12 samples per
+iteration and a pool
+of size 204. The BLR approach only worked with using 30 samples
+per iteration and a pool of size 150. The RLS approach
+outperforms the other methods in terms of total samples needed for
+convergence. 
 % TODO add result on rosenbrock 8 dim on the side
 % TODO look for styling plots --> make them look better
 \begin{figure}[ht!]
      \centering
-     % \input{figures/rosenbrock15dim}
+     \input{figures/rosenbrock15dim}
      \hspace{1cm}                       
      \caption{
-       This figure shows the mean of 10 runs for RLS, LS and
-       the original MORE algorithm, which uses
+       This figure shows the mean of 10 runs for RLS, ridge regression (RR)
+       and the original MORE algorithm, which uses
        Bayesian Linear Regression (BLR),
        on 15 dimensional Rosenbrock.
      }
@@ -122,7 +131,8 @@ Policy search methods enable us to work with parameterized policies,
 therefore we can use a policy representation that is relevant
 to a given task.
 In robotics Dynamic Movement Primitives 
-(DMPs) first introduced in \citet{ijspeert2002learning} are commonly used for movement tasks.
+(DMPs) first introduced in \citet{ijspeert2002learning} are
+commonly used for movement tasks.
 Formalized as second-order dynamic systems, DMPs offer a compact
 representation for movements, allowing to choose between a rhythmic
 and a discrete movement. 
@@ -138,13 +148,18 @@ function is highly non-quadratic in the parameters. Using
 5 basis functions per degree of freedom for the DMPs results
 in a 25 dimensional parameter vector.
 In \Cref{fig:reaching_result} we see the average reward and the resulting
-movement.
+movement from one RLS run. The ridge regression had more problems
+with avoiding a self-collision than the other two approaches.
+The RLS algorithm performs slightly better than BLR and RR, but overall
+these the improvement seems not very significant as we have to take the
+underlying stochastic nature into account. But nonetheless we could show that
+MORE with recursive surrogate-modeling is able to learn the reaching task.
 
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
       \centering
-      % \input{figures/reaching_results}
+      \input{figures/via_results}
       \hspace{1cm}                       
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
@@ -155,13 +170,12 @@ movement.
      \caption{\small
        {\color{gray!25!black!60} Left:}
        Results on via-point reaching task
-       LS approach, RLS approach with and without a pool.
-       The LS approach performs slightly better than RLS
-       with pool. The RLS without a pool finds
-       acceptable solutions to the tasks, but performs worse
-       that the other approaches.
+       using the recursive least squares (RLS),
+       the ridge regression (RR)
+       and the original approach
+       (BLR).
        {\color{gray!25!black!60} Right:} Resulting movement for
-       via-point reaching task of the RLS with pool.
+       via-point reaching task of the RLS algorithm.
        The via-points are indicated by the red crosses. The
        postures of the resulting motion are shown as overlay.
        Darker postures are later in time.
@@ -184,31 +198,53 @@ movement.
 The motor skill game Ball-in-a-Cup consists
 of small cup that has a string with a ball attached to it.
 Initially the ball hangs down vertically in a resting position.
+See \Cref{fig:cup} for a picture of the setup in the simulation
+framework.
 The goal is to toss the ball up and catch it inside the cup.
-The reward is calculated as the distance from the center of the cup
-to the ball. 
+The reward signal is based on calculating the distance $d$ from
+the center of the cup to the ball. When the ball lands directly in
+the center of the cup, the distance is 0 and through the
+transformation $\text{exp}(-d^2)$ it yields the highest possible
+reward of 1.
 We ran a simulation with the Barret WAM robot arm with three
 degree of freedom (DoF) using the
 MuJoCo\footnote{\href{http://www.mujoco.org/}{http://www.mujoco.org/}}
 physics engine.
+Our results are shown in \Cref{fig:cup}.
+In our remaining time for the thesis we could only complete
+5 runs for each approach as the samples have to be evaluated using the
+mujoco framework which produces long runtimes. Therefore
+the results should be considered preliminary.
+The BLR seems to converge prematurely, though this may be due to
+a suboptimal entropy constraint parameter.
+Still, we can see that RLS is succesfull in learning the ball-in-a-cup task
+while the ridge regression struggles with finding a good solution.
+% Until the submission of this thesis we only managed to complete
+% 5 runs for this experiment. 
+
+
 \begin{figure}
-    \centering
-    \begin{minipage}{0.5\textwidth}
+  \centering
+    \begin{minipage}{0.45\textwidth}
       \centering
-      \includegraphics[scale=0.7]{figures/ball_in_a_cup.png}
-      \hspace{1cm}                       
+      \input{figures/cup_results}
+      \hspace{1cm}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
       \centering
-      \hspace{1cm}                       
+      \includegraphics[scale=0.7]{figures/ball_in_a_cup_hack.png}
+      \hspace{1cm}
     \end{minipage}
      \caption{\small
        {\color{gray!25!black!60} Left:}
-       Picture of the task in simulation framework.       
+       Results on ball-in-a-cup task
+       using the recursive least squares (RLS),
+       the ridge regression (RR)
+       and the original approach (BLR), using the mean of 5 runs.
        {\color{gray!25!black!60} Right:}
-       Results from running RLS on Ball-in-a-Cup.       
+       Picture of the ball-in-a-cup task in the simulation framework.
      }
-     \label{fig:reaching_result}      
+     \label{fig:cup}
 \end{figure}
 
 %\subsection{Further Investigations}
