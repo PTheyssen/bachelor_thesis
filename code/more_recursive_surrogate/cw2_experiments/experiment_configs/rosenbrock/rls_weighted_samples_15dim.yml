@@ -1,0 +1,78 @@
+################################################################################
+# This file contains the experiments for running MORE
+# with RLS, LS, and BLR on 15 dimensional rosenbrock.
+# We use the parameters obtained from hyperparameter
+# search (manual + grid search), they may be suboptimal.
+################################################################################
+---
+# Slurm config
+name: "SLURM"
+
+---
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 1   # number of times one set of parameters is run
+iterations: 2000  # number of total MORE iterations
+wandb:
+  project: "test_weighting"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  gamma: 0.99
+  minimize: true
+  dim: 15
+  seed: true  
+  problem: "test_func"
+  objective: 7
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    weighting: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+
+---
+name: "rls_rosenbrock_dim15_no_weighting"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  surrogate: "RLS"
+  pool_size: 100
+  weighting: 0
+  samples_per_iter: 7
+  warm_start: 30
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.99
+
+---
+name: "rls_rosenbrock_dim15_weighting"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  surrogate: "RLS"
+  pool_size: 100
+  weighting: 2
+  samples_per_iter: 7
+  warm_start: 30
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.99
+
+

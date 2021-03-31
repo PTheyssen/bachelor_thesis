@@ -1,0 +1,97 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 10   # number of times one set of parameters is run
+iterations: 300  # number of total MORE iterations
+wandb:
+  project: "reaching_test"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  dim: 25
+  gamma: 0.99
+  minimize: false # false when doing reaching task
+  seed: false
+  problem : "via"
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+
+#---
+#name: "LS_via_penalty5"
+#path: "/home/theyssen/cw_results/via"
+#params:
+#  kl_bound: 0.2
+#  collision: false
+#  penalty: 5
+#  scaling_dmp: 100
+#  no_pool: false
+#  entropy_loss_bound: 0.1
+#  surrogate: "LS"
+#  normalize_output: "mean_std"
+#  pool_size: 527
+#  samples_per_iter: 13
+#  warm_start: 150
+#
+#---
+#name: "LS_via_penalty10"
+#path: "/home/theyssen/cw_results/via"
+#params:
+#  kl_bound: 0.2
+#  collision: false
+#  penalty: 10
+#  scaling_dmp: 100
+#  no_pool: false
+#  entropy_loss_bound: 0.1
+#  surrogate: "LS"
+#  normalize_output: "mean_std"
+#  pool_size: 527
+#  samples_per_iter: 13
+#  warm_start: 150
+#
+---
+name: "LS_via_penalty100"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 0.2
+  collision: false
+  penalty: 100
+  scaling_dmp: 100
+  no_pool: false
+  entropy_loss_bound: 0.1
+  surrogate: "LS"
+  normalize_output: "mean_std"
+  pool_size: 527
+  samples_per_iter: 13
+  warm_start: 150
+
+---
+name: "LS_via_penalty1000"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 0.2
+  collision: false
+  penalty: 1000
+  scaling_dmp: 100
+  no_pool: false
+  entropy_loss_bound: 0.1
+  surrogate: "LS"
+  normalize_output: "mean_std"
+  pool_size: 527
+  samples_per_iter: 13
+  warm_start: 150

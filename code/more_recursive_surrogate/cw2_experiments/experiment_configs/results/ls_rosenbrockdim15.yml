@@ -1,0 +1,51 @@
+################################################################################
+# This file contains the experiments for running MORE
+# with RLS, LS, and BLR on 15 dimensional rosenbrock.
+# We use the parameters obtained from hyperparameter
+# search (manual + grid search), they may be suboptimal.
+################################################################################
+---
+# Slurm config
+name: "SLURM"
+
+---
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 10   # number of times one set of parameters is run
+iterations: 1666  # number of total MORE iterations
+wandb:
+  project: "more_plotting"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  gamma: 0.99
+  minimize: true
+  no_pool: false
+  dim: 15
+  seed: false
+  problem: "test_func"
+  objective: 7
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+---
+name: "ls_rosenbrock_dim15"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 1
+  entropy_loss_bound: 0.1
+  surrogate: "LS"
+  pool_size: 204
+  samples_per_iter: 12
+  warm_start: 100
+  normalize_output: "mean_std_clipped"

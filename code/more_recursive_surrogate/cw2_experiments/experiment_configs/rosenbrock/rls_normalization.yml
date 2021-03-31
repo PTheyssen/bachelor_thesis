@@ -1,0 +1,166 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 5   # number of times one set of parameters is run
+iterations: 1500  # number of total MORE iterations
+wandb:
+  project: "test_rosenbrock_norm_multpile_seeds_10dim"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  gamma: 0.99
+  minimize: true
+  dim: 10
+  seed: false
+  problem: "test_func"
+  objective: 7
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    weighting: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+---
+name: "rls_with_pool_no_normalization"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  normalize_output: false
+  surrogate: "RLS"
+  pool_size: 100
+  no_pool: false
+  samples_per_iter: 7
+  weighting: 2
+  warm_start: 40
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.99
+
+
+---
+name: "rls_mean_std_with_pool"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  normalize_output: "mean_std"
+  surrogate: "RLS"
+  pool_size: 70
+  no_pool: false
+  samples_per_iter: 7
+  weighting: 0
+  warm_start: 40
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.99
+
+---
+name: "rls_moving_with_pool"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  normalize_output: "moving"
+  surrogate: "RLS"
+  pool_size: 100
+  no_pool: false
+  samples_per_iter: 7
+  weighting: 5
+  warm_start: 40
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.3
+grid:
+  optim_params:
+    alpha: [0.3,0.6,0.9]
+
+##############################################################################
+# no pool mean std
+---
+name: "rls_no_pool_mean_std"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  normalize_output: "mean_std"
+  surrogate: "RLS"
+  pool_size: 500
+  no_pool: true
+  samples_per_iter: 10
+  weighting: 0
+  warm_start: 500
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.99
+
+
+##############################################################################
+# no pool exponential moving for normalization
+---
+name: "rls_no_pool_moving"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  normalize_output: "moving"
+  surrogate: "RLS"
+  pool_size: 500
+  no_pool: true
+  samples_per_iter: 10
+  weighting: 0
+  warm_start: 500
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.9
+grid:
+  optim_params:
+    alpha: [0.3,0.6,0.9]
+
+---
+name: "rls_no_pool_no_normalization"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  normalize_output: false
+  surrogate: "RLS"
+  pool_size: 500
+  no_pool: true
+  samples_per_iter: 10
+  weighting: 0
+  warm_start: 500
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.9
+

@@ -1,0 +1,167 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 10   # number of times one set of parameters is run
+iterations: 300  # number of total MORE iterations
+wandb:
+  project: "reaching_results"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  norm_out: false
+  norm_type: "moving" # "running"
+  alpha: 0.9
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    weighting: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+#---
+#name: "RLS_via_samples"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 25
+#  seed: True
+#  kl_bound: 0.2
+#  minimize: false # false when doing reaching task
+#  surrogate: "RLS"
+#  problem : "via"
+#  collision: "true"
+#  scaling_dmp: 100
+#  pool_size: 150
+#  samples_per_iter: 30
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#grid:
+#  optim_params:
+#    pool_size: [150, 200]
+#    samples_per_iter: [10, 15, 20, 25]
+#
+#
+#
+#---
+#name: "RLS_via_weighting"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 25
+#  seed: True
+#  kl_bound: 0.2
+#  minimize: false # false when doing reaching task
+#  surrogate: "RLS"
+#  problem : "via"
+#  collision: "true"
+#  scaling_dmp: 150
+#  pool_size: 150
+#  samples_per_iter: 25
+#  warm_start: 100
+#  weighting: 0
+#  whiten: whiten  
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#
+#grid:
+#  optim_params:
+#    weighting: [1, 5, 10, 50, 100]
+#
+#
+#
+#---
+#name: "RLS_via_bound"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 25
+#  seed: True
+#  kl_bound: 0.2
+#  minimize: false # false when doing reaching task
+#  surrogate: "RLS"
+#  problem : "via"
+#  collision: "true"
+#  scaling_dmp: 100
+#  pool_size: 150
+#  samples_per_iter: 30
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#grid:
+#  optim_params:
+#    kl_bound: [0.1, 0.5]
+#    samples_per_iter: [10, 15]
+#
+#---
+#name: "RLS_via_bound"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 25
+#  seed: false
+#  kl_bound: 0.1
+#  minimize: false # false when doing reaching task
+#  surrogate: "RLS"
+#  problem : "via"
+#  collision: "true"
+#  scaling_dmp: 100
+#  pool_size: 150
+#  samples_per_iter: 10
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.01
+p#  delta: 10
+#
+---
+name: "RLS_via_no_pool_moving"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 25
+  seed: false
+  kl_bound: 0.1
+  minimize: false # false when doing reaching task
+  surrogate: "RLS"
+  problem : "via"
+  collision: true
+  scaling_dmp: 100
+  normalize_output: "moving"
+  alpha: 0.006
+  no_pool: true
+  pool_size: 527
+  samples_per_iter: 13
+  warm_start: 527
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+

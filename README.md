@@ -11,8 +11,7 @@ In the field of
 robotics we can use it for model-free policy search, a subfield of 
 reinforcement learning. 
 The original code for the MORE algorithm is based on a version from
-[Maximilian Hüttenrauch](https://github.com/maxhuettenrauch/MORE).
-
+Maximilian Hüttenrauch [github repository](https://github.com/maxhuettenrauch/MORE).
 
 The main idea for the thesis was to
 use recursive estimation techniques like the Kalman filter and
@@ -25,6 +24,9 @@ to parameterize the movement task, the resulting parameters can
 then be optimized by the MORE algorithm.
 
 
+## Experiments
+
+### Planar reaching task
 In the reaching task the end effector of the robot arm
 has to pass through two via-points at a specified time.
 The following picture shows a simple planar robot arm with
@@ -33,17 +35,17 @@ The via-points that have to be reached are marked with a red cross.
 The reward based on the distance to the via-points at specific
 timesteps.
 
-<img src="resources/via.png" alt="via-point reaching task" width="200"/>
+<img src="resources/via.png" alt="via-point reaching task" width="400"/>
 
-
-For the ball-in-the-cup-task 
+### Ball-in-a-cup task
+For the ball-in-a-cup-task 
 the reward signal is based on calculating the
-distance d from the center of the cup to the ball.
-
+distance d from the center of the cup to the ball.  
 Some solution for the ball-in-the-cup-task obtained by using
 MORE with recursive surrogate-modeling:
 
 ![](resources/cup_1.gif)
+
 ![](resources/cup_2.gif)
 ![](resources/cup_3.gif)
 

@@ -1,0 +1,45 @@
+## The usual slurm stuff
+---
+# Slurm bwuni cpu
+name: "SLURM"   # MUST BE "SLURM"
+
+---
+name: "blr_reaching_optuna"
+path: "/home/theyssen/cw_results"
+repetitions: 20 # this should be the number of desired optuna trials. Always map one optuna trial to one repetition
+iterations: 100   # number of iterations (if a pruner is specified it might end the trial prematurely
+                 # and this can be viewed as max number of iterations.
+# constant parameters, as usual - grids and lists not tested.. it will probably do something but nothing useful
+params:
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  dim: 25
+  seed: false
+  kl_bound: 0.2
+  minimize: false # false when doing reaching task
+  surrogate: "BLR"
+  problem : "via"  
+  sample_pool: true
+  pool_size: 150
+  samples_per_iter: 30
+  warm_start: 50
+  optim_params:
+    kl_bound: ~
+  
+
+## Specify optuna trial
+optuna:
+  # will be passed to study constructor / load
+  study_name: "blr_via"
+  storage: "sqlite:///test.db"
+  load_if_exists: true
+  # Specify sampler and pruner. The arguments is always a list with two entries. First is the name of the desired
+  # sampler or pruner, second is arguments for it (either in form of a list (args) or a dict (kwargs):
+  sampler: [ "TPESampler", { prior_weight: 1.0 } ]
+  pruner: ["HyperbandPruner", [10]]
+
+## specify (hyper) parameters to be tuned by optuna:
+optuna_hps:
+  # again two entries, first specifies which "suggest" function to call, second the arguments for that function
+  sample_pool: ["int", [50, 200]]  
+  samples_per_iter: ["int", [15, 50]]

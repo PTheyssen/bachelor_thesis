@@ -1,0 +1,60 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 5 # number of times one set of parameters is run
+iterations: 250 # number of total MORE iterations
+wandb:
+  project: "BLR_cup"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.01
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  norm_out: false
+  seed: false
+  norm_type: false # "running"
+  alpha: 0.9
+  collision: false # allow collision?
+  dim: 15
+  surrogate: "RLS"
+  problem : "cup"  
+  minimize: false # false when doing reaching task  
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    weighting: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+---
+name: "BLR_cup_30spi"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  pool_size: 150
+  surrogate: "BLR"  
+  no_pool: false  
+  samples_per_iter: 30
+  warm_start: 150
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10

@@ -1,0 +1,78 @@
+################################################################################
+# This file contains the experiments for running MORE
+# with RLS, LS, and BLR on 5 dimensional rosenbrock.
+# We use the parameters obtained from hyperparameter
+# search (manual + grid search), they may be suboptimal.
+################################################################################
+---
+# Slurm config
+name: "SLURM"
+
+---
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 5   # number of times one set of parameters is run
+iterations: 2000  # number of total MORE iterations
+wandb:
+  project: "more_results"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  gamma: 0.99
+  minimize: true
+  dim: 5
+  seed: false
+  problem: "test_func"
+  objective: 7
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+---
+name: "rls_rosenbrock_dim5"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  entropy_loss_bound: 0.1
+  surrogate: "RLS"
+  pool_size: 15
+  samples_per_iter: 1
+  warm_start: 15
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.99
+
+---
+name: "ls_rosenbrock_dim5"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 1
+  entropy_loss_bound: 0.1
+  surrogate: "LS"
+  pool_size: 32
+  samples_per_iter: 8
+  warm_start: 30
+  normalize_output: "mean_std_clipped"
+
+---
+name: "blr_rosenbrock_dim5"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 1
+  entropy_loss_bound: 0.01  
+  surrogate: "BLR"
+  pool_size: 150
+  samples_per_iter: 15
+  warm_start: 40    

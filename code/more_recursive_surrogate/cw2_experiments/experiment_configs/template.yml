@@ -1,0 +1,96 @@
+################################################################################
+# Template for different Experiments with MORE algorithm:
+# - use params to set the parameters that stay the same for every experiment
+# - use optim_params to do grid search on parameters
+################################################################################
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 1   # number of times one set of parameters is run
+iterations: 1000  # number of total MORE iterations
+wandb:
+  project: "more_tests"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  norm_out: false
+  norm_type: "moving" # "running"
+  alpha: 0.9
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+#---
+#name: "BLR_experiment"
+#path: "/home/philipp/cw_results/rosenbrock"
+#params:
+#  dim: 15
+#  seed: false
+#  kl_bound: 0.2
+#  minimize: true # false when doing reaching task
+#  surrogate: "BLR"
+#  problem : "test_func"
+#  objective: 7
+#  sample_pool: true
+#  pool_size: 150
+#  samples_per_iter: 40
+#  warm_start: 150
+#
+#
+#---
+#name: "LS_experiment"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 15
+#  seed: false
+#  kl_bound: 0.2
+#  minimize: true # false when doing reaching task
+#  surrogate: "LS"
+#  problem : "test_func"
+#  objective: 7
+#  sample_pool: true
+#  pool_size: 70
+#  samples_per_iter: 7
+#  warm_start: 30
+#
+---
+name: "RLS_experiment"
+path: "/home/philipp/cw_results/rosenbrock"
+params:
+  dim: 15
+  seed: false
+  kl_bound: 0.2
+  minimize: true # false when doing reaching task
+  surrogate: "RLS"
+  problem : "test_func"  
+  objective: 7
+  sample_pool: true
+  pool_size: 70
+  samples_per_iter: 7
+  warm_start: 30
+  whiten: whiten  
+  # RLS specific 
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10

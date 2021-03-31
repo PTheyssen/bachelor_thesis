@@ -1,0 +1,96 @@
+---
+# Slurm config
+name: "SLURM"
+
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/philipp/cw_results"   # location to save results in
+repetitions: 1   # number of times one set of parameters is run
+iterations: 1000  # number of iterations per repetition
+wandb:
+  project: "more_tests"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  minimize: true
+  surrogate: "RLS"
+  sample_pool: true
+  pool_size: 70
+  whiten: whiten
+  normalize_ma: false
+  normalize_standard: false
+  cov: ~
+  std: ~
+  delta: 1
+  K: 1
+  alpha: ~
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+
+---
+name: "test_no_norm"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 15
+  seed: true
+  kl_bound: 0.1
+  samples_per_iter: 7
+  pool_size: 70
+  objective: 7
+  cov: 1
+  std: 0.01
+  delta: 10
+  normalize_ma: false
+  normalize_standard: false  
+  whiten: true
+
+---
+name: "test_ma_norm"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 15
+  seed: true
+  kl_bound: 0.1
+  samples_per_iter: 7
+  pool_size: 70
+  objective: 7
+  cov: 1
+  std: 0.01
+  delta: 10
+  normalize_ma: true
+  alpha: 0.999
+  normalize_standard: false  
+  whiten: true
+
+
+---
+name: "test_standard_norm"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 15
+  seed: true
+  kl_bound: 0.1
+  samples_per_iter: 15
+  pool_size: 70
+  objective: 7
+  cov: 1
+  std: 0.01
+  delta: 10
+  normalize_ma: false
+  normalize_standard: true
+  whiten: true

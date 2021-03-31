@@ -1,0 +1,120 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 3   # number of times one set of parameters is run
+iterations: 1500  # number of total MORE iterations
+wandb:
+  project: "RLS_rosenbrock_with_clipping"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  seed: false
+  dim: 15
+  minimize: true
+  problem: "test_func"
+  objective: 7  
+  norm_out: false
+  norm_type: "moving" # "running"
+  surrogate: "RLS"  
+  alpha: 0.9
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    weighting: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+#---
+#name: "RLS_mean_std_clipped"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2
+#  pool_size: 150
+#  normalize_output: "mean_std_clipped"
+#  no_pool: false  
+#  samples_per_iter: 12
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#
+#---
+#name: "RLS_moving_clipped"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2
+#  pool_size: 150
+#  alpha: 0.006  
+#  normalize_output: "moving_clipped"
+#  no_pool: false
+#  samples_per_iter: 12
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#grid:
+#  optim_params:
+#    alpha: [0.006, 0.01, 0.1, 0.3, 0.6, 0.8, 0.99]
+#
+
+---
+name: "RLS_no_pool_mean_std_clipped"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2  
+  pool_size: 400
+  normalize_output: "mean_std_clipped"
+  no_pool: true  
+  samples_per_iter: 12
+  warm_start: 400
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.001
+  delta: 10
+  
+---
+name: "RLS_via_no_pool_moving_clipped"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  pool_size: 400
+  normalize_output: "moving_clipped"
+  no_pool: true  
+  samples_per_iter: 12
+  warm_start: 400
+  alpha: 0.006  
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.001
+  delta: 10
+grid:
+  optim_params:
+    alpha: [0.006, 0.01, 0.1, 0.3, 0.6, 0.8, 0.99]  

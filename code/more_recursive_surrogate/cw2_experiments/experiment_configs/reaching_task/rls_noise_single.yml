@@ -1,0 +1,92 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 1   # number of times one set of parameters is run
+iterations: 300  # number of total MORE iterations
+wandb:
+  project: "reaching_noise_parameters"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  norm_out: false
+  norm_type: "moving" # "running"
+  alpha: 0.9
+  collision: "true"
+  penalty: 100  
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    weighting: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+
+################################################################################
+# no pool with normalization with mean from new samples
+---
+name: "single"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 25
+  seed: true
+  kl_bound: 0.2
+  minimize: false # false when doing reaching task
+  surrogate: "RLS"
+  problem : "via"
+  scaling_dmp: 100
+  pool_size: 500
+  normalize_output: "mean_std"
+  no_pool: true  
+  samples_per_iter: 13
+  warm_start: 500
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 0.001
+  std: 0.1
+  delta: 10
+
+################################################################################
+# no pool with exponential moving average
+#---
+#name: "RLS_via_no_pool_mean_std"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 25
+#  seed: True
+#  kl_bound: 0.2
+#  minimize: false # false when doing reaching task
+#  surrogate: "RLS"
+#  problem : "via"
+#  scaling_dmp: 100
+#  pool_size: 500
+#  normalize_output: "moving"
+#  no_pool: true  
+#  samples_per_iter: 13
+#  warm_start: 500
+#  alpha: 0.006  
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#

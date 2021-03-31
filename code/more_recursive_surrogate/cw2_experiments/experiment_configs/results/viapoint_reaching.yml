@@ -1,0 +1,78 @@
+################################################################################
+# This file contains the experiments for running MORE
+# with RLS, LS, and BLR on a viapoint reaching task
+# with a 5 link 2D planar robot (25 dim).
+# We use the parameters obtained from hyperparameter
+# search (manual + grid search), they may be suboptimal.
+################################################################################
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 1   # number of times one set of parameters is run
+iterations: 1500  # number of total MORE iterations
+wandb:
+  project: "more_tests"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  dim: 25
+  seed: false
+  gamma: 0.99
+  minimize: false # false when doing reaching task
+  problem: "via"
+  entropy_loss_bound: 0.1
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+
+---
+name: "RLS_via"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 0.2
+  surrogate: "RLS"
+  pool_size: 150
+  samples_per_iter: 30
+  warm_start: 150
+  whiten: true
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  alpha: 0.9
+
+
+---
+name: "BLR_via"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 0.1
+  pool_size: 150
+  samples_per_iter: 40
+  warm_start: 150
+
+
+---
+name: "LS_via"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 1
+  pool_size: 527
+  samples_per_iter: 13
+  warm_start: 150
+

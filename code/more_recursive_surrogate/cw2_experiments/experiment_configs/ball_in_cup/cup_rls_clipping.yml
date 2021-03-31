@@ -1,0 +1,160 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 1 # number of times one set of parameters is run
+iterations: 250  # number of total MORE iterations
+wandb:
+  project: "RLS_cup_with_clipping"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.01
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  norm_out: false
+  seed: false
+  norm_type: false # "running"
+  alpha: 0.9
+  collision: false # allow collision?
+  dim: 15
+  surrogate: "RLS"
+  problem : "cup"  
+  minimize: false # false when doing reaching task  
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    weighting: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+#---
+#name: "RLS_mean_std_clipped"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2
+#  pool_size: 150
+#  normalize_output: "mean_std_clipped"
+#  no_pool: false  
+#  samples_per_iter: 30
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 0.01
+#  std: 0.001
+#  delta: 10
+
+#
+#---
+#name: "RLS_mean_std_clipped"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2
+#  pool_size: 150
+#  normalize_output: "mean_std_clipped"
+#  no_pool: false  
+#  samples_per_iter: 12
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 0.01
+#  std: 0.001
+#  delta: 10
+#grid:
+# optim_params:
+#   samples_per_iter: [20, 30, 50]
+#
+
+---
+name: "RLS_moving_clipped"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  kl_bound: 0.2
+  pool_size: 150
+  alpha: 0.006  
+  normalize_output: "moving_clipped"
+  no_pool: false
+  samples_per_iter: 30
+  warm_start: 150
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 0.01
+  std: 0.001
+  delta: 10
+grid:
+  optim_params:
+    alpha: [0.006, 0.01, 0.1, 0.3]
+
+
+#---
+#name: "RLS_no_pool_mean_std_clipped"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2  
+#  pool_size: 500
+#  normalize_output: "mean_std_clipped"
+#  no_pool: true  
+#  samples_per_iter: 12
+#  warm_start: 500
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#  
+#---
+#name: "RLS_via_no_pool_moving_clipped"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2
+#  pool_size: 500
+#  normalize_output: "moving_clipped"
+#  no_pool: true  
+#  samples_per_iter: 12
+#  warm_start: 500
+#  alpha: 0.006  
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 1
+#  std: 0.001
+#  delta: 10
+#grid:
+#  optim_params:
+#    alpha: [0.006, 0.01, 0.1, 0.3]
+#
+#---
+#name: "RLS_no_normalization"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  kl_bound: 0.2
+#  pool_size: 150
+#  normalize_output: false
+#  no_pool: false  
+#  samples_per_iter: 13
+#  warm_start: 150
+#  weighting: 0
+#  whiten: true
+#  K: 1
+#  cov: 0.01
+#  std: 0.001
+#  delta: 10
+#

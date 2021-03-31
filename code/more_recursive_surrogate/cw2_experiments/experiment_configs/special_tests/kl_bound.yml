@@ -1,0 +1,86 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/philipp/cw_results"   # location to save results in
+repetitions: 3   # number of times one set of parameters is run
+iterations: 1500  # number of total MORE iterations
+wandb:
+  project: "more_tests"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  minimize: true
+  surrogate: "RLS"
+  sample_pool: true
+  pool_size: 70
+  whiten: true
+  normalize_ma: false
+  normalize_standard: false
+  cov: ~
+  std: ~
+  delta: 1
+  K: 1
+  alpha: ~
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+
+
+# Test how samples per iteration interact with bound on KL-divergence
+# Expected behaviour: if we use less samples we should use a smaller KL-bound
+# since we are less certain about the current model
+---
+name: "kl_bound_dim5"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 5
+  kl_bound: 0.1
+  pool_size: 15
+  objective: 7
+  K: 1
+  cov: 0.001
+  std: 0.001
+  delta: 10
+  whiten: true
+  alpha: ~
+
+grid:
+  optim_params:
+    kl_bound: [0.05, 0.1, 0.5, 1]
+    samples_per_iter: [1, 5, 8]
+
+---
+name: "kl_bound_dim15"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 15
+  kl_bound: 0.1
+  pool_size: 70
+  objective: 7
+  K: 1
+  cov: 0.001
+  std: 0.001
+  delta: 10
+  whiten: true
+  alpha: ~
+
+grid:
+  optim_params:
+    kl_bound: [0.05, 0.1, 0.5, 1]
+    samples_per_iter: [5, 7, 10, 15]

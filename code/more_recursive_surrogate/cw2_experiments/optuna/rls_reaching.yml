@@ -1,0 +1,66 @@
+## The usual slurm stuff
+---
+# Slurm bwuni cpu
+name: "SLURM"   # MUST BE "SLURM"
+
+---
+name: "rls_reaching_optuna"
+path: "/home/theyssen/cw_results"
+repetitions: 20 # this should be the number of desired optuna trials. Always map one optuna trial to one repetition
+iterations: 500   # number of iterations (if a pruner is specified it might end the trial prematurely
+                 # and this can be viewed as max number of iterations.
+# constant parameters, as usual - grids and lists not tested.. it will probably do something but nothing useful
+params:
+  gamma: 0.99
+  entropy_loss_bound: 0.01
+  norm_feat: false
+  unnorm_feat: false
+  norm_out: false
+  norm_type: "moving" # "running"
+  alpha: 0.9
+  dim: 25
+  seed: true
+  kl_bound: 0.2
+  minimize: false # false when doing reaching task
+  weighting: 0
+  surrogate: "RLS"
+  problem : "via"  
+  sample_pool: true
+  pool_size: 150
+  samples_per_iter: 30
+  warm_start: 50
+  whiten: true 
+  K: 1
+  cov: 1
+  std: 0.01
+  delta: 10
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~  
+  
+
+## Specify optuna trial
+optuna:
+  # will be passed to study constructor / load
+  study_name: "rls_reaching"
+  storage: "sqlite:///test.db"
+  load_if_exists: true
+  # Specify sampler and pruner. The arguments is always a list with two entries. First is the name of the desired
+  # sampler or pruner, second is arguments for it (either in form of a list (args) or a dict (kwargs):
+  sampler: [ "TPESampler", { prior_weight: 1.0 } ]
+  pruner: ["HyperbandPruner", [10]]
+
+## specify (hyper) parameters to be tuned by optuna:
+optuna_hps:
+  # again two entries, first specifies which "suggest" function to call, second the arguments for that function
+  weighting: ["float", [0, 50]]
+  sample_pool: ["int", [50, 300]]
+  samples_per_iter: ["int", [15,40]]

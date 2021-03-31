@@ -1,0 +1,83 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 10   # number of times one set of parameters is run
+iterations: 250  # number of total MORE iterations
+wandb:
+  project: "RLS_with_clipping"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  # RLS specific
+  norm_feat: false
+  unnorm_feat: false
+  seed: false
+  alpha: 0.9
+  collision: false # allow collision?
+  dim: 25
+  problem : "via"  
+  penalty: 100 # 10, 100, 1000
+  scaling_dmp: 100
+  minimize: false # false when doing reaching task  
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    weighting: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+---
+name: "RLS_moving_clipped"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  surrogate: "RLS"
+  kl_bound: 0.2
+  pool_size: 150
+  normalize_output: "moving_clipped"
+  no_pool: false
+  samples_per_iter: 13
+  warm_start: 150
+  weighting: 0
+  whiten: true
+  K: 1
+  cov: 0.01
+  std: 0.001
+  delta: 10
+  alpha: 0.006  
+
+---
+name: "BLR_via"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 0.2
+  surrogate: "BLR"
+  pool_size: 150
+  samples_per_iter: 13
+  warm_start: 150
+
+
+---
+name: "LS_via"
+path: "/home/theyssen/cw_results/via"
+params:
+  kl_bound: 1
+  pool_size: 537
+  normalize_output: "moving_clipped"  
+  samples_per_iter: 13
+  warm_start: 150
+

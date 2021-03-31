@@ -1,0 +1,67 @@
+---
+# Slurm config
+name: "SLURM"
+
+---
+# DEFAULT parameters (Optional)
+name: "DEFAULT"
+path: "/home/theyssen/cw_results"   # location to save results in
+repetitions: 10   # number of times one set of parameters is run
+iterations: 200  # number of total MORE iterations
+wandb:
+  project: "blr_reaching"
+  group: "more"
+  disable_stats: true
+  histogram: ["samples"]
+params:
+  # Parameters that typically stay the same
+  gamma: 0.99
+  entropy_loss_bound: 0.1
+  optim_params:
+    kl_bound: ~
+    pool_size: ~
+    samples_per_iter: ~
+    whiten: ~
+    normalize: ~
+    pool_size: ~
+    cov: ~
+    std: ~
+    delta: ~
+    alpha: ~
+
+#---
+#name: "BLR_via"
+#path: "/home/theyssen/cw_results/rosenbrock"
+#params:
+#  dim: 25
+#  seed: true
+#  kl_bound: 1
+#  minimize: false # false when doing reaching task
+#  surrogate: "BLR"
+#  problem : "via"
+#  collision: "false"
+#  scaling_dmp: 50
+#  pool_size: 150
+#  samples_per_iter: 40
+#  warm_start: 100
+#
+#grid:
+# optim_params:
+#   kl_bound: [0.2, 0.5, 1]
+#   samples_per_iter: [10, 15, 20, 25]
+#
+---
+name: "BLR_via_final_par"
+path: "/home/theyssen/cw_results/rosenbrock"
+params:
+  dim: 25
+  seed: false
+  kl_bound: 1
+  minimize: false # false when doing reaching task
+  surrogate: "BLR"
+  problem : "via"
+  collision: "false"
+  scaling_dmp: 50
+  pool_size: 150
+  samples_per_iter: 25
+  warm_start: 100
