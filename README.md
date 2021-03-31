@@ -32,20 +32,23 @@ The following picture shows a simple planar robot arm with
 The via-points that have to be reached are marked with a red cross.
 The reward based on the distance to the via-points at specific
 timesteps.
-![](resources/via.png)
+
+<img src="resources/via.png" alt="via-point reaching task" width="200"/>
+
 
 For the ball-in-the-cup-task 
 the reward signal is based on calculating the
 distance d from the center of the cup to the ball.
-![Illustration for reward calculation (Picture from [2])](resources/cup_reward.png)
 
 Some solution for the ball-in-the-cup-task obtained by using
 MORE with recursive surrogate-modeling:
+
 ![](resources/cup_1.gif)
-
 ![](resources/cup_2.gif)
-
 ![](resources/cup_3.gif)
 
+---
+
 [1] (Model-Based Relative Entropy Stochastic Search, Abdolmaleki et al. 2015)
+
 [2] (Kober, Jens, and Jan Peters. "Policy search for motor primitives in robotics.")
