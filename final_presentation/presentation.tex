@@ -1,0 +1,847 @@
+%% Modified LaTeX-Beamer template, stolen from the SDQ group and
+%% adapted by Philipp Becker
+%% Original Statement:
+
+%%------------------------------------------------------------
+%% LaTeX-Beamer template for KIT design
+%% by Erik Burger, Christian Hammer
+%% title picture by Klaus Krogmann
+%%
+%% version 2.5
+%%
+%% mostly compatible to KIT corporate design v2.0
+%% http://intranet.kit.edu/gestaltungsrichtlinien.php
+%%
+%% Problems, bugs and comments to
+%% burger@kit.edu
+%%------------------------------------------------------------
+%% Class options
+%%   aspect ratio options:
+%%   -- 16:9 (default)
+%%   -- 4:3
+%%   language options:
+%%   -- en (default)
+%%   -- de
+%%   position of navigation bar:
+%%   -- navbarinline (default): bottom of the white canvas
+%%   -- navbarinfooter : more compressed variant inside the footer
+%%   -- navbarside : side bar at the left of the white canvas
+%%   -- navbaroff : none
+%% example: \documentclass[16:9,de,navbarinfooter]{sdqbeamer}
+
+% \documentclass[navbarinfooter, 12pt]{sdqbeamer}
+\documentclass[navbarinfooter, 12pt]{sdqbeamer}
+% remove "Figure:" in caption
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+%% TITLE PICTURE
+
+% if a custom picture is to be used on the title page, copy it into the 'logos'
+% directory, in the line below, replace 'myimage' with the
+% filename (without extension) and uncomment the following line
+% (picture proportions: 63 : 20 for standard, 169 : 40 for wide
+% *.eps format if you use latex+dvips+ps2pdf,
+% *.jpg/*.png/*.pdf if you use pdflatex)
+
+% \titleimage{myimage}
+
+%% GROUP LOGO
+
+% for a custom group logo, copy your file into the 'logos'
+% directory, insert the filename in the line below and uncomment it
+
+% \grouplogo{mylogo}
+
+% (*.eps format if you use latex+dvips+ps2pdf,
+% *.jpg/*.png/*.pdf if you use pdflatex)
+
+%% GROUP NAME
+
+% for groups other than SDQ, please insert in the line below and uncomment it
+% \groupname{}
+
+% the presentation starts here
+
+\title[Short Title]{Recursive Surrogate-Modeling for Stochastic Search}
+\subtitle{Final Presentation - Bachelor Thesis}
+\author{Philipp Theyssen}
+
+% Bibliography
+
+\usepackage[citestyle=authoryear,bibstyle=numeric,hyperref,backend=biber]{biblatex}
+\usepackage{tikz}
+\usepackage[T1]{fontenc} % Encoding
+\usepackage[utf8]{inputenc} % Encoding
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\usepackage[ruled,vlined]{algorithm2e} % for algorithms
+\addbibresource{presentation.bib}
+\bibhang1em
+
+\begin{document}
+
+% title page
+\date{April 30, 2021}
+\KITtitleframe
+
+% table of contents
+\section{Outline}
+\begin{frame}{Outline}
+ \begin{itemize}
+  \item Motivation
+  \item Fundamentals
+  \item Recursive Surrogate-Modeling for MORE
+  \item Experiments
+  \item Conclusion \& Future Work
+  \end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% General todo:
+% TODO: use ispell to check every word
+% TODO: add reference for pictures I used
+% TODO: add figure for correlated surrogate models (contour lines)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Motivation}
+\begin{frame}{Autonomous Robots: Motivation}
+  \begin{columns}[c]
+    \begin{column}{8cm}
+      \begin{itemize}
+      \item Robots start moving from factories into daily life
+      \item In daily life exact engineering fails or is unfeasible
+      \item Ability to learn and adopt to changing environment is needed
+      \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{figure}[ht]
+        \centering
+        \includegraphics[height=3cm]{figures/factory_robot.png}
+        % source: springer link robotics handbook (audi plant in ingolstadt)nn
+
+        $\downarrow$
+
+        \vspace{0.3cm}
+        \includegraphics[height=2.8cm]{figures/kitchen_robot.jpg}
+        % source: https://www.therobotreport.com/nvidias-new-robotics-lab/
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Autonomous Robots: Tasks + Key Challenges}
+\begin{columns}[c]
+  \begin{column}{7cm}
+    Main tasks for autonomous robots: \\
+      \begin{itemize}
+      \item Modeling
+      \item Predicting
+      \item Decision making
+      \end{itemize}
+  \end{column}
+  \begin{column}{5cm}
+    \begin{figure}[ht]
+      \centering
+      \includegraphics[height=3.5cm]{figures/robot_table_tennis.png}
+    \end{figure}
+
+  \end{column}
+\end{columns}
+\begin{block}{Challenges}
+  \begin{itemize}
+  \item Uncertainty, sensor noise
+  \item Real-world samples are expensive in time, labor and finances
+    % $\rightarrow$ \textbf{sample efficiency}
+  \item Robot hardware is expensive, needs careful maintenance    
+  \end{itemize}
+\end{block}
+\end{frame}
+
+
+%\begin{frame}{Policy Search with Stochastic optimizer}
+%  \alert{TODO:talk about interaction with environment, change this slide because this is more model based PS } \\
+%  \begin{itemize}
+%  \item learn parametrized policy $\pi(x_t, \theta)$ to create samples in parameter space
+%  \end{itemize}
+%  \centering
+%  \begin{tikzpicture}
+%    \draw (0,0) node {$ p(x_{t+1} | x_t, u_t) \quad \quad u_t \; = \; \pi(x_t, \theta) $};
+%    \draw [->][very thick] (-2.9,-1) -- (-3.4,-0.3);
+%    \draw [->][very thick] (-2.36,-1.05) -- (-1.7,-0.3);
+%    \draw (-2.7,-1.3) node {Probabilistic transition function};
+%    \draw (2,0) node {Control}
+%    \draw
+%    % $$ x_{t+1} = f(x_t, u_t) + w,  u_t = \pi(x_t, \theta) $$
+%  \end{tikzpicture}
+%  \begin{block}{Policy Search}
+%    Find policy parameters $\theta^*$ that maximizes expected accumulated reward
+%  \end{block}
+%\end{frame}
+
+
+\section{Fundamentals}
+%\begin{frame}{Stochastic search}
+%  \begin{block}{Stochastic search}
+%    \begin{itemize}
+%    \item optimize objective function $f(\mathbf{x}): \mathbb{R}^n \rightarrow \mathbb{R}$
+%    \item learn policy $\pi(\mathbf{x})$ (search distribution) over parameter space of objective function
+%    \item black-box optimizer: only evaluate objective function (no gradients)
+%    \item iteratively update search distribution (policy)
+%    \end{itemize}
+%  \end{block}
+%\textbf{Examples} \\
+%    \begin{itemize}
+%    \item learn motor skills with Dynamic Movement Primitives (DMP)
+%    \end{itemize}
+%\end{frame}
+
+\begingroup
+\small
+\begin{frame}{MORE Algorithm for Policy Search}
+  MORE is stochastic search algorithm can be used for model-free policy search
+\begin{block}{\normalsize MORE-Framework for Constraint Optimization Problem}
+  \begin{align*}
+    \max_{\pi} \int \pi(\mathbf{x}) f(\mathbf{x}) dx \quad \quad  &\rightarrow \text{Maximize objective} \\
+    \text{ s.t. KL}(\pi(\mathbf{x})||\pi_{t-1}(\mathbf{x})) \leq \epsilon \quad \quad &\rightarrow \text{Bound between old and new policy} \\
+    H(\pi) \geq \beta \quad \quad  &\rightarrow \text{Lower entropy bound} \\
+    1 = \int \pi(\mathbf{x}) dx  \quad \quad  &\rightarrow \text{Distribution requirement}
+  \end{align*}
+\end{block}
+
+$\rightarrow$ Cannot evaluate integral in optimization problem \\
+$\rightarrow$ Approximate objective with quadratic surrogate model
+\end{frame}
+\endgroup
+
+\begin{frame}{Solve Dual Function}
+\begin{block}{Surrogate Model}
+  $$f(\mathbf{x}) \approx \hat{f}(\mathbf{x}) = -\frac{1}{2}
+  \mathbf{x}^T \mathbf{A} \mathbf{x} + \mathbf{x}^T \mathbf{a} + a $$
+\end{block}
+  \textbf{New policy:}
+    $$ \pi_{t+1} = \mathcal{N}(\mu_{t+1}, \Sigma_{t+1}) $$
+    $$ \mu_{t+1} = B_t^{-1} b_t   \quad \quad  \Sigma_{t+1} = B_t^{-1} $$
+    \text{with}
+    $$ B_t = (\eta \Sigma_t^{-1} + \mathbf{A}) / (\eta + \omega) $$
+    $$ b_t = (\eta \Sigma_t^{-1} \mu_t + \mathbf{a}) / (\eta + \omega) $$
+    and $\eta, \omega$ Lagrangian multipliers
+\end{frame}
+
+
+\begin{frame}{MORE Algorithm}
+  \begin{block}{Iteration Step}
+    \begin{enumerate}
+    \item Draw samples from search distribution + evaluate objective function
+    \item Estimate surrogate model using samples + values
+      ($\leftarrow$ \textbf{this thesis})
+    \item Use surrogate model to solve optimization problem analytically
+    \item Update search distribution
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{Surrogate Model}
+\begin{columns}[c]
+  \begin{column}{8cm}
+    \begin{itemize}
+    \item Local approximation of objective function
+    % \item   $f(\mathbf{x}) \approx \hat{f}(\mathbf{x}) = -\frac{1}{2}
+      % \mathbf{x}^T \mathbf{A} \mathbf{x}
+      % + \mathbf{x}^T \mathbf{a} + a $
+    \item $\mathcal{O}(n^2)$ parameters to estimate
+    \item KL-bound avoids over-exploitation of surrogate model
+    \item Subsequent models are locally correlated      
+    \end{itemize}
+  \end{column}
+  \begin{column}{5cm}
+    \includegraphics[height=3cm]{figures/Surrogate_Model.png}
+  \end{column}
+\end{columns}
+  \begin{alertblock}{Central Question}
+    Can we improve sample efficiency by recursively estimating \\
+    the surrogate model?
+  \end{alertblock}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Recursive Surrogate-Modeling for MORE}
+
+\begin{frame}{Formulation as Regression problem}
+  \begin{block}{Regression problem}
+    \begin{align*}
+      y_k &=  -\frac{1}{2} \mathbf{x}^T \mathbf{A} \mathbf{x} + \mathbf{x}^T \mathbf{a} + a + \epsilon_k \\
+      \beta &= (a, \mathbf{a}, \text{tri}(\mathbf{A}))
+    \end{align*}
+   $\rightarrow$ Measurement noise $\epsilon_k$ is zero mean
+   Gaussian $\epsilon_k \sim N(0, \sigma^2)$ \\
+   $\rightarrow$ Estimate parameters $\beta$ from samples + objective values
+   % $\rightarrow$ $\beta \in \mathbb{R}^D$ with $D = 1 + d + d(d + 1) / 2$ and $d$ the dimension of the objective function
+  \end{block}
+  % $\rightarrow$ we estimate $ 1 + d + d(d + 1) / 2$ parameters, $\mathbf{x} \in \mathbb{R}^d$
+\end{frame}
+
+
+\begin{frame}{Batch Solution}
+  Set up system of linear equations with design Matrix
+  $\mathbf{X} \in \mathbb{R}^{N \times D}$
+  \begin{equation*}
+    \begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_N \end{bmatrix} =
+    \underbrace{
+      \begin{bmatrix}
+        1 & \mathbf{x}_1 & \text{tri}(\mathbf{x}_1 \mathbf{x}_1^T) \\
+        1 & \mathbf{x}_2 & \text{tri}(\mathbf{x}_2 \mathbf{x}_2^T) \\
+        \vdots & \vdots & \vdots \\
+        1 & \mathbf{x}_N & \text{tri}(\mathbf{x}_N \mathbf{x}_N^T) \\
+      \end{bmatrix}}_{\mathbf{X}}
+    \begin{bmatrix}
+      \beta_1 \\ \beta_2 \\ \vdots \\ \beta_D
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      \epsilon_1 \\
+      \epsilon_2 \\
+      \vdots \\
+      \epsilon_N
+    \end{bmatrix}
+\end{equation*}
+
+$\Rightarrow$ Using ridge regression we get $\beta = (\mathbf{X}^T \mathbf{X} +
+\lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y} $
+% notes: simply least squares solution, use ridge regression for
+% regularization term, not to complicated simply, np.linalg.solve()
+\end{frame}
+
+\begin{frame}{Bayesian Estimation}
+  \begin{block}{Probability Distributions}
+    \begin{align*}
+      p(\mathbf{\beta}) &= \mathcal{N}(\mathbf{\beta} | \textbf{m}_0, \textbf{P}_0)
+      \, \; \; \; \quad \rightarrow \text{Prior} \\
+      p(y_k | \mathbf{\beta}) &= \mathcal{N}(y_k | \textbf{X}_k \mathbf{\beta}, \sigma^2)
+                                \;   \quad \rightarrow  \text{Likelihood} \\
+      p(\beta_k | \beta_{k-1})
+                        &=
+                          \mathcal{N}(\beta_k | \beta_{k-1}, \textbf{Q}) \quad
+                          \; \rightarrow \text{Drift model} \\      
+      p(\beta | y_{1:T}, \mathbf{x}_{1:T}) &= \mathcal{N}(\beta | y_{1:T}, \mathbf{x}_{1:T}) \quad  \rightarrow \text{Posterior} 
+    \end{align*}
+  \end{block}
+  We want to compute the filtering distribution
+  \begin{align*}
+    p(\beta_k | \, y_{1:k}, \mathbf{x}_{1:k})
+    &\propto p(y_k, \mathbf{x}_k | \, \beta_k) \,
+      p(\beta_k |\, y_{1:k-1}, \mathbf{x}_{1:k-1}) \\
+    &\propto \mathcal{N}(\beta_k | \, \mathbf{m}_k, \mathbf{P}_k),
+  \end{align*}
+
+\end{frame}
+
+%\begin{frame}{Recursive Least Squares}
+%  \begin{itemize}
+%  \item we process the samples one by one
+%  \end{itemize}
+%  $$
+%  y_k =
+%  \big(1 \;  \mathbf{x}_k \; \text{tril}(\mathbf{x}_k \mathbf{x}_k^T) \big)
+%  \begin{pmatrix}
+%    \beta_1 \\ \beta_2 \\ \vdots \\ \beta_D
+%  \end{pmatrix}
+%  + \epsilon_k.
+%  $$
+%
+%\end{frame}
+
+\begin{frame}{Recursive Least Squares Equations}
+% \begin{align*}
+      % p(\theta | y_{1:k}) &\propto  p(\theta | y_{1:k-1}) p(y_k | \theta) \\
+                          % &\propto N (\theta | \textbf{m}_k, \textbf{P}_k)
+                              %   \end{align*}
+  Drift model for the Parameters:
+  $$ \textbf{P}^-_{k-1} = \textbf{P}_{k-1} + \textbf{Q} $$
+  
+  Matrix inversion lemma and introducing \\
+  temporary variables $S_k$ and $\textbf{K}_k$ yields:
+   \begin{align*}
+     S_k &= \textbf{X}_k \textbf{P}^-_{k-1} \textbf{X}^T_k + \sigma^2 \\
+     \textbf{K}_k &= \textbf{P}^-_{k-1} \textbf{X}^T_k S_k^{-1} \\
+     \textbf{m}_k &= \textbf{m}_{k-1} + \textbf{K}_k [y_k - \textbf{X}_k \textbf{m}_{k-1}] \\
+     \textbf{P}_k &= \textbf{P}^-_{k-1} - \textbf{K}_k S_k \textbf{K}_k^T
+   \end{align*}
+
+   $\rightarrow$ Equivalent to Kalman Filter update step
+\end{frame}
+
+
+\begin{frame}{Recursive Least Squares Approach}
+  \begin{block}{Data Preprocessing}
+    \begin{itemize}
+    \item Cholesky Whitening on samples
+    \item Normalization + clipping for reward
+    \item Use sample pool
+    \end{itemize}
+  \end{block}
+  \begin{block}{Other ideas explored}
+  \begin{itemize}
+  \item Momentum based state transition model (Kalman Filter prediction step)
+  \item Increasing the model noise for older samples in sample pool
+  \item Adjusting the model noise in relation to change in model parameters
+  % \item use prior as 
+  \end{itemize}    
+  \end{block}
+\end{frame}
+
+%\begin{frame}{Recursive Least Squares Final Approach}
+%  \begin{block}{RLS}
+%    \begin{enumerate}
+%    \item Cholesky Whitening
+%    \item Normalize with exponential moving average + clipping
+%    \item Add the model noise $\mathbf{Q}$
+%    \item Kalman Filter update equations
+%    \item reverse whitening
+%    \end{enumerate}
+%  \end{block}
+%  $\Rightarrow$ Result is the surrogate model
+%\end{frame}
+
+\begingroup
+\footnotesize
+\begin{frame}{Final Algorithm}
+    % TODO: fix correct prior sqrt(2) ...
+  % The prior is chosen as:
+  % $$ p(\mathbf{\beta}_0) = \mathcal{N}(\mathbf{\beta}_0 |
+  % \, \mathbf{m}_0, \mathbf{P}_0) $$
+  % with $\mathbf{m}_0 = (0, \mathbf{0}, \mathbf{I}_{d\times d})$
+  % and $\mathbf{P}_0 = \delta \; \mathbf{I}$
+  % TODO: add input output description
+\begin{algorithm}[H]
+\renewcommand{\algorithmcfname}{Algorithm}
+\KwIn{% $\{(\mathbf{x}_1,y_1),\cdots,(\mathbf{x}_N,y_N)\}$
+ samples as rows of design matrix $\mathbf{X}_n$, rewards $y_n$ with $n = 1, \dots, N$}
+% \SetKw{KwInit}{Initialization:}
+\DontPrintSemicolon
+% \SetAlgoLined
+% \KwIn{% $\{(\mathbf{x}_1,y_1),\cdots,(\mathbf{x}_N,y_N)\}$
+  % stream of samples as rows of design matrix $\mathbf{X}_n$
+  % and rewards $y_n$ with $n = 1, \dots, N$, \\
+  % $\mathbf{Q}$ model noise, $\sigma^2$ measurement noise}
+% \KwInit{$\mathbf{m}_0 = (0, \mathbf{0}, \mathbf{I})$,  $\mathbf{P}_0 = \delta \mathbf{I}$}
+\For{$n = 1,...,N$}
+{
+  \Begin(Data Preprocessing)
+  {
+  Whitening of samples $\mathbf{X}_n$ \;
+  Normalize reward $y_n$ using exponential moving average \;
+  }
+  $~$ \;
+  $\mathbf{P}_n^- = \mathbf{P}_{n-1} + \mathbf{Q}$
+  \textit{  // Add the model noise}\;
+  \Begin(KF Update step)
+  {
+    $S_n = \mathbf{X}_n \; \mathbf{P}_n^- \, \mathbf{X}_n^T + \sigma^2$ \;
+    $\textbf{K}_n = \textbf{P}_{n}^{-} \, \textbf{X}^T_n \, S_n^{-1}$ \;
+    $\textbf{m}_n = \textbf{m}_{n-1} + \textbf{K}_n [y_n - \textbf{X}_n \textbf{m}_{n-1}]$ \;
+    $\textbf{P}_n = \textbf{P}_{n}^{-} - \textbf{K}_n \, S_n \, \textbf{K}_n^T $ \;
+  }
+}
+Reverse whitening transformation for $\mathbf{m}_N$ \;
+\KwRet{$\mathbf{m}_N$}
+\caption{Recursive Least Squares with Drift Model}
+\end{algorithm}
+\end{frame}
+\endgroup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Experiments}
+\begin{frame}{Setup}
+\begin{itemize}
+\item Goal is to use minimal amount of samples
+\item CMA-ES heuristics: $s = 4 + 3 \lfloor \log(n) \rfloor$
+\item Clusterwork 2.0 framework for hyper parameter tuning
+\item Compare Ridge Regression, Recursive Least Squares (RLS)  and original approach Bayesian Dimensionality Reduction + Linear Regression (BLR)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Test Functions}
+\begin{columns}[c]
+  \begin{column}{8cm}
+    Rosenbrock function (uni-modal):
+    $$ f(\mathbf{x}) = \sum^{n-1}_{i=1} [100 (x_{i+1} - x_i^2)^2 + (1 - x_i)^2] $$
+  \end{column}
+  \begin{column}{5cm}
+    \includegraphics[height=5cm]{figures/Rosenbrock.png}
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{15 Dimensional Rosenbrock (mean of 10 runs)}
+  \centering
+  \includegraphics[height=6cm]{figures/rosenbrock_results.png}
+\end{frame}
+
+
+\begin{frame}{Reaching task}
+  \begin{columns}[c]
+    \begin{column}{8cm}
+      \begin{itemize}
+      \item With 5 DoF using DMPs we get 25
+        dimensional objective function \\
+      $\Rightarrow$ 351 parameters for quadratic model
+      \item Via-points $v_{100} = [1, 1]$  and
+        $v_{200} = [5, 0]$
+      \item Quadratic cost term for the two via-points and penalty
+        for self-collision
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{5cm}
+      \includegraphics[height=5cm]{figures/via_movement.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Reaching Task Results (mean of 10 Runs)}
+  \centering
+  \includegraphics[height=6cm]{figures/reaching_results.png}
+  %TODO show video
+\end{frame}
+
+
+\begin{frame}{Ball-in-a-cup Task}
+  \begin{columns}[c]
+    \begin{column}{8cm}
+      \begin{itemize}
+      \item MuJoCo simulation of Barret WAM robot arm
+      \item Using DMPs, gives 15 dimensional objective function
+      \item Reward based on distance between ball and center of cup
+      \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      \includegraphics[height=5cm]{figures/ball_in_a_cup.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Ball-in-a-cup Results (mean of 4 runs)}
+  \centering
+  \includegraphics[height=6cm]{figures/cup_results.png}
+  % show gifs in firefox in another workspace
+\end{frame}
+
+\begin{frame}{Ball-in-a-cup Results}
+\begin{itemize}
+\item Ride regression + RLS: every run finds a solution but the solution is unstable
+\item BLR: 2 out of 5 runs find solution others converge prematurely, but
+  solutions found are more stable
+\item Runtime: 60 min for RR and RLS, 75 min for BLR
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ball-in-a-cup Solutions}
+  % show video of solutions
+  \centering
+  \includegraphics[height=4cm]{figures/cup_solution.png}
+\end{frame}
+
+
+\section{Conclusion \& Future Work}
+\begin{frame}{Conclusion}
+  \begin{itemize}
+  \item Recursive approach beats original approach (my implementation)
+    and a simple batch solution on rosenbrock and reaching task
+  \item RLS manages to learn complex ball-in-a-cup task but solution is
+    unstable
+  \end{itemize}
+
+  $~$
+
+  \begin{block}{Main Conclusion}
+    MORE with Recursive Surrogate-Modeling has potential to beat existing
+    state-of-the-art algorithms in terms of sample efficiency
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{Future Work}
+  \begin{itemize}
+    \item Avoid using sample pool
+    \item Learning the model noise
+    \item Test on higher dimensional task
+    \item Benchmark against other state-of-the-art algorithms (CMA-ES)
+    \item Re-evaluating, optimize hyperparameters
+    \item Using a State Transition model, fine-tune Kalman Filter
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{}
+  \centering
+  \huge
+  Thank you! \\
+  $ $ \\
+  Discussion \& Questions?
+\end{frame}
+
+\appendix
+\beginbackup
+
+% TODO: add bibliography and use citeations
+% \begin{frame}[allowframebreaks]{References}
+% \printbibliography
+% \end{frame}
+
+\begin{frame}{Ball-in-a-cup RLS runs}
+  \centering
+  \includegraphics[height=6cm]{figures/cup_rls_runs.png}
+\end{frame}
+
+\begin{frame}{Ball-in-a-cup RR runs}
+  \centering
+  \includegraphics[height=6cm]{figures/cup_rr_runs.png}
+\end{frame}
+
+\begin{frame}{Ball-in-a-cup BLR runs}
+  \centering
+  \includegraphics[height=6cm]{figures/cup_blr_runs.png}
+\end{frame}
+
+
+\begin{frame}{Reaching Task RLS runs}
+  \centering
+  \includegraphics[height=6cm]{figures/via_rls_runs.png}
+\end{frame}
+
+\begin{frame}{Reaching Task RR runs}
+  \centering
+  \includegraphics[height=6cm]{figures/via_rr_runs.png}
+\end{frame}
+
+\begin{frame}{Reaching Task BLR runs}
+  \centering
+  \includegraphics[height=6cm]{figures/via_blr_runs.png}
+\end{frame}
+
+
+\begin{frame}{Runtimes}
+\begin{block}{Reaching task}
+  \begin{itemize}
+  \item RR: $ \sim $ 50 seconds
+  \item RLS: $ \sim $ 80 seconds
+  \item BLR: $ \sim $ 140 seconds
+  \end{itemize}
+\end{block}
+\begin{block}{Rosenbrock}
+  \begin{itemize}
+  \item RR: $ \sim $ 30 seconds
+  \item RLS: $ \sim $ 70 seconds
+  \item BLR: $ \sim $ 9 minutes
+  \end{itemize}
+\end{block}
+\end{frame}
+
+
+\begin{frame}{Data Preprocessing: Whitening}
+\begin{columns}[c]
+  \begin{column}{8cm}
+    \begin{itemize}
+    % \item $\mathbf{z} = (z_1,...,z_d)^T = \mathbf{W}\mathbf{x}$ with \\
+    %   $\text{var}(z) = \mathbf{I}$
+    \item transform random vector $\mathbf{x}$ into new
+      random vector $\mathbf{z}$
+      with ``white'' covariance $\text{var}(\mathbf{z}) = \mathbf{I}$
+    \item make computation numerically more stable
+
+    \item we use \textit{Cholesky whitening}
+      % $\mathbf{L}\mathbf{L}^T = \Sigma^{-1}$ \\
+      % $\mathbf{W} = \mathbf{L}^T$
+    \end{itemize}
+  \end{column}
+  \begin{column}{6cm}
+    \begin{figure}[h!]
+      \includegraphics[height=4cm]{figures/white.png}
+      \caption{100 samples 2 dim Rosenbrock}
+     \end{figure}
+   \end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Effect of Whitening}
+  Ridge Regression on 2D Rosenbrock
+  \begin{columns}[c]
+      \begin{column}{5cm}
+        \begin{figure}[h!]
+          \input{figures/LS_no_whitening}
+          \caption{No Whitening}
+        \end{figure}
+      \end{column}
+
+      \begin{column}{5cm}
+        \begin{figure}[h!]
+          \input{figures/LS_whitening}
+          \caption{Whitened Space}
+        \end{figure}
+      \end{column}
+
+      \begin{column}{5cm}
+        \begin{figure}[h!]
+          \input{figures/LS_unwhitened}
+          \caption{Unwhitened Space}
+        \end{figure}
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Hyperparameter Optimization}
+  $\rightarrow$ first try different order of magnitudes then do grid search
+  \begin{block}{MORE}
+    \begin{itemize}
+    \item samples per iteration
+    \item sample pool size
+    \item KL-bound (step size)
+    \end{itemize}
+  \end{block}
+  \begin{block}{Recursive Least squares}
+    \begin{itemize}
+    \item model noise $\textbf{Q}$
+    \item measurement noise 
+    \item different alpha (window size) for exponential moving average
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{Example Config Reaching Task}
+  \begin{itemize}
+  \item model noise $\textbf{Q}:$ 0.01
+  \item measurement noise: 0.001
+  \item alpha (window for normalization)  0.006
+  \item delta: 1000
+  \item gamma: 0.99
+  \item problem: via
+  \item kl bound: 0.2
+  \item pool size: 150
+  \item warm start: 150
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Data Preprocessing: Normalization}
+  \begin{itemize}
+  \item standard score for normalization   $z = \frac{x - \mu}{\sigma}$
+  \item batch solution uses mean and var of sample pool
+  \item recursive approach uses exponential moving average
+  \item clipping to deal with sharp jumps in reward from penalties
+  \end{itemize}
+  % maybe add graphic, or plot
+\end{frame}
+
+
+
+%\begin{frame}{Exponential Moving Average Calculation}
+%  compute the mean and variance for
+%  normalization in an incremental on-line fashion
+%  \begin{equation*}
+%  \label{eq:ema}
+%  \begin{aligned}
+%    \delta_i &= x_i - \mu_{i-1} \\
+%    \mu_i &= \mu_{i-1} + \alpha \, \delta_i \\
+%    \sigma^2_i &= (1 - \alpha) (\sigma^2_{i-1} + \alpha \, \delta^2_i).
+%  \end{aligned}
+%\end{equation*}
+%\end{frame}
+
+%\begin{frame}{Surrogate Model Example on 2D Rosenbrock}
+%  \begin{columns}[c]
+%      \begin{column}{5cm}
+%        \begin{figure}[h!]
+%          \input{figures/rosenbrock_mean}
+%          \caption{Objective Function}
+%        \end{figure}
+%      \end{column}
+%
+%      \begin{column}{5cm}
+%        \begin{figure}[h!]
+%          \input{figures/model_1}
+%          \caption{model at iteration $i$}
+%        \end{figure}
+%      \end{column}
+%
+%      \begin{column}{5cm}
+%        \begin{figure}[h!]
+%          \input{figures/model_2}
+%          \caption{model at iteration $i+1$}
+%        \end{figure}
+%      \end{column}
+%    \end{columns}
+%\end{frame}
+
+%\begin{frame}{}
+%    \textit{batch solution} by applying Bayes' rule
+%    \begin{align*}
+%      p(\beta | y_{1:T}) &\propto p(\beta) \prod^T_{k=1} p(y_k|\beta)  \\
+%                          &= \mathcal{N}(\beta | \textbf{m}_0, \textbf{P}_0)
+%                            \prod^T_{k=1} \mathcal{N}(y_k | \textbf{H}_k \beta, \sigma^2)
+%    \end{align*}
+%  \end{frame}
+
+  \begin{frame}{Recursive Least Squares}
+  \begin{itemize}
+    \item dynamic model has to be Markov sequence
+    \item  use \textit{previous posterior} as \textit{prior}
+  \end{itemize}
+  \begin{align*}
+      p(\beta | y_{1}) &= \frac{1}{Z_1} p(y_1 | \beta) p(\beta) \\
+      p(\beta | y_{1:2}) &= \frac{1}{Z_2} p(y_2 | \beta) p(\beta | y_1) \\
+                        &\vdots \\
+    p(\beta | y_{1:T}) &= \frac{1}{Z_T} p(y_T | \beta) p(\beta | y_{1:T-1})
+  \end{align*}
+  Normalization term: $Z_k = \int p(\beta) p(y_k | \beta) d\beta$
+\end{frame}
+% \begin{frame}{Influence of model noise}
+  % show plots of model noise influence
+% \end{frame}
+
+% \begin{frame}{Notion material}
+% TODO: go through notion and get extra material
+% \end{frame}
+\backupend
+
+\end{document}
+
+% Fundamentals:
+% Data preprocessing
+% --> in appendix (nur kurz erwähnen)
+
+% weniger zu MORE sagen
+% -1/2 vor surrogate model
+
+% Drift model kürzen, direkt RLS mit drift model --> in fundamentals
+% Bayesian
+
+% sample pool, was ich probiert habe welche parameter, ansätze
+% die resultate dann mit einem gewissen stand
+
+% top runs in ball in a cup
+% --> einzelne runs, wie viele haben eine richtige lösung gefunden
+
+% Surrogate model example rosenbrock in appendix
+
+% --> 20 minuten + 10 minuten fragen

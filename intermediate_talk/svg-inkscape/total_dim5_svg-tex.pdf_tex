@@ -1,0 +1,72 @@
+%% Creator: Inkscape inkscape 0.92.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'total_dim5_svg-tex.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{704.00025bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.54250652)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{total_dim5_svg-tex.pdf}}%
+    \put(0.13561784,0.54250652){\color[rgb]{0.63137255,0.15686275,0.39215686}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}LS: 8 samples per iteration\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{total_dim5_svg-tex.pdf}}%
+    \put(0.34747859,0.54250652){\color[rgb]{0.3254902,0.52941176,0.86666667}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}RLS: 1 sample per iteration\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{total_dim5_svg-tex.pdf}}%
+    \put(0.19767967,0.26594414){\color[rgb]{0.41960784,0.41960784,0.4627451}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}500\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{total_dim5_svg-tex.pdf}}%
+    \put(0.34770389,0.26594414){\color[rgb]{0.41960784,0.41960784,0.4627451}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1k\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{total_dim5_svg-tex.pdf}}%
+    \put(0.49772811,0.26594414){\color[rgb]{0.41960784,0.41960784,0.4627451}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1.5k\end{tabular}}}}%
+    \put(0.61150546,0.28725095){\color[rgb]{0.41960784,0.41960784,0.4627451}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}total_samples\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{total_dim5_svg-tex.pdf}}%
+    \put(0.0340909,0.34205606){\color[rgb]{0.41960784,0.41960784,0.4627451}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}1e-10\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{total_dim5_svg-tex.pdf}}%
+    \put(0.0340909,0.47087944){\color[rgb]{0.41960784,0.41960784,0.4627451}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}1\end{tabular}}}}%
+  \end{picture}%
+\endgroup%

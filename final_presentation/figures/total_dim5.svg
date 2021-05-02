@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 600 300"
+   version="1.1"
+   id="svg364"
+   sodipodi:docname="total_dim5.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:export-filename="/home/philipp/Downloads/total_dim5.svg.png"
+   inkscape:export-xdpi="116.8"
+   inkscape:export-ydpi="116.8">
+  <metadata
+     id="metadata370">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs368" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
+     id="namedview366"
+     showgrid="false"
+     inkscape:zoom="2.7866667"
+     inkscape:cx="140.74007"
+     inkscape:cy="167.22488"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g316" />
+  <g
+     id="g224">
+    <svg
+       viewBox="0 0 1024 1024"
+       x="108.29998779296875"
+       y="26.10003662109375"
+       height="11"
+       width="11"
+       version="1.1"
+       id="svg214">
+      <path
+         d="M128 533.333h768c23.564 0 42.667-19.103 42.667-42.667v-85.333c0-23.564-19.103-42.667-42.667-42.667h-768c-23.564 0-42.667 19.103-42.667 42.667v85.333c0 23.564 19.103 42.667 42.667 42.667z"
+         style="fill: rgb(161, 40, 100);"
+         id="path212" />
+    </svg>
+    <text
+       x="127.29998779296875"
+       y="24.10003662109375"
+       style="fill: rgb(161, 40, 100); dominant-baseline: text-before-edge; font-family: sans-serif;"
+       id="text216">LS: 8 samples per iteration</text>
+    <svg
+       viewBox="0 0 1024 1024"
+       x="307.16668701171875"
+       y="26.10003662109375"
+       height="11"
+       width="11"
+       version="1.1"
+       id="svg220">
+      <path
+         d="M128 533.333h768c23.564 0 42.667-19.103 42.667-42.667v-85.333c0-23.564-19.103-42.667-42.667-42.667h-768c-23.564 0-42.667 19.103-42.667 42.667v85.333c0 23.564 19.103 42.667 42.667 42.667z"
+         style="fill: rgb(83, 135, 221);"
+         id="path218" />
+    </svg>
+    <text
+       x="326.16668701171875"
+       y="24.10003662109375"
+       style="fill: rgb(83, 135, 221); dominant-baseline: text-before-edge; font-family: sans-serif;"
+       id="text222">RLS: 1 sample per iteration</text>
+  </g>
+  <g
+     transform="translate(0, 36.70001220703125)"
+     id="g362">
+    <svg
+       class="rv-xy-plot__inner"
+       width="600"
+       height="263"
+       version="1.1"
+       id="svg360">
+      <g
+         transform="translate(46,5)"
+         class="rv-xy-plot__grid-lines"
+         id="g232">
+        <line
+           y1="170.55624944172112"
+           y2="170.55624944172112"
+           x1="0"
+           x2="534"
+           class="rv-xy-plot__grid-lines__line"
+           style="stroke-width: 0.5px;"
+           id="line226" />
+        <line
+           y1="110.09512335582588"
+           y2="110.09512335582588"
+           x1="0"
+           x2="534"
+           class="rv-xy-plot__grid-lines__line"
+           style="stroke-width: 0.5px;"
+           id="line228" />
+        <line
+           y1="49.633997269930646"
+           y2="49.633997269930646"
+           x1="0"
+           x2="534"
+           class="rv-xy-plot__grid-lines__line"
+           style="stroke-width: 0.5px;"
+           id="line230" />
+      </g>
+      <g
+         transform="translate(46,NaN)"
+         class="rv-xy-plot__axis rv-xy-plot__axis--horizontal"
+         id="g238">
+        <line
+           x1="0"
+           x2="534"
+           y1="0"
+           y2="0"
+           class="rv-xy-plot__axis__line"
+           id="line234" />
+        <g
+           transform="translate(0, 0)"
+           class="rv-xy-plot__axis__ticks"
+           id="g236" />
+      </g>
+      <path
+         d="M0,0L2.2531645569620253,0.7896356321529052L4.506329113924051,7.470350908917261L6.7594936708860756,9.355189107210249L9.012658227848101,11.984480276125158L11.265822784810126,14.930993175207401L13.518987341772151,16.560354643903747L15.772151898734178,19.747586727634342L18.025316455696203,20.897582861670884L20.27848101265823,21.871067161959594L22.531645569620252,24.046063129056055L24.78481012658228,25.05320586175298L27.037974683544302,26.033276434388984L29.291139240506332,29.112645454017084L31.544303797468356,30.118234312881153L33.79746835443038,31.180694560868428L36.050632911392405,33.36591601871579L38.30379746835443,36.003023028189574L40.55696202531646,38.681437316229655L42.810126582278485,40.768055018254756L45.063291139240505,41.80968389610419L47.31645569620253,41.62961118048327L49.56962025316456,42.193699643869124L51.82278481012658,42.428513613259504L54.075949367088604,44.38890478885071L56.32911392405063,45.63970321316445L58.582278481012665,46.560273753324005L60.835443037974684,47.19670706346854L63.08860759493671,47.68142328253218L65.34177215189874,48.770661452706115L67.59493670886076,49.646616593586664L69.84810126582279,50.47345912268476L72.10126582278481,50.93823679245528L74.35443037974683,51.22412780709823L76.60759493670886,51.540640454060224L78.86075949367088,51.8231385377679L81.11392405063292,52.045459877254665L83.36708860759494,52.3267662333825L85.62025316455697,52.56039707621398L87.87341772151898,52.77545467062605L90.12658227848101,53.03325798007802L92.37974683544303,53.287852876448184L94.63291139240506,53.513535234232215L96.8860759493671,53.76953675332621L99.13924050632912,54.04571292657828L101.39240506329115,54.312987469043314L103.64556962025316,54.538606596636754L105.89873417721519,54.810338633800214L108.15189873417721,55.09465429115971L110.40506329113924,55.386656750830284L112.65822784810126,55.654067721901434L114.9113924050633,55.88891361780609L117.16455696202533,56.15263528618401L119.41772151898734,56.4355969417134L121.67088607594937,56.72047365139302L123.92405063291139,56.947574756893566L126.17721518987342,57.22482768718992L128.43037974683546,57.46847850035888L130.68354430379748,57.700068720082065L132.9367088607595,57.967645280530384L135.18987341772151,58.18361651949786L137.44303797468356,58.45520192156586L139.69620253164558,58.70257892966935L141.94936708860757,58.971467383459526L144.20253164556962,59.23916360367121L146.45569620253164,59.48416243473052L148.70886075949366,59.707976707594774L150.96202531645568,59.956826327044055L153.21518987341773,60.220423933103746L155.46835443037975,60.45542688986284L157.72151898734177,60.70821745700978L159.9746835443038,60.87232582819797L162.22784810126583,61.10330516430549L164.48101265822785,61.41671051807339L166.73417721518987,61.76719836274318L168.98734177215192,62.14817103003838L171.24050632911394,62.54194102727965L173.49367088607593,62.940309222666166L175.74683544303795,63.315139975990654L178,63.727114069529556L180.25316455696202,64.14596810346171L182.50632911392404,64.5293943588048L184.75949367088606,64.84764020303447L187.0126582278481,65.22443451028623L189.26582278481013,65.64840440502178L191.51898734177215,66.10582309554712L193.7721518987342,66.54078835238693L196.0253164556962,67.05530446070377L198.27848101265823,67.53106248968666L200.53164556962025,68.0397370318117L202.7848101265823,68.5912777393255L205.0379746835443,69.11444734386278L207.2911392405063,69.66375005757122L209.54430379746833,70.21348619885782L211.79746835443038,70.85256431338085L214.0506329113924,71.61228834607691L216.30379746835442,72.38494771531093L218.55696202531647,73.22717460616727L220.81012658227849,74.11365425452769L223.0632911392405,75.08282524322733L225.31645569620252,76.16856769619093L227.56962025316457,77.25867605091669L229.8227848101266,78.37979702620973L232.0759493670886,79.67600174977888L234.32911392405066,81.06519064205526L236.58227848101265,82.53590806429642L238.83544303797467,83.69875945245242L241.0886075949367,85.3187320447203L243.34177215189874,87.16923194296187L245.59493670886076,89.21113261576875L247.84810126582278,91.39495148746329L250.1012658227848,92.94527358701471L252.35443037974684,95.38198213123887L254.60759493670886,98.68616201025601L256.8607594936709,101.64314805006389L259.11392405063293,104.33819120970404L261.36708860759495,108.1781080581236L263.62025316455697,114.62680983716395L265.873417721519,120.5139562178305L268.126582278481,126.92027882783428L270.37974683544303,137.78296225329237L272.63291139240505,139.82967401417073L274.8860759493671,143.9247262203997L277.1392405063291,146.1142536185336L279.39240506329116,146.11425339647766"
+         class="rv-xy-plot__series rv-xy-plot__series--line"
+         transform="translate(46,5)"
+         style="opacity: 1; stroke-width: 1.5px; stroke: rgb(83, 135, 221);"
+         id="path240" />
+      <path
+         d="M0,1.7786971951212114L2.2531645569620253,6.37029521109199L4.506329113924051,10.108950519077872L6.7594936708860756,15.06432439779966L9.012658227848101,18.25219074814843L11.265822784810126,20.60722641803188L13.518987341772151,21.76843060196643L15.772151898734178,24.172687213453425L18.025316455696203,25.669066897454L20.27848101265823,28.00080389830072L22.531645569620252,31.289879344801253L24.78481012658228,31.161688600048183L27.037974683544302,34.243329674111486L29.291139240506332,35.922320352005165L31.544303797468356,39.24135273369554L33.79746835443038,39.74963431036837L36.050632911392405,41.20377979056244L38.30379746835443,39.742056528283996L40.55696202531646,41.406874216600336L42.810126582278485,42.66233255786431L45.063291139240505,42.63864957337977L47.31645569620253,42.722981650183414L49.56962025316456,43.15076429655582L51.82278481012658,43.31051102823609L54.075949367088604,43.559461745408946L56.32911392405063,43.93618258712269L58.582278481012665,44.10004775794361L60.835443037974684,44.808752848819886L63.08860759493671,44.44582453500154L65.34177215189874,44.58246058580063L67.59493670886076,45.08544946396893L69.84810126582279,44.920153539812034L72.10126582278481,45.62018356231572L74.35443037974683,45.77734169781266L76.60759493670886,45.928912188179126L78.86075949367088,46.2997732313795L81.11392405063292,46.21113760322569L83.36708860759494,46.50214485953007L85.62025316455697,47.048228657544406L87.87341772151898,47.339364144562225L90.12658227848101,47.5122229084117L92.37974683544303,47.74126961543302L94.63291139240506,47.96393374845265L96.8860759493671,48.220452804773814L99.13924050632912,48.443529660694786L101.39240506329115,48.656027772346114L103.64556962025316,48.866195759374584L105.89873417721519,49.06481957336778L108.15189873417721,49.27821100642544L110.40506329113924,49.49332746973913L112.65822784810126,49.69851491513515L114.9113924050633,49.91275294108459L117.16455696202533,50.137487508134754L119.41772151898734,50.357311379742875L121.67088607594937,50.583767275777674L123.92405063291139,50.80756963627982L126.17721518987342,51.04977502127455L128.43037974683546,51.28021235043634L130.68354430379748,51.49829708777411L132.9367088607595,51.69492153304816L135.18987341772151,51.88692533944397L137.44303797468356,52.076656360842776L139.69620253164558,52.2745873670827L141.94936708860757,52.46997278066833L144.20253164556962,52.66312582966516L146.45569620253164,52.845967816144714L148.70886075949366,53.018525459008394L150.96202531645568,53.20048074035642L153.21518987341773,53.37470372807044L155.46835443037975,53.54977477086376L157.72151898734177,53.73101300896227L159.9746835443038,53.92179715400541L162.22784810126583,54.10688883712871L164.48101265822785,54.284738370081385L166.73417721518987,54.47237820283714L168.98734177215192,54.667154271500664L171.24050632911394,54.877554176611966L173.49367088607593,55.08944624535971L175.74683544303795,55.302562313581056L178,55.52839685560759L180.25316455696202,55.77376807699832L182.50632911392404,58.264499408158095L184.75949367088606,56.268795495081854L187.0126582278481,56.510785143923904L189.26582278481013,56.7698891885086L191.51898734177215,57.04057198168188L193.7721518987342,57.29593712495874L196.0253164556962,57.568475329573545L198.27848101265823,57.85274762845256L200.53164556962025,58.13338076060144L202.7848101265823,58.41749498843401L205.0379746835443,58.72156517526653L207.2911392405063,59.01341941410111L209.54430379746833,59.28396766307473L211.79746835443038,59.551812659000014L214.0506329113924,59.83673685329506L216.30379746835442,60.10911563908094L218.55696202531647,60.38049350871898L220.81012658227849,60.67495239547878L223.0632911392405,60.9571736780148L225.31645569620252,61.25146746868451L227.56962025316457,61.54582178523286L229.8227848101266,61.843915137213415L232.0759493670886,62.151229057165644L234.32911392405066,62.47918297682904L236.58227848101265,62.781833866970786L238.83544303797467,63.10338514131149L241.0886075949367,63.45957496525249L243.34177215189874,63.84245723252019L245.59493670886076,64.1909284982028L247.84810126582278,64.55895250278208L250.1012658227848,64.93095513943211L252.35443037974684,65.3147772254737L254.60759493670886,65.72797787813526L256.8607594936709,66.14983396546221L259.11392405063293,66.56283576419102L261.36708860759495,66.9576232789471L263.62025316455697,67.40296111071825L265.873417721519,67.90218908377331L268.126582278481,68.46859651039175L270.37974683544303,69.01250150936237L272.63291139240505,69.56684917151082L274.8860759493671,70.18159465958229L277.1392405063291,70.78901113442474L279.39240506329116,71.43012597518931L281.6455696202532,72.1206580862472L283.89873417721515,72.810622004368L286.1518987341772,73.50468692205169L288.40506329113924,74.12439410298661L290.65822784810126,74.99979103238948L292.9113924050633,75.91744536971738L295.1645569620253,76.73288911434808L297.4177215189873,77.58924665366165L299.6708860759494,78.43918274909934L301.92405063291136,79.37411821303643L304.17721518987344,80.41099121028459L306.43037974683546,81.6380047377914L308.6835443037975,82.80966006588486L310.9367088607595,84.05157479890129L313.18987341772157,85.26896154565507L315.44303797468353,86.61254873167664L317.69620253164555,88.12800917773353L319.9493670886076,89.95106315123087L322.2025316455696,91.81629280755844L324.45569620253167,93.61563079810512L326.70886075949363,95.96546599758648L328.9620253164557,98.9900825189121L331.2151898734177,103.1495637765492L333.46835443037975,107.58701100438924L335.72151898734177,108.03057131123964L337.97468354430384,114.78257033221762L340.2278481012658,117.61234513045589L342.4810126582279,125.93968072399693L344.73417721518985,125.28497886457325L346.98734177215186,133.32861821153347L349.24050632911394,129.42775766547243L351.4936708860759,128.05205651320767L353.746835443038,135.28200471743625L356,134.4707725079672L358.253164556962,149.32467736484182L360.50632911392404,151.58160295077866L362.7594936708861,140.35800919375518L365.0126582278481,142.9144302944574L367.26582278481015,146.47615123699134L369.5189873417721,159.20852766378044L371.7721518987342,157.5677872816631L374.0253164556962,160.01338040611088L376.27848101265823,160.08865846955902L378.53164556962025,166.8701975525855L380.7848101265823,168.5076018120636L383.0379746835443,166.62401927991L385.2911392405063,165.52257026233758L387.5443037974684,176.9720340537784L389.79746835443035,177.84910287423702L392.0506329113924,174.80234067700076L394.3037974683544,176.06075915551753L396.55696202531647,182.53177262078472L398.8101265822785,186.79500676676895L401.0632911392405,189.21581961321806L403.3164556962025,189.7215643660416L405.5696202531646,193.10956229446444L407.82278481012656,184.71245052094628L410.0759493670886,191.49719370691707L412.32911392405066,187.96378345675777L414.5822784810126,186.54230436283615L416.8354430379747,188.92434193004686L419.08860759493666,188.45866929440643L421.34177215189874,190.39419697783853L423.59493670886076,190.36978986952613L425.8481012658228,191.76550599440588L428.1012658227848,191.68147881482344L430.3544303797469,191.76550599440588L432.60759493670884,191.69190898048782L434.8607594936709,192.39465238027898L437.11392405063293,193.00127832032084L439.36708860759495,194.3364109365232L441.62025316455697,195.64388566122707L443.87341772151893,195.57782709606656L446.126582278481,196.1311369772992L448.37974683544303,196.97319030359222L450.63291139240505,197.97653344121852L452.88607594936707,200.38980730385504L455.13924050632914,201.97404460741066L457.3924050632911,201.9005946452724L459.6455696202532,201.34728476403976L461.8987341772152,201.34728476403976L464.1518987341772,201.15395299293888L466.40506329113924,200.44479824282064L468.6582278481013,201.6166559459138L470.9113924050633,199.04575100379645L473.1645569620253,204.02992980855032L475.4177215189873,202.51914246713295L477.67088607594934,199.5335905681678L479.9240506329114,203.31501989436487L482.1772151898734,201.15395299293888L484.43037974683546,200.1754270609466L486.6835443037975,199.39598653816822L488.9367088607595,201.9005946452724L491.1898734177215,197.35798561935798L493.4430379746836,193.56651008337215L495.69620253164555,193.44849193278864L497.94936708860763,199.58027164607455L500.2025316455696,198.40841394298138L502.45569620253167,200.84675509276275L504.7088607594937,201.82815781840992L506.96202531645565,204.02992980855032L509.2151898734177,204.02992980855032L511.46835443037975,204.98740726873507L513.7215189873418,204.48687759745803L515.9746835443037,205.1203659320578L518.2278481012659,206.86051665546515L520.4810126582279,208.62752977343035L522.7341772151899,211.31017481794092L524.9873417721519,211.31017481794092L527.2405063291139,215.90777478282095L529.493670886076,228L531.746835443038,213.12113452445888L534,222.2305423320268"
+         class="rv-xy-plot__series rv-xy-plot__series--line"
+         transform="translate(46,5)"
+         style="opacity: 1; stroke-width: 1.5px; stroke: rgb(161, 40, 100);"
+         id="path242" />
+      <g
+         class="rv-xy-plot__series rv-xy-plot__series--mark"
+         transform="translate(46,5)"
+         id="g246">
+        <circle
+           r="2"
+           cx="534"
+           cy="222.2305423320268"
+           style="opacity: 1; stroke: rgb(161, 40, 100); fill: rgb(161, 40, 100); stroke-width: 1px;"
+           id="circle244" />
+      </g>
+      <g
+         class="rv-xy-plot__series rv-xy-plot__series--mark"
+         transform="translate(46,5)"
+         id="g250">
+        <circle
+           r="2"
+           cx="279.39240506329116"
+           cy="146.11425339647766"
+           style="opacity: 1; stroke: rgb(83, 135, 221); fill: rgb(83, 135, 221); stroke-width: 1px;"
+           id="circle248" />
+      </g>
+      <defs
+         class="rv-gradient-defs"
+         id="defs276">
+        <linearGradient
+           id="leftFadeGradient"
+           x1="0"
+           x2="1"
+           y1="0"
+           y2="0">
+          <stop
+             offset="0%"
+             stop-color="white"
+             stop-opacity="1"
+             id="stop252" />
+          <stop
+             offset="60%"
+             stop-color="white"
+             stop-opacity="1"
+             id="stop254" />
+          <stop
+             offset="100%"
+             stop-color="white"
+             stop-opacity="0"
+             id="stop256" />
+        </linearGradient>
+        <linearGradient
+           id="rightFadeGradient"
+           x1="1"
+           x2="0"
+           y1="0"
+           y2="0">
+          <stop
+             offset="0%"
+             stop-color="white"
+             stop-opacity="1"
+             id="stop259" />
+          <stop
+             offset="100%"
+             stop-color="white"
+             stop-opacity="0"
+             id="stop261" />
+        </linearGradient>
+        <linearGradient
+           id="bottomFadeGradient"
+           x1="0"
+           x2="0"
+           y1="1"
+           y2="0">
+          <stop
+             offset="0%"
+             stop-color="white"
+             stop-opacity="1"
+             id="stop264" />
+          <stop
+             offset="40%"
+             stop-color="white"
+             stop-opacity="1"
+             id="stop266" />
+          <stop
+             offset="100%"
+             stop-color="white"
+             stop-opacity="0"
+             id="stop268" />
+        </linearGradient>
+        <linearGradient
+           id="topFadeGradient"
+           x1="0"
+           x2="0"
+           y1="0"
+           y2="1">
+          <stop
+             offset="0%"
+             stop-color="white"
+             stop-opacity="1"
+             id="stop271" />
+          <stop
+             offset="100%"
+             stop-color="white"
+             stop-opacity="0"
+             id="stop273" />
+        </linearGradient>
+      </defs>
+      <g
+         class="rv-xy-plot__borders plot-border"
+         id="g286">
+        <rect
+           class="rv-xy-plot__borders-bottom plot-border-bottom"
+           style="fill: url(&quot;#bottomFadeGradient&quot;); opacity: 1;"
+           x="0"
+           y="233"
+           width="600"
+           height="30"
+           id="rect278" />
+        <rect
+           class="rv-xy-plot__borders-left plot-border-left"
+           style="fill: url(&quot;#leftFadeGradient&quot;); opacity: 1;"
+           x="0"
+           y="0"
+           width="46"
+           height="263"
+           id="rect280" />
+        <rect
+           class="rv-xy-plot__borders-right plot-border-right"
+           style="fill: url(&quot;#rightFadeGradient&quot;); opacity: 1;"
+           x="580"
+           y="0"
+           width="20"
+           height="263"
+           id="rect282" />
+        <rect
+           class="rv-xy-plot__borders-top plot-border-top"
+           style="fill: url(&quot;#topFadeGradient&quot;); opacity: 1;"
+           x="0"
+           y="0"
+           width="600"
+           height="5"
+           id="rect284" />
+      </g>
+      <g
+         transform="translate(46,233)"
+         class="rv-xy-plot__axis rv-xy-plot__axis--horizontal"
+         style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+         id="g316">
+        <line
+           x1="0"
+           x2="534"
+           y1="0"
+           y2="0"
+           class="rv-xy-plot__axis__line"
+           style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke-width: 0px;"
+           id="line288" />
+        <g
+           transform="translate(0, 0)"
+           class="rv-xy-plot__axis__ticks"
+           id="g308">
+          <g
+             transform="translate(139.55537974683543, 0)"
+             class="rv-xy-plot__axis__tick"
+             style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+             id="g294">
+            <line
+               x1="0"
+               x2="0"
+               y1="-6"
+               y2="6"
+               class="rv-xy-plot__axis__tick__line"
+               style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke-width: 0px;"
+               id="line290" />
+            <text
+               text-anchor="middle"
+               dy="0.72em"
+               transform="translate(0, 14)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif; fill: rgb(107, 107, 118); font-size: 11px;"
+               id="text292">500</text>
+          </g>
+          <g
+             transform="translate(280.378164556962, 0)"
+             class="rv-xy-plot__axis__tick"
+             style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+             id="g300">
+            <line
+               x1="0"
+               x2="0"
+               y1="-6"
+               y2="6"
+               class="rv-xy-plot__axis__tick__line"
+               style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke-width: 0px;"
+               id="line296" />
+            <text
+               text-anchor="middle"
+               dy="0.72em"
+               transform="translate(0, 14)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif; fill: rgb(107, 107, 118); font-size: 11px;"
+               id="text298">1k</text>
+          </g>
+          <g
+             transform="translate(421.2009493670886, 0)"
+             class="rv-xy-plot__axis__tick"
+             style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+             id="g306">
+            <line
+               x1="0"
+               x2="0"
+               y1="-6"
+               y2="6"
+               class="rv-xy-plot__axis__tick__line"
+               style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke-width: 0px;"
+               id="line302" />
+            <text
+               text-anchor="middle"
+               dy="0.72em"
+               transform="translate(0, 14)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif; fill: rgb(107, 107, 118); font-size: 11px;"
+               id="text304">1.5k</text>
+          </g>
+        </g>
+        <g
+           transform="translate(0, 0)"
+           class="rv-xy-plot__axis__title"
+           id="g314">
+          <g
+             style="text-anchor: end; font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+             transform="translate(528, -6) rotate(0)"
+             id="g312">
+            <text
+               style="font-family: sans-serif; fill: rgb(107, 107, 118); font-size: 11px;"
+               id="text310">total_samples</text>
+          </g>
+        </g>
+        <g
+           style="font-size:11px;font-family:'Source Sans Pro';fill:#6b6b76"
+           transform="rotate(-90,181.68061,200.49758)"
+           class="rv-xy-plot__axis__title"
+           id="g314-3">
+          <g
+             style="font-size:11px;font-family:'Source Sans Pro';text-anchor:end;fill:#6b6b76"
+             transform="translate(528,-6)"
+             id="g312-6">
+            <text
+               style="font-size:11px;font-family:sans-serif;fill:#6b6b76"
+               id="text310-7">Loss</text>
+          </g>
+        </g>
+      </g>
+      <g
+         transform="translate(46,233)"
+         class="rv-xy-plot__axis rv-xy-plot__axis--horizontal"
+         id="g340">
+        <line
+           x1="0"
+           x2="0"
+           y1="0"
+           y2="0"
+           class="rv-xy-plot__axis__line"
+           id="line318" />
+        <g
+           transform="translate(0, 0)"
+           class="rv-xy-plot__axis__ticks"
+           id="g338">
+          <g
+             transform="translate(139.55537974683543, 0)"
+             class="rv-xy-plot__axis__tick"
+             id="g324">
+            <line
+               x1="0"
+               x2="0"
+               y1="-6"
+               y2="6"
+               class="rv-xy-plot__axis__tick__line"
+               id="line320" />
+            <text
+               text-anchor="middle"
+               dy="0.72em"
+               transform="translate(0, 14)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif;"
+               id="text322" />
+          </g>
+          <g
+             transform="translate(280.378164556962, 0)"
+             class="rv-xy-plot__axis__tick"
+             id="g330">
+            <line
+               x1="0"
+               x2="0"
+               y1="-6"
+               y2="6"
+               class="rv-xy-plot__axis__tick__line"
+               id="line326" />
+            <text
+               text-anchor="middle"
+               dy="0.72em"
+               transform="translate(0, 14)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif;"
+               id="text328" />
+          </g>
+          <g
+             transform="translate(421.2009493670886, 0)"
+             class="rv-xy-plot__axis__tick"
+             id="g336">
+            <line
+               x1="0"
+               x2="0"
+               y1="-6"
+               y2="6"
+               class="rv-xy-plot__axis__tick__line"
+               id="line332" />
+            <text
+               text-anchor="middle"
+               dy="0.72em"
+               transform="translate(0, 14)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif;"
+               id="text334" />
+          </g>
+        </g>
+      </g>
+      <g
+         transform="translate(0,5)"
+         class="rv-xy-plot__axis rv-xy-plot__axis--vertical"
+         style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+         id="g358">
+        <line
+           x1="46"
+           x2="46"
+           y1="0"
+           y2="228"
+           class="rv-xy-plot__axis__line"
+           style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke: none;"
+           id="line342" />
+        <g
+           transform="translate(46, 0)"
+           class="rv-xy-plot__axis__ticks"
+           id="g356">
+          <g
+             transform="translate(0, 170.55624944172112)"
+             class="rv-xy-plot__axis__tick"
+             style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+             id="g348">
+            <line
+               y1="0"
+               y2="0"
+               x1="6"
+               x2="-6"
+               class="rv-xy-plot__axis__tick__line"
+               style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke: none;"
+               id="line344" />
+            <text
+               text-anchor="end"
+               dy="0.32em"
+               transform="translate(-14, 0)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif; fill: rgb(107, 107, 118); font-size: 11px;"
+               id="text346">1e-10</text>
+          </g>
+          <g
+             transform="translate(0, 49.633997269930646)"
+             class="rv-xy-plot__axis__tick"
+             style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px;"
+             id="g354">
+            <line
+               y1="0"
+               y2="0"
+               x1="6"
+               x2="-6"
+               class="rv-xy-plot__axis__tick__line"
+               style="font-family: Source Sans Pro; fill: rgb(107, 107, 118); font-size: 11px; stroke: none;"
+               id="line350" />
+            <text
+               text-anchor="end"
+               dy="0.32em"
+               transform="translate(-14, 0)"
+               class="rv-xy-plot__axis__tick__text"
+               style="font-family: sans-serif; fill: rgb(107, 107, 118); font-size: 11px;"
+               id="text352">1</text>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </g>
+  <xhtml:style>/*&lt;![CDATA[*/<xhtml:br />
+
+text { font-size: 10px; fill: black }<xhtml:br />
+
+.react-vis-magic-css-import-rule{display:inherit}.rv-treemap{font-size:12px;position:relative}.rv-treemap__leaf{overflow:hidden;position:absolute}.rv-treemap__leaf--circle{align-items:center;border-radius:100%;display:flex;justify-content:center}.rv-treemap__leaf__content{overflow:hidden;padding:10px;text-overflow:ellipsis}.rv-xy-plot{color:#c3c3c3;position:relative}.rv-xy-plot canvas{pointer-events:none}.rv-xy-plot .rv-xy-canvas{pointer-events:none;position:absolute}.rv-xy-plot__inner{display:block}.rv-xy-plot__axis__line{fill:none;stroke-width:2px;stroke:#e6e6e9}.rv-xy-plot__axis__tick__line{stroke:#e6e6e9}.rv-xy-plot__axis__tick__text{fill:#6b6b76;font-size:11px}.rv-xy-plot__axis__title text{fill:#6b6b76;font-size:11px}.rv-xy-plot__grid-lines__line{stroke:#e6e6e9}.rv-xy-plot__circular-grid-lines__line{fill-opacity:0;stroke:#e6e6e9}.rv-xy-plot__series,.rv-xy-plot__series path{pointer-events:all}.rv-xy-plot__series--line{fill:none;stroke:#000;stroke-width:2px}.rv-crosshair{position:absolute;font-size:11px;pointer-events:none}.rv-crosshair__line{background:#47d3d9;width:1px}.rv-crosshair__inner{position:absolute;text-align:left;top:0}.rv-crosshair__inner__content{border-radius:4px;background:#3a3a48;color:#fff;font-size:12px;padding:7px 10px;box-shadow:0 2px 4px rgba(0,0,0,0.5)}.rv-crosshair__inner--left{right:4px}.rv-crosshair__inner--right{left:4px}.rv-crosshair__title{font-weight:bold;white-space:nowrap}.rv-crosshair__item{white-space:nowrap}.rv-hint{position:absolute;pointer-events:none}.rv-hint__content{border-radius:4px;padding:7px 10px;font-size:12px;background:#3a3a48;box-shadow:0 2px 4px rgba(0,0,0,0.5);color:#fff;text-align:left;white-space:nowrap}.rv-discrete-color-legend{box-sizing:border-box;overflow-y:auto;font-size:12px}.rv-discrete-color-legend.horizontal{white-space:nowrap}.rv-discrete-color-legend-item{color:#3a3a48;border-radius:1px;padding:9px 10px}.rv-discrete-color-legend-item.horizontal{display:inline-block}.rv-discrete-color-legend-item.horizontal .rv-discrete-color-legend-item__title{margin-left:0;display:block}.rv-discrete-color-legend-item__color{display:inline-block;vertical-align:middle;overflow:visible}.rv-discrete-color-legend-item__color__path{stroke:#dcdcdc;stroke-width:2px}.rv-discrete-color-legend-item__title{margin-left:10px}.rv-discrete-color-legend-item.disabled{color:#b8b8b8}.rv-discrete-color-legend-item.clickable{cursor:pointer}.rv-discrete-color-legend-item.clickable:hover{background:#f9f9f9}.rv-search-wrapper{display:flex;flex-direction:column}.rv-search-wrapper__form{flex:0}.rv-search-wrapper__form__input{width:100%;color:#a6a6a5;border:1px solid #e5e5e4;padding:7px 10px;font-size:12px;box-sizing:border-box;border-radius:2px;margin:0 0 9px;outline:0}.rv-search-wrapper__contents{flex:1;overflow:auto}.rv-continuous-color-legend{font-size:12px}.rv-continuous-color-legend .rv-gradient{height:4px;border-radius:2px;margin-bottom:5px}.rv-continuous-size-legend{font-size:12px}.rv-continuous-size-legend .rv-bubbles{text-align:justify;overflow:hidden;margin-bottom:5px;width:100%}.rv-continuous-size-legend .rv-bubble{background:#d8d9dc;display:inline-block;vertical-align:bottom}.rv-continuous-size-legend .rv-spacer{display:inline-block;font-size:0;line-height:0;width:100%}.rv-legend-titles{height:16px;position:relative}.rv-legend-titles__left,.rv-legend-titles__right,.rv-legend-titles__center{position:absolute;white-space:nowrap;overflow:hidden}.rv-legend-titles__center{display:block;text-align:center;width:100%}.rv-legend-titles__right{right:0}.rv-radial-chart .rv-xy-plot__series--label{pointer-events:none}<xhtml:br />
+<xhtml:br />
+
+/*]]&gt;*/</xhtml:style>
+</svg>
